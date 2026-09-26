@@ -1,0 +1,57 @@
+import { TimelineEvent } from '@/types'
+
+export const timelineData: TimelineEvent[] = [
+  {
+    iconName: 'Check',
+    tone: 'emerald',
+    title: 'In-Memory Forensic Routine Completed',
+    detail: 'mem_dump.go executed across 8 Windows Server 2022 targets with 0 disk artifacts.',
+    time: '2 minutes ago',
+    systemNode: 'NTRO-WIN-04',
+    evasionTechnique: 'Direct Syscall (SSN)',
+  },
+  {
+    iconName: 'Upload',
+    tone: 'sky',
+    title: 'Immutable Evidence Sealed & Vaulted',
+    detail: 'kernel_callback_table_dump.bin (2.4 MB) encrypted with AES-256-GCM and SHA-256.',
+    time: '8 minutes ago',
+    systemNode: 'Central Vault',
+    evasionTechnique: 'BYOVD Callback Subversion',
+  },
+  {
+    iconName: 'AlertTriangle',
+    tone: 'amber',
+    title: 'Kernel Callback Hook Identified & Disarmed',
+    detail: 'Anomalous unhooked pointer detected in nt!PspCreateProcessNotifyRoutine (0xFFFFF80321A4B000).',
+    time: '18 minutes ago',
+    systemNode: 'NTRO-WIN-08',
+    evasionTechnique: 'BYOVD Callback Subversion',
+  },
+  {
+    iconName: 'GitBranch',
+    tone: 'violet',
+    title: 'Polymorphic Routine Deployed to Linux Agents',
+    detail: 'proc_hollow_scan.go (v2.4.0) compiled to SSA stream and dispatched to Ubuntu nodes.',
+    time: '34 minutes ago',
+    systemNode: 'FORENSIC-LNX-11',
+    evasionTechnique: 'Polymorphic LLVM Mutation',
+  },
+  {
+    iconName: 'Activity',
+    tone: 'sky',
+    title: 'Multi-Target Encrypted Tunnel Established',
+    detail: 'Encrypted relay authenticated over Port 443 (TLS 1.3) with 24/24 active target beacons.',
+    time: '52 minutes ago',
+    systemNode: 'All Targets',
+    evasionTechnique: 'Encrypted Relay',
+  },
+  {
+    iconName: 'FileText',
+    tone: 'blue',
+    title: 'Executive Stakeholder Forensic Audit Compiled',
+    detail: 'Generated Report "Full-Spectrum In-Memory Forensic Audit" with 3,384 telemetry records.',
+    time: '1 hour ago',
+    systemNode: 'Console Manager',
+  },
+]

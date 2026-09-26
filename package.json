@@ -1,0 +1,13 @@
+{
+  "name": "control-plane-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Operations Control Plane & Anomaly Detection System Monorepo",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "start:frontend": "npm --prefix frontend run start",
+    "lint:frontend": "npm --prefix frontend run lint"
+  }
+}

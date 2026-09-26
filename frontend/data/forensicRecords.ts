@@ -1,0 +1,85 @@
+import { ForensicRecord } from '@/types'
+
+export const forensicRecordsData: ForensicRecord[] = [
+  {
+    id: 'REC-BYOVD-8901',
+    targetNode: 'us-east-prod-02',
+    targetOS: 'Windows Server 2022',
+    technique: 'BYOVD Callback Subversion',
+    avEvasionStatus: 'Bypassed (0 Detections)',
+    processContext: 'System / ntoskrnl.exe',
+    pid: 4,
+    collectedArtifact: 'kernel_callback_table_dump.bin',
+    findingsCount: 3,
+    severity: 'HIGH',
+    timestamp: '2 mins ago',
+    details: {
+      unhookedDlls: ['ntoskrnl.exe', 'fltmgr.sys'],
+      memoryRegion: '0xFFFFF80004200000',
+      driverCallbackTarget: 'PspCreateProcessNotifyRoutine array [slot 4 disarmed]',
+      mitigationAction: 'Target EDR process notification callback disarmed without kernel panic.',
+      rawSummary:
+        'Extracted running process tree and parent-child execution genealogy without triggering active EDR filter driver heuristics.',
+    },
+  },
+  {
+    id: 'REC-INMEM-8902',
+    targetNode: 'us-east-worker-09',
+    targetOS: 'Ubuntu 24.04 LTS',
+    technique: 'In-Memory Reflective Injection',
+    avEvasionStatus: 'Stealth Verified',
+    processContext: 'systemd-journald [reflective]',
+    pid: 582,
+    collectedArtifact: 'proc_mem_forensic_trace.json',
+    findingsCount: 1,
+    severity: 'MEDIUM',
+    timestamp: '8 mins ago',
+    details: {
+      unhookedDlls: ['libc.so.6', 'libpthread.so.0'],
+      memoryRegion: '0x7ffc82a10000 - 0x7ffc82a34000 (RWX)',
+      mitigationAction: 'Anonymous memory segment execution via memfd_create without disk footprint.',
+      rawSummary:
+        'Collected full socket connections, active listening ports, and hidden file descriptor mappings across namespace.',
+    },
+  },
+  {
+    id: 'REC-SYSCALL-8903',
+    targetNode: 'us-east-prod-02',
+    targetOS: 'Windows Server 2022',
+    technique: 'Direct Syscall (SSN)',
+    avEvasionStatus: 'Heuristics Blinded',
+    processContext: 'explorer.exe (PID 4192)',
+    pid: 4192,
+    collectedArtifact: 'unhooked_ntdll_evidence.log',
+    findingsCount: 5,
+    severity: 'CRITICAL',
+    timestamp: '15 mins ago',
+    details: {
+      unhookedDlls: ['ntdll.dll', 'kernel32.dll', 'advapi32.dll'],
+      memoryRegion: '0x00007FF682000000',
+      mitigationAction: 'Dynamic SSN resolution parsed from clean disk image to bypass user-mode inline hooks.',
+      rawSummary:
+        'Deep forensic extraction of suspicious persistence keys, scheduled task registrations, and unbacked memory regions.',
+    },
+  },
+  {
+    id: 'REC-POLY-8904',
+    targetNode: 'eu-west-forensic-01',
+    targetOS: 'Ubuntu 22.04 LTS',
+    technique: 'Polymorphic LLVM Mutation',
+    avEvasionStatus: 'Bypassed (0 Detections)',
+    processContext: 'jocky-runner-v4.0 [MD5: e7b20a]',
+    pid: 9104,
+    collectedArtifact: 'evaded_av_telemetry_dump.json',
+    findingsCount: 2,
+    severity: 'LOW',
+    timestamp: '32 mins ago',
+    details: {
+      unhookedDlls: ['libssl.so.3', 'libcrypto.so.3'],
+      memoryRegion: '0x55d8a9000000',
+      mitigationAction: 'Control-flow flattening & dead code insertion neutralized static signature scanners.',
+      rawSummary:
+        'Extracted hardware telemetry, active CPU execution privileges, and kernel ring buffer logs.',
+    },
+  },
+]
