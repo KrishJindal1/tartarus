@@ -1,36 +1,51 @@
-"""
-Router for job dispatching, status tracking, and payload retrieval.
-"""
-from fastapi import APIRouter
+from fastapi import APIRouter , HTTPException
+from pydantic import BaseModel
+from uuid import uuid4
 
 router = APIRouter()
 
+jobs = []
+
+
+class JobCreate(BaseModel):
+    agent_id: str
+    script_id: str
+    exec_mode: str = "user_mode"
+
 
 @router.post("/create")
-def create_job():
-    """Create and dispatch a new forensic job."""
-    raise NotImplementedError("Endpoint not implemented yet")
+def create_job(job: JobCreate):
+    job_data = {
+        "job_id": str(uuid4()),
+        "agent_id": job.agent_id,
+        "script_id": job.script_id,
+        "exec_mode": job.exec_mode,
+        "status": "pending",
+    }
 
+    jobs.append(job_data)
 
-@router.get("/")
-def list_jobs():
-    """List forensic jobs with optional filtering."""
-    raise NotImplementedError("Endpoint not implemented yet")
+    return {
+        "message": "Job created",
+        "job": job_data,
+    }
 
+@router.get("/pending/{agent_id}")
+def get_pending_job(agent_id: str):
+    for job in jobs:
+        if job["agent_id"] == agent_id and job["status"] == "pending":
 
-@router.get("/{job_id}")
-def get_job(job_id: str):
-    """Retrieve details and status for a specific job."""
-    raise NotImplementedError("Endpoint not implemented yet")
+            job["status"] = "dispatched"
 
+            return {
+                "job_id": job["job_id"],
+                "payload_url": "",
+                "enc_aes_key": "",
+                "exec_mode": job["exec_mode"],
+                "result_r2_key": "",
+            }
 
-@router.patch("/{job_id}/status")
-def update_job_status(job_id: str):
-    """Update job status callback."""
-    raise NotImplementedError("Endpoint not implemented yet")
-
-
-@router.get("/{job_id}/payload-url")
-def get_job_payload_url(job_id: str):
-    """Get presigned URL for encrypted job payload download."""
-    raise NotImplementedError("Endpoint not implemented yet")
+    raise HTTPException(
+        status_code=404,
+        detail="No pending jobs",
+    )

@@ -1,12 +1,33 @@
-"""
-Router for ingesting forensic job results returned from endpoint agents.
-"""
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 router = APIRouter()
 
+results = []
 
-@router.post("/ingest/{job_id}")
-def ingest_job_results(job_id: str):
-    """Ingest, decrypt, verify, and store forensic findings for a completed job."""
-    raise NotImplementedError("Endpoint not implemented yet")
+
+class JobResult(BaseModel):
+    job_id: str
+    agent_id: str
+    status: str
+    message: str
+    hostname: str
+    os: str
+    timestamp: str
+
+
+@router.post("/submit")
+def submit_result(result: JobResult):
+    result_data = result.model_dump()
+
+    results.append(result_data)
+
+    return {
+        "message": "Result received",
+        "result": result_data,
+    }
+
+
+@router.get("/")
+def list_results():
+    return results
