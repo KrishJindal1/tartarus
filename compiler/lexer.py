@@ -1,32 +1,112 @@
-"""
-Lexer/tokenizer for the JOCKY forensic DSL.
-"""
-from typing import List
+from dataclasses import dataclass
+from enum import Enum, auto
 
 
-class TokenType:
-    KEYWORD = "KEYWORD"
-    IDENT = "IDENT"
-    BUILTIN = "BUILTIN"
-    STRING = "STRING"
-    NUMBER = "NUMBER"
-    PUNCT = "PUNCT"
-    EOF = "EOF"
+class TokenType(Enum):
+    IDENTIFIER = auto()
+    DOT = auto()
+    LEFT_PAREN = auto()
+    RIGHT_PAREN = auto()
+    EOF = auto()
 
 
+@dataclass
 class Token:
-    def __init__(self, type_: str, value, line: int):
-        self.type = type_
-        self.value = value
-        self.line = line
+    type: TokenType
+    value: str
+    position: int
 
 
 class Lexer:
     def __init__(self, source: str):
-        self.src = source
-        self.pos = 0
-        self.line = 1
+        self.source = source
+        self.position = 0
 
-    def tokenize(self) -> List[Token]:
-        """Convert DSL source string into a list of tokens."""
-        raise NotImplementedError("Lexer not implemented yet")
+    def tokenize(self):
+        tokens = []
+
+        while self.position < len(self.source):
+            char = self.source[self.position]
+
+            # Ignore whitespace
+            if char.isspace():
+                self.position += 1
+                continue
+
+            # Identifier
+            if char.isalpha() or char == "_":
+                start = self.position
+
+                while (
+                    self.position < len(self.source)
+                    and (
+                        self.source[self.position].isalnum()
+                        or self.source[self.position] == "_"
+                    )
+                ):
+                    self.position += 1
+
+                value = self.source[start:self.position]
+
+                tokens.append(
+                    Token(
+                        TokenType.IDENTIFIER,
+                        value,
+                        start,
+                    )
+                )
+
+                continue
+
+            # Dot
+            if char == ".":
+                tokens.append(
+                    Token(
+                        TokenType.DOT,
+                        char,
+                        self.position,
+                    )
+                )
+
+                self.position += 1
+                continue
+
+            # (
+            if char == "(":
+                tokens.append(
+                    Token(
+                        TokenType.LEFT_PAREN,
+                        char,
+                        self.position,
+                    )
+                )
+
+                self.position += 1
+                continue
+
+            # )
+            if char == ")":
+                tokens.append(
+                    Token(
+                        TokenType.RIGHT_PAREN,
+                        char,
+                        self.position,
+                    )
+                )
+
+                self.position += 1
+                continue
+
+            raise SyntaxError(
+                f"Unexpected character '{char}' at position {self.position}"
+            )
+
+        tokens.append(
+            Token(
+                TokenType.EOF,
+                "",
+                self.position,
+            )
+        )
+
+        return tokens

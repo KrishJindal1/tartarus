@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 	"os"
 	"runtime"
+	"time"
+
 	"tartarus-agent/config"
+	"tartarus-agent/executor"
 )
 
 // JobResponse models a pending job returned from the server.
@@ -19,6 +21,7 @@ type JobResponse struct {
 	EncAESKey   string `json:"enc_aes_key"`
 	ExecMode    string `json:"exec_mode"`
 	ResultR2Key string `json:"result_r2_key"`
+	IR          []byte `json:"ir"`
 }
 
 // JobResult represents the result produced by the agent.
@@ -30,34 +33,6 @@ type JobResult struct {
 	Hostname  string `json:"hostname"`
 	OS        string `json:"os"`
 	Timestamp string `json:"timestamp"`
-}
-
-// executeJob performs the first harmless test execution.
-//
-// We are intentionally not executing arbitrary commands or code here.
-// This is only verifying the job -> execution -> result pipeline.
-func executeJob(job JobResponse, cfg config.AgentConfig) JobResult {
-	hostname, err := os.Hostname()
-	if err != nil {
-		hostname = "unknown"
-	}
-
-	// Hostname retrieval is kept simple for this first test.
-	// We will improve the execution layer later.
-	log.Printf(
-		"[TARTARUS-AGENT] Executing job %s",
-		job.JobID,
-	)
-
-	return JobResult{
-		JobID:     job.JobID,
-		AgentID:   cfg.AgentID,
-		Status:    "success",
-		Message:   "Test job executed successfully",
-		Hostname:  hostname,
-		OS:        runtime.GOOS,
-		Timestamp: time.Now().UTC().Format(time.RFC3339),
-	}
 }
 
 // submitResult sends the completed job result back to the backend.
@@ -134,10 +109,45 @@ func pollJobs(cfg config.AgentConfig) error {
 		job.ExecMode,
 	)
 
-	// Execute the received job.
-	result := executeJob(job, cfg)
+	log.Printf(
+		"[TARTARUS-AGENT] Executing JOCKY IR for job %s",
+		job.JobID,
+	)
 
-	// Send the result back to the backend.
+	irResult, err := executor.ExecuteIR(
+		job.IR,
+		job.ExecMode,
+	)
+
+	if err != nil {
+		log.Printf(
+			"[TARTARUS-AGENT] IR execution failed: %v",
+			err,
+		)
+
+		return err
+	}
+
+	log.Printf(
+		"[TARTARUS-AGENT] IR execution successful: %s",
+		string(irResult),
+	)
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "unknown"
+	}
+
+	result := JobResult{
+		JobID:     job.JobID,
+		AgentID:   cfg.AgentID,
+		Status:    "success",
+		Message:   string(irResult),
+		Hostname:  hostname,
+		OS:        runtime.GOOS,
+		Timestamp: time.Now().UTC().Format(time.RFC3339),
+	}
+
 	if err := submitResult(cfg, result); err != nil {
 		return err
 	}
