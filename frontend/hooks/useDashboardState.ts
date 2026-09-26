@@ -1,12 +1,19 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
-import { endpointsData } from '@/data/endpoints'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { scriptsData } from '@/data/scripts'
 import { reportsData } from '@/data/reports'
 import { evidenceData } from '@/data/evidence'
 import { timelineData } from '@/data/timeline'
 import { Endpoint, ScriptItem, ReportItem, EvidenceItem } from '@/types'
+
+interface BackendAgent {
+  agent_id: string
+  hostname: string
+  os: string
+  architecture: string
+  status: string
+}
 
 export function useDashboardState(initialNav = 'Overview') {
   const [activeNav, setActiveNav] = useState<string>(initialNav)
@@ -16,10 +23,49 @@ export function useDashboardState(initialNav = 'Overview') {
   const [alertsPaused, setAlertsPaused] = useState<boolean>(false)
 
   // Mutable datasets
-  const [endpoints, setEndpoints] = useState<Endpoint[]>(endpointsData)
+  const [endpoints, setEndpoints] = useState<Endpoint[]>([])
   const [scripts, setScripts] = useState<ScriptItem[]>(scriptsData)
   const [reports, setReports] = useState<ReportItem[]>(reportsData)
   const [evidence, setEvidence] = useState<EvidenceItem[]>(evidenceData)
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/agents/')
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch agents: ${response.status}`)
+        }
+
+        const agents: BackendAgent[] = await response.json()
+
+        const mappedEndpoints: Endpoint[] = agents.map((agent) => ({
+          name: agent.hostname,
+          agentId: agent.agent_id,
+          hostname: agent.hostname,
+          ip: '',
+          url: `/agents/${agent.agent_id}`,
+          method: 'POST',
+          status: agent.status === 'online' ? 'Healthy' : 'Degraded',
+          latency: '-',
+          lastRun: '-',
+          platform: agent.os,
+          color: agent.status === 'online' ? 'emerald' : 'amber',
+          technique: 'Forensic Collection',
+          avStatus: 'Unknown',
+          avPresent: 'Unknown',
+          lastScript: '',
+          evasionStatus: 'Monitoring',
+        }))
+
+        setEndpoints(mappedEndpoints)
+      } catch (error) {
+        console.error('Failed to load agents:', error)
+      }
+    }
+
+    fetchAgents()
+  }, [])
 
   const filteredEndpoints = useMemo(() => {
     const trimmed = query.trim().toLowerCase()
@@ -44,13 +90,42 @@ export function useDashboardState(initialNav = 'Overview') {
     setSelectedEndpoint((prev) => (prev === name ? null : name))
   }, [])
 
-  const handleRun = useCallback(() => {
-    setRunning(true)
-    const timer = window.setTimeout(() => {
-      setRunning(false)
-    }, 1800)
-    return () => clearTimeout(timer)
-  }, [])
+  const handleRun = useCallback(async () => {
+  setRunning(true)
+
+  try {
+    if (endpoints.length === 0) {
+      console.warn('No registered agents available')
+      return
+    }
+
+    const agent = endpoints[0]
+
+    const response = await fetch('http://127.0.0.1:8000/jobs/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        agent_id: agent.agentId,
+        script_id: 'test-script',
+        exec_mode: 'user_mode',
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Job creation failed: HTTP ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    console.log('Job created:', data)
+  } catch (error) {
+    console.error('Failed to create job:', error)
+  } finally {
+    setRunning(false)
+  }
+}, [endpoints])
 
   const addEndpoint = useCallback((newEndpoint: Endpoint) => {
     setEndpoints((prev) => [newEndpoint, ...prev])

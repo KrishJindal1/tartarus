@@ -1,4 +1,15 @@
-# v0 sandbox internal files
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js & Build outputs
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# v0 sandbox & Vercel internal files
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
@@ -6,10 +17,52 @@ __v0_jsx-dev-runtime.ts
 .v0-trash/
 .vercel/
 
-# Environment variables
-.env*.local
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+backendenv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Common ignores
-node_modules
-.next/
+# Go compiled binaries & test artifacts
+/agent/tartarus-agent
+tartarus-agent
+*.test
+*.out
+*.exe
+*.exe?
+*.dll
+
+# Environment variables & secrets
+.env
+.env*.local
+.env.production
+.env.development
+.env.test
+
+# Logs & Databases
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.sqlite
+*.db
+
+# Operating System & IDE
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
