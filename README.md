@@ -24,12 +24,14 @@
 5. [End-to-end walkthrough](#5-end-to-end-walkthrough)
 6. [Docker](#6-docker)
 7. [Environment variables](#7-environment-variables)
-8. [Testing](#8-testing)
-9. [API quick reference](#9-api-quick-reference)
-10. [Cross-compiling the agent](#10-cross-compiling-the-agent)
-11. [Documentation files](#11-documentation-files)
-12. [Security scope & limitations](#12-security-scope--limitations)
-13. [Troubleshooting](#13-troubleshooting)
+8. [Deployment (Render + Vercel + Supabase)](#8-deployment-render--vercel--supabase)
+9. [Install agents on any machine](#9-install-agents-on-any-machine)
+10. [Testing](#10-testing)
+11. [API quick reference](#11-api-quick-reference)
+12. [Cross-compiling the agent](#12-cross-compiling-the-agent)
+13. [Documentation files](#13-documentation-files)
+14. [Security scope & limitations](#14-security-scope--limitations)
+15. [Troubleshooting](#15-troubleshooting)
 
 ---
 
@@ -263,8 +265,9 @@ secrets are stored there**. Highlights:
 |---|---|---|
 | `AUTH_ENABLED` | `false` | `true` enforces JWT on console routes |
 | `JWT_SECRET` | dev value | set a random ≥32-char secret in production |
-| `DATABASE_PATH` | `jockey.db` | SQLite file (used when `SUPABASE_URL` empty) |
-| `SUPABASE_URL` / keys | empty | optional cloud DB (SQLite is the local store) |
+| `DATABASE_PATH` | `jockey.db` | SQLite file (used when `DATABASE_URL` is empty) |
+| `DATABASE_URL` | empty | Postgres connection string (Supabase pooler) → persistent cloud DB |
+| `CORS_ORIGINS` | dev origins | JSON list of allowed origins, e.g. `["https://jockytartarus.vercel.app"]` |
 | `R2_*` | empty | optional encrypted payload delivery; inline when empty |
 | `WORKER_SECRET` | empty | shared secret for the Cloudflare Worker |
 | `NEXT_PUBLIC_API_BASE_URL` | `http://127.0.0.1:8000` | frontend → backend |
@@ -272,7 +275,100 @@ secrets are stored there**. Highlights:
 
 ---
 
-## 8. Testing
+## 8. Deployment (Render + Vercel + Supabase)
+
+**Live instance**
+
+| Piece | URL |
+|---|---|
+| Backend (Render) | <https://jockey-backend-ho8q.onrender.com> |
+| Frontend (Vercel) | <https://jockytartarus.vercel.app> |
+
+**Backend → Render** (blueprint `render.yaml`, repo-root Docker context):
+
+1. Render → **New + → Blueprint** → connect `himkarr/tartarus` (already done for the live service).
+2. Render dashboard → your service → **Environment** tab → **Add Environment Variable**:
+
+   | Key | Value |
+   |---|---|
+   | `DATABASE_URL` | Supabase pooler connection string (see below) |
+
+3. **Manual Deploy → Clear build cache & deploy.**
+   Done — the code auto-detects `DATABASE_URL` and switches to Postgres;
+   when unset it falls back to SQLite (`DATABASE_PATH`, wiped on every
+   free-tier redeploy — **so without `DATABASE_URL` history is not persistent**).
+
+`render.yaml` also sets `PORT=10000`, `ENVIRONMENT=production`,
+`AUTH_ENABLED=false`, `JWT_SECRET` (generated), `CORS_ORIGINS` (Vercel origin).
+
+**Database → Supabase** (connection string, region `ap-south-1`):
+
+```
+postgresql://postgres.<project-ref>:<db-password>@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require
+```
+
+- Get it from Supabase dashboard → **Connect → Pooler** (use the *transaction*
+  mode pooler; username is `postgres.<project-ref>`, port **6543**,
+  `sslmode=require`). `db.<ref>.supabase.co` is IPv6-only and unreachable
+  from Render/WSL — always use the `aws-0-<region>.pooler.supabase.com` host.
+- Schema + the 10 predefined scripts are created automatically on first boot.
+- Keep the password out of the repo — set it only in the Render dashboard.
+
+**Frontend → Vercel**:
+
+1. Vercel → **Import Project** → root directory `frontend/` (framework auto = Next.js).
+2. **Environment Variables**: `NEXT_PUBLIC_API_BASE_URL` =
+   `https://jockey-backend-ho8q.onrender.com` (must match exactly, no trailing slash).
+3. Deploy. Any backend origin change requires a Vercel **redeploy**
+   (the value is baked into the build).
+
+---
+
+## 9. Install agents on any machine
+
+Any endpoint that can reach the backend over HTTPS gets an agent in one
+command. The installer downloads the released binary, generates an RSA key,
+registers with `POST /agents/register`, and starts the poll loop — you'll see
+the machine appear on **Dashboard → Agents** as `online`.
+
+**Linux** (systemd or nohup; tested — prints `SUCCESS: ... ONLINE`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/himkarr/tartarus/main/agent/install/install-linux.sh | bash -s -- --c2 https://jockey-backend-ho8q.onrender.com
+```
+
+**Windows (PowerShell):**
+
+```powershell
+iwr https://raw.githubusercontent.com/himkarr/tartarus/main/agent/install/install-windows.ps1 -OutFile i.ps1; .\i.ps1 -C2 https://jockey-backend-ho8q.onrender.com -Autostart
+```
+
+**Installer flags** (both scripts):
+
+| Flag | Meaning |
+|---|---|
+| `--c2` / `-C2 <url>` | backend origin (default: this repo's Render URL) |
+| `--agent-id <uuid>` | reuse an existing agent id (re-register) |
+| `--dir` / `-InstallDir <path>` | install directory (default `/opt/jockey-agent`, `C:\jockey-dist`) |
+| `--source` / `-Source <path>` | use a local `tartarus-*` binary instead of downloading |
+| `--systemd` / `-Autostart` | install as a service / start with Windows |
+| `--no-start` / `-NoStart` | install only, don't start |
+| `--force` / `-Force` | overwrite an existing install |
+
+Binaries are also vendored in [`releases/`](releases/)
+(`tartarus-linux-amd64`, `tartarus-win-amd64.exe`); for other OS/arch
+cross-compile from source — see [§12](#12-cross-compiling-the-agent).
+
+**Local (dev) agents** — one command per terminal/distro:
+
+```bash
+bash scripts/setup-agent.sh WSL-AGENT-01 new     # register + start against local backend
+bash scripts/host-test-agent.sh start            # second agent on the same host
+```
+
+---
+
+## 10. Testing
 
 ```bash
 # Compiler (lexer/parser/IR/polymorphism/codegen) — 11 tests
@@ -295,7 +391,7 @@ All of the above pass on the current tree (see `details.md` for results).
 
 ---
 
-## 9. API quick reference
+## 11. API quick reference
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -332,7 +428,7 @@ Interactive docs: <http://127.0.0.1:8000/docs>
 
 ---
 
-## 10. Cross-compiling the agent
+## 12. Cross-compiling the agent
 
 ```bash
 cd agent
@@ -348,7 +444,7 @@ documented as future work in `details.md`).
 
 ---
 
-## 11. Documentation files
+## 13. Documentation files
 
 | File | Contents |
 |---|---|
@@ -359,7 +455,7 @@ documented as future work in `details.md`).
 
 ---
 
-## 12. Security scope & limitations
+## 14. Security scope & limitations
 
 - The agent implements **forensic collection**, **BYOVD vulnerable-driver
   *detection*** and integrity sealing. It deliberately **does not** implement
@@ -373,7 +469,7 @@ documented as future work in `details.md`).
 
 ---
 
-## 13. Troubleshooting
+## 15. Troubleshooting
 
 | Symptom | Fix |
 |---|---|
