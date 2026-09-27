@@ -1,69 +1,56 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Modal } from '@/components/ui'
 import {
   Search,
   LayoutDashboard,
   Server,
   TerminalSquare,
+  Plus,
   Activity,
-  BarChart3,
   FolderKanban,
   FileText,
-  Clock3,
-  Plus,
   Play,
-  ArrowDownToLine,
 } from 'lucide-react'
 
 interface CommandPaletteModalProps {
   isOpen: boolean
   onClose: () => void
-  onNavigate: (viewName: string) => void
   onAction: (actionName: string) => void
 }
 
-export function CommandPaletteModal({
-  isOpen,
-  onClose,
-  onNavigate,
-  onAction,
-}: CommandPaletteModalProps) {
+export function CommandPaletteModal({ isOpen, onClose, onAction }: CommandPaletteModalProps) {
+  const router = useRouter()
   const [query, setQuery] = useState('')
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
         if (isOpen) onClose()
-        else onAction('open-palette')
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose, onAction])
+  }, [isOpen, onClose])
 
   const actions = [
-    { label: 'Go to Overview', icon: LayoutDashboard, action: () => onNavigate('Overview'), category: 'Navigation' },
-    { label: 'Go to Endpoints', icon: Server, action: () => onNavigate('Endpoints'), category: 'Navigation' },
-    { label: 'Go to Deploy Scripts', icon: TerminalSquare, action: () => onNavigate('Deploy scripts'), category: 'Navigation' },
-    { label: 'Go to Live Status', icon: Activity, action: () => onNavigate('Live status'), category: 'Navigation' },
-    { label: 'Go to Results', icon: BarChart3, action: () => onNavigate('Results'), category: 'Navigation' },
-    { label: 'Go to Evidence', icon: FolderKanban, action: () => onNavigate('Evidence'), category: 'Navigation' },
-    { label: 'Go to Reports', icon: FileText, action: () => onNavigate('Reports'), category: 'Navigation' },
-    { label: 'Go to Timeline', icon: Clock3, action: () => onNavigate('Timeline'), category: 'Navigation' },
-    { label: 'Add new Endpoint', icon: Plus, action: () => onAction('add-endpoint'), category: 'Actions' },
-    { label: 'Run Test Suite Now', icon: Play, action: () => onAction('run-suite'), category: 'Actions' },
-    { label: 'Export Report Summary', icon: ArrowDownToLine, action: () => onAction('export-json'), category: 'Actions' },
+    { label: 'Go to Overview', icon: LayoutDashboard, run: () => router.push('/'), category: 'Navigation' },
+    { label: 'Go to Agents', icon: Server, run: () => router.push('/agents'), category: 'Navigation' },
+    { label: 'Go to Scripts', icon: TerminalSquare, run: () => router.push('/scripts'), category: 'Navigation' },
+    { label: 'Go to Jobs', icon: Activity, run: () => router.push('/jobs'), category: 'Navigation' },
+    { label: 'Go to Evidence', icon: FolderKanban, run: () => router.push('/evidence'), category: 'Navigation' },
+    { label: 'Go to Reports', icon: FileText, run: () => router.push('/reports'), category: 'Navigation' },
+    { label: 'Create new JOCKEY script', icon: Plus, run: () => router.push('/scripts/new'), category: 'Actions' },
+    { label: 'Run suite now (all deployed scripts)', icon: Play, run: () => onAction('run-suite'), category: 'Actions' },
   ]
 
-  const filtered = actions.filter((item) =>
-    item.label.toLowerCase().includes(query.toLowerCase())
-  )
+  const filtered = actions.filter((item) => item.label.toLowerCase().includes(query.toLowerCase()))
 
-  const handleSelect = (action: () => void) => {
-    action()
+  const handleSelect = (run: () => void) => {
+    run()
     setQuery('')
     onClose()
   }
@@ -72,8 +59,8 @@ export function CommandPaletteModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Quick Command Palette"
-      description="Type a command, action, or navigate to any workspace module."
+      title="Command Palette"
+      description="Jump to a page or trigger an action."
       maxWidth="lg"
     >
       <div className="flex flex-col gap-3">
@@ -84,8 +71,11 @@ export function CommandPaletteModal({
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type a command or jump to page... (e.g. Endpoints, Run, Export)"
+            placeholder="Type a command or jump to page…"
             className="w-full bg-transparent text-xs text-slate-900 dark:text-slate-100 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && filtered[0]) handleSelect(filtered[0].run)
+            }}
           />
         </div>
 
@@ -96,14 +86,16 @@ export function CommandPaletteModal({
               <button
                 type="button"
                 key={item.label}
-                onClick={() => handleSelect(item.action)}
+                onClick={() => handleSelect(item.run)}
                 className="flex items-center gap-3 p-2.5 rounded-md text-left hover:bg-sky-50 dark:hover:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 transition-colors group cursor-pointer"
               >
                 <div className="flex size-6 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 group-hover:bg-sky-100 dark:group-hover:bg-sky-950 text-slate-600 dark:text-slate-400 group-hover:text-sky-800 dark:group-hover:text-sky-400 transition-colors">
                   <Icon className="size-3.5" />
                 </div>
                 <span className="flex-1 font-medium">{item.label}</span>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{item.category}</span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                  {item.category}
+                </span>
               </button>
             )
           })}

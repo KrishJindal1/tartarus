@@ -161,3 +161,21 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* JOCKEY IDE syntax tokens */
+.tok-kw { color: #8250df; font-weight: 600; }
+.tok-fn { color: #0969da; }
+.tok-str { color: #0a3069; }
+.tok-num { color: #0550ae; }
+.tok-bool { color: #cf222e; }
+.tok-comment { color: #6e7781; font-style: italic; }
+.tok-punct { color: #57606a; }
+.dark .tok-kw { color: #d2a8ff; }
+.dark .tok-fn { color: #79c0ff; }
+.dark .tok-str { color: #a5d6ff; }
+.dark .tok-num { color: #79c0ff; }
+.dark .tok-bool { color: #ff7b72; }
+.dark .tok-comment { color: #8b949e; }
+.dark .tok-punct { color: #8b949e; }
+
+.jockey-editor-ta::selection { background: rgba(88, 166, 255, 0.35); }

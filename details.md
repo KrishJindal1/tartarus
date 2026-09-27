@@ -149,6 +149,10 @@ test_polymorphic_unique_hashes · test_seed_scripts_compile
 (prefixes `/auth /agents /jobs /results /scripts /evidence /reports`) plus
 `/health` and `/audit`.
 
+Scripts router (IDE support): `POST /scripts/compile` (dry-run → IR listing + AST + error
+without saving), `PUT /scripts/{id}` (recompile + version bump, 403 on predefined),
+`DELETE /scripts/{id}` (403 on predefined).
+
 ### 3.3 Job lifecycle
 
 ```
@@ -245,17 +249,35 @@ Cross-compile verified: `GOOS=linux`, `GOOS=windows`, `GOOS=darwin` all build.
 
 ## 5. Frontend (`frontend/`)
 
-| Piece | Behaviour |
-|---|---|
-| `lib/api.ts` | typed client; base URL `NEXT_PUBLIC_API_BASE_URL` fallback `http://127.0.0.1:8000`; attaches `jockey_token` if present |
-| `hooks/useDashboardState.ts` | 3 s polling of `/agents /scripts /jobs /evidence /evidence/summary /reports`; maps to dashboard types; live metrics; `handleRun` = one `POST /jobs/create` per deployed script against first online agent |
-| Overview | real endpoints table, live KPI cards, real `ForensicJob` rows |
-| Evidence view | real evidence rows (filename from type+id, size, SHA-256, target hostname) |
-| Reports view | real report summaries (risk, evidence count, critical count) |
-| Deploy scripts view | the 10 seeded scripts with source, category, mutation hash (IR SHA-256 prefix) |
-| Export | downloads workspace JSON (endpoints/scripts/reports/evidence/jobs) |
+Multi-page Next.js 16 App Router console (route group `app/(dashboard)/`), fully driven by the
+live backend — **no mock data remains**.
 
-Verification: `tsc --noEmit` = 0 errors; `next build` = exit 0.
+| Route | Page | Contents |
+|---|---|---|
+| `/` | Overview | 6 live KPI cards (agents, scripts, jobs, evidence, reports, critical findings), recent-jobs table, endpoint list, quick actions, Run suite |
+| `/agents`, `/agents/[id]` | Endpoints | searchable agent table (status, OS/arch, AV, jobs, last seen) + detail page with metadata and that agent's jobs; "Register endpoint" modal shows the real `scripts/register_agent.py` command |
+| `/scripts` | Scripts | script table: category, risk, target OS, version, IR SHA-256, Edit → IDE, Run → queued on first online agent |
+| `/scripts/new`, `/scripts/[id]` | **JOCKEY script IDE** | custom dependency-free editor: syntax highlighting (keywords, builtins, strings, `#` comments, numbers), line numbers, tab/indent handling; toolbar = Open file (upload `.jky/.txt`), New, **Compile** (dry-run `POST /scripts/compile` → IR listing + AST + SHA-256 without saving), **Save/Create** (`POST`/`PUT`, Ctrl+S), Delete; IR/AST inspector tabs; Run panel (agent picker + last-job link); builtin scripts are read-only → "Save as new" |
+| `/jobs`, `/jobs/[id]` | Jobs | filterable job table + detail: lifecycle timeline, findings summary, executed IR listing, raw agent result payloads, evidence table with JSON preview/download, report + PDF links; auto-refreshes while running |
+| `/evidence` | Evidence | evidence table (type, host, job, SHA-256, risk, size, collected), per-type stat chips, **real** JSON preview modal, real JSON download, export-all |
+| `/reports`, `/reports/[jobId]` | Reports | report table + full report page: verdict/severity banner, risk score, timeline, evidence summary table, MITRE ATT&CK technique links, grouped findings, raw JSON, PDF download |
+
+State: `providers/dashboard-provider.tsx` — single context polling
+`/agents /scripts /jobs /evidence /evidence/summary /reports` every 3 s; mappers carry only
+real fields (no invented AV/evasion/technique values); `runSuite()` queues one
+`POST /jobs/create` per deployed script on the first online agent. Navigation is
+`next/link` + `usePathname` (sidebar badges = live counts).
+
+**Removed as fabricated/duplicate** (previous single-page console): the *Live status*, *Results*
+and *Timeline* views (fake nodes, pass rates, audit events); fake metric cards (AV Evasion Rate
+99.3 %, Kernel Callbacks 18, Tunnel Uptime 99.97 %); 10 mock `data/*` files (only
+`data/navigation.ts` remains, now with hrefs); fake header alerts + target switcher; fake
+`avStatus` / `technique` / `evasionStatus` / `0/72` fields in the state mappers; mock evidence
+download content; 9 unused dashboard cards/tables; 14 mock modals; 5 unused UI primitives.
+
+Verification: `tsc --noEmit` = 0 errors; `next build` = 12 routes, exit 0; every route returns
+HTTP 200; E2E through the IDE path: create → dry-run compile → dispatch → completed job with
+evidence, result and report.
 
 ---
 

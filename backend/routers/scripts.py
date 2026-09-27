@@ -35,6 +35,18 @@ class ScriptCreate(BaseModel):
     os_target: str = "both"
 
 
+class ScriptCompile(BaseModel):
+    jocky_source: str
+
+
+class ScriptUpdate(BaseModel):
+    name: Optional[str] = None
+    jocky_source: Optional[str] = None
+    category: Optional[str] = None
+    risk_level: Optional[str] = None
+    os_target: Optional[str] = None
+
+
 def _serialize(row: dict, include_ir: bool = False) -> dict:
     ir = row.get("compiled_ir")
     ir_bytes = bytes(ir) if isinstance(ir, (bytes, bytearray)) else (bytes(ir) if ir else b"")
@@ -127,6 +139,79 @@ def create_script(body: ScriptCreate, request: Request, user=Depends(require_rol
                             ip_address=request.client.host if request.client else None,
                             metadata={"name": body.name, "ir_sha256": sha})
     return {"message": "Script staged", "script": _serialize(db.query_one("SELECT * FROM scripts WHERE id=?", (script_id,)), include_ir=True)}
+
+
+@router.post("/compile")
+def compile_dry_run(body: ScriptCompile):
+    """Dry-run compile for the IDE: no save, returns IR listing + AST or the error."""
+    try:
+        ir, sha = mutate_source(body.jocky_source)
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)}
+    try:
+        tree = parse(body.jocky_source)
+        ast_structure = _ast_summary(tree)
+    except Exception as exc:  # pragma: no cover - mutate_source already parsed
+        return {"ok": False, "error": f"AST error: {exc}"}
+    return {
+        "ok": True,
+        "error": None,
+        "ir_listing": format_ir(ir),
+        "ir_bytes": list(ir),
+        "ir_sha256": sha,
+        "size": len(ir),
+        "ast_structure": ast_structure,
+    }
+
+
+@router.put("/{script_id}")
+def update_script(script_id: str, body: ScriptUpdate, request: Request, user=Depends(require_role("admin", "analyst"))):
+    """Save edits to a script: recompiles (polymorphic), bumps version."""
+    row = db.query_one("SELECT * FROM scripts WHERE id = ?", (script_id,))
+    if row is None:
+        row = db.query_one("SELECT * FROM scripts WHERE name = ?", (script_id,))
+    if row is None:
+        raise HTTPException(status_code=404, detail="Script not found")
+    if row.get("is_predefined"):
+        raise HTTPException(status_code=403, detail="Predefined scripts are read-only (use Save as new)")
+
+    name = body.name if body.name is not None else row["name"]
+    category = body.category if body.category is not None else row["category"]
+    risk_level = body.risk_level if body.risk_level is not None else row["risk_level"]
+    os_target = body.os_target if body.os_target is not None else row["os_target"]
+    source = body.jocky_source if body.jocky_source is not None else row["jocky_source"]
+
+    try:
+        ir, sha = mutate_source(source)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"JOCKY compile error: {exc}")
+
+    version = int(row.get("version") or 1) + 1
+    db.execute(
+        """UPDATE scripts SET name=?, jocky_source=?, category=?, risk_level=?, os_target=?,
+             compiled_ir=?, ir_sha256=?, version=? WHERE id=?""",
+        (name, source, category, risk_level, os_target, ir, sha, version, row["id"]),
+    )
+    audit_logger.log_action(user.get("sub"), "script.update", "script", row["id"],
+                            ip_address=request.client.host if request.client else None,
+                            metadata={"name": name, "version": version, "ir_sha256": sha})
+    return {"message": "Script saved", "script": _serialize(
+        db.query_one("SELECT * FROM scripts WHERE id=?", (row["id"],)), include_ir=True)}
+
+
+@router.delete("/{script_id}")
+def delete_script(script_id: str, request: Request, user=Depends(require_role("admin", "analyst"))):
+    """Remove a user-created script (predefined scripts are protected)."""
+    row = db.query_one("SELECT * FROM scripts WHERE id = ?", (script_id,))
+    if row is None:
+        raise HTTPException(status_code=404, detail="Script not found")
+    if row.get("is_predefined"):
+        raise HTTPException(status_code=403, detail="Predefined scripts cannot be deleted")
+    db.execute("DELETE FROM scripts WHERE id = ?", (script_id,))
+    audit_logger.log_action(user.get("sub"), "script.delete", "script", script_id,
+                            ip_address=request.client.host if request.client else None,
+                            metadata={"name": row["name"]})
+    return {"message": "Script deleted"}
 
 
 @router.get("/{script_id}")

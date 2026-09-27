@@ -30,7 +30,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     cache: 'no-store',
   })
   if (!res.ok) {
-    throw new Error(`${path} -> HTTP ${res.status}`)
+    let detail = ''
+    try {
+      const body = await res.json()
+      detail = typeof body?.detail === 'string' ? body?.detail : JSON.stringify(body)
+    } catch {
+      detail = ''
+    }
+    throw new Error(detail ? `${path} → ${res.status}: ${detail}` : `${path} → HTTP ${res.status}`)
   }
   return (await res.json()) as T
 }
@@ -43,6 +50,20 @@ export function apiPost<T>(path: string, body?: unknown): Promise<T> {
   return request<T>(path, { method: 'POST', body: JSON.stringify(body ?? {}) })
 }
 
+export function apiPut<T>(path: string, body?: unknown): Promise<T> {
+  return request<T>(path, { method: 'PUT', body: JSON.stringify(body ?? {}) })
+}
+
+export function apiDelete<T>(path: string): Promise<T> {
+  return request<T>(path, { method: 'DELETE' })
+}
+
+async function requestBlob(path: string): Promise<Blob> {
+  const res = await fetch(`${BASE}${path}`, { headers: authHeader(), cache: 'no-store' })
+  if (!res.ok) throw new Error(`${path} → HTTP ${res.status}`)
+  return res.blob()
+}
+
 // ---------------- backend payload shapes ----------------
 
 export interface BackendAgent {
@@ -52,7 +73,7 @@ export interface BackendAgent {
   architecture: string
   status: string
   av_present?: string | null
-  agent_version?: string
+  agent_version?: string | null
   last_seen_at?: string | null
   registered_at?: string | null
 }
@@ -69,6 +90,12 @@ export interface BackendScript {
   version: number
   ir_sha256?: string | null
   created_at?: string | null
+}
+
+export interface BackendScriptDetail extends BackendScript {
+  ir_bytes?: number[]
+  ir_listing?: string
+  ast_structure?: string
 }
 
 export interface BackendJob {
@@ -88,6 +115,10 @@ export interface BackendJob {
   hostname?: string | null
   os?: string | null
   script_name?: string | null
+}
+
+export interface BackendJobDetail extends BackendJob {
+  ir?: number[]
 }
 
 export interface BackendEvidenceRow {
@@ -122,19 +153,71 @@ export interface EvidenceSummary {
   latest: BackendEvidenceRow | null
 }
 
+export interface CompileResult {
+  ok: boolean
+  error: string | null
+  ir_listing?: string
+  ir_bytes?: number[]
+  ir_sha256?: string
+  size?: number
+  ast_structure?: string
+}
+
+export interface BackendResultRow {
+  id: string
+  job_id: string
+  agent_id: string
+  status: string
+  message: string
+  hostname: string | null
+  os: string | null
+  timestamp: string | null
+  raw: string | null
+  received_at: string | null
+}
+
 // ---------------- endpoint helpers ----------------
 
 export const api = {
   listAgents: () => apiGet<BackendAgent[]>('/agents/'),
+  deleteAgent: (agentId: string) => apiDelete<{ message: string }>(`/agents/${agentId}`),
   listScripts: () => apiGet<BackendScript[]>('/scripts/'),
+  getScript: (id: string) => apiGet<BackendScriptDetail>(`/scripts/${id}`),
+  compileScript: (jocky_source: string) =>
+    apiPost<CompileResult>('/scripts/compile', { jocky_source }),
+  createScript: (body: {
+    name: string
+    jocky_source: string
+    category?: string
+    risk_level?: string
+    os_target?: string
+  }) => apiPost<{ message: string; script: BackendScriptDetail }>('/scripts/', body),
+  updateScript: (
+    id: string,
+    body: {
+      name?: string
+      jocky_source?: string
+      category?: string
+      risk_level?: string
+      os_target?: string
+    }
+  ) => apiPut<{ message: string; script: BackendScriptDetail }>(`/scripts/${id}`, body),
+  deleteScript: (id: string) => apiDelete<{ message: string }>(`/scripts/${id}`),
   listJobs: () => apiGet<BackendJob[]>('/jobs/'),
+  getJob: (jobId: string) => apiGet<BackendJobDetail>(`/jobs/${jobId}`),
   createJob: (body: { agent_id: string; script_id: string; exec_mode?: string }) =>
     apiPost<{ message: string; job: BackendJob }>('/jobs/create', body),
   listEvidence: () => apiGet<BackendEvidenceRow[]>('/evidence/'),
+  evidenceByJob: (jobId: string) => apiGet<BackendEvidenceRow[]>(`/evidence/${jobId}`),
   evidenceSummary: () => apiGet<EvidenceSummary>('/evidence/summary'),
   listReports: () => apiGet<BackendReport[]>('/reports/'),
+  reportJson: (jobId: string) => apiGet<Record<string, unknown>>(`/reports/${jobId}/json`),
+  reportPdfBlob: (jobId: string) => requestBlob(`/reports/${jobId}/pdf`),
   listResults: (jobId?: string) =>
-    apiGet<Array<Record<string, unknown>>>(`/results/${jobId ? `?job_id=${jobId}` : ''}`),
+    apiGet<BackendResultRow[]>(`/results/${jobId ? `?job_id=${jobId}` : ''}`),
   login: (email: string, password: string) =>
     apiPost<{ access_token: string; token_type: string }>('/auth/login', { email, password }),
 }
+
+// handy base for <a href> links (dev mode has no auth on static-ish GETs)
+export const API_BASE = BASE

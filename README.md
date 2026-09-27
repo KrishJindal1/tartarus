@@ -57,10 +57,13 @@ jockey/
 │   ├── byovd/           #   vulnerable-driver detection scanner
 │   ├── crypto/          #   AES-256-GCM, RSA-OAEP
 │   └── transport/       #   hardened TLS client, poll loop + tests
-├── frontend/            # Next.js 16 + React 19 + TypeScript console
+├── frontend/            # Next.js 16 + React 19 + TypeScript console (multi-page)
 │   ├── lib/api.ts       #   typed backend client
-│   ├── hooks/useDashboardState.ts  # live polling dashboard state
-│   └── components/      #   views: Overview, Endpoints, Scripts, Results, Evidence…
+│   ├── providers/       #   DashboardProvider — 3 s polling React context
+│   ├── app/(dashboard)/ #   routes: /, /agents, /agents/[id], /scripts,
+│   │                    #   /scripts/new, /scripts/[id], /jobs, /jobs/[id],
+│   │                    #   /evidence, /reports, /reports/[jobId]
+│   └── components/      #   tables, JOCKEY script IDE, layout, modals
 ├── scripts/             # seed_scripts.py, register_agent.py CLIs
 ├── infra/
 │   ├── supabase/schema.sql   # reference schema (SQLite mirrors it locally)
@@ -194,18 +197,21 @@ Expected agent log:
 
 ## 5. End-to-end walkthrough
 
-1. **Open** <http://localhost:3000> — *Overview* shows the live agent as
-   `Healthy`, real KPI metrics, and the jobs table.
-2. Click **Run Suite** (or command palette → *run-suite*). This issues
+1. **Open** <http://localhost:3000> — the *Overview* page shows live KPI cards,
+   the endpoint list (`online`/`offline`), and recent jobs (polled every 3 s).
+2. Click **Run Suite** (or Ctrl+K → *run suite now*). This issues
    `POST /jobs/create` **for every deployed script** against the first online
-   agent (10 jobs for the seeded scripts).
+   agent (10 jobs for the seeded scripts). You can also open any script in the
+   IDE (`/scripts/new`) and press **Run** there.
 3. The agent claims jobs (`GET /jobs/pending/{agent_id}`), executes the
    polymorphic IR **in memory**, and submits results
    (`POST /results/submit`) within seconds.
-4. Watch the jobs table flip `Queued → Running → Completed`; findings appear,
-   e.g. `42 persistence mechanism(s) detected`.
-5. **Evidence** view lists per-job artifacts (type, SHA-256, target, size);
-   **Reports** view lists per-job reports with risk scores.
+4. Watch the jobs table flip `queued → executing → completed` (open a job for
+   the lifecycle timeline, findings, raw results and IR listing); findings
+   appear, e.g. `42 persistence mechanism(s) detected`.
+5. **Evidence** lists per-job artifacts (type, SHA-256, host, size, real JSON
+   preview/download); **Reports** lists per-job reports with risk scores and
+   opens a full report page (verdict, timeline, MITRE links, PDF download).
 6. Fetch a report from the API:
    ```bash
    curl http://127.0.0.1:8000/reports/<job_id>/json
@@ -301,6 +307,9 @@ All of the above pass on the current tree (see `details.md` for results).
 | POST | `/agents/verify-token` | validate an agent JWT (worker) |
 | GET  | `/scripts/` | list seeded/user scripts |
 | POST | `/scripts/` | create script (compiles IR) |
+| POST | `/scripts/compile` | dry-run compile → IR listing + AST (IDE) |
+| PUT  | `/scripts/{id}` | save edits, recompile, bump version |
+| DELETE | `/scripts/{id}` | delete a user-created script |
 | GET  | `/scripts/{id}` | script + IR listing + AST summary |
 | POST | `/jobs/create` | compile → polymorphic IR → queue |
 | GET  | `/jobs/pending/{agent_id}` | agent claim (Bearer agent token) |

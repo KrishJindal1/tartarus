@@ -1,51 +1,52 @@
-import React, { memo } from 'react'
-import { Card } from '@/components/ui'
-import { DynamicIcon } from '@/components/ui/dynamic-icon'
-import { MetricCard } from '@/types'
+'use client'
+
+import React from 'react'
+import Link from 'next/link'
+import { DynamicIcon } from '@/components/ui'
+import type { MetricCard } from '@/types'
 
 interface MetricsGridProps {
   metrics: MetricCard[]
-  onNavigate?: (viewName: string) => void
 }
 
-const toneIconColors: Record<string, string> = {
-  cyan: 'text-[#0969da] dark:text-[#58a6ff]',
-  violet: 'text-[#8250df] dark:text-[#d2a8ff]',
-  sky: 'text-[#0969da] dark:text-[#58a6ff]',
-  slate: 'text-[#656d76] dark:text-[#8b949e]',
-  emerald: 'text-[#1a7f37] dark:text-[#3fb950]',
-  amber: 'text-[#9a6700] dark:text-[#d29922]',
+const toneClasses: Record<string, string> = {
+  sky: 'bg-sky-500/10 text-[#0969da] dark:text-[#58a6ff] ring-sky-500/30',
+  emerald: 'bg-emerald-500/10 text-[#1a7f37] dark:text-[#3fb950] ring-emerald-500/30',
+  violet: 'bg-violet-500/10 text-[#8250df] dark:text-[#a371f7] ring-violet-500/30',
+  cyan: 'bg-cyan-500/10 text-[#0a7d8c] dark:text-[#39c5cf] ring-cyan-500/30',
+  blue: 'bg-blue-500/10 text-[#0969da] dark:text-[#58a6ff] ring-blue-500/30',
+  rose: 'bg-rose-500/10 text-[#cf222e] dark:text-[#ff7b72] ring-rose-500/30',
+  amber: 'bg-amber-500/10 text-[#9a6700] dark:text-[#d29922] ring-amber-500/30',
+  slate: 'bg-slate-500/10 text-[#57606a] dark:text-[#8b949e] ring-slate-500/30',
 }
 
-export const MetricsGrid = memo(function MetricsGrid({ metrics, onNavigate }: MetricsGridProps) {
+export function MetricsGrid({ metrics }: MetricsGridProps) {
   return (
-    <section className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3" aria-label="Summary metrics">
-      {metrics.map((metric) => {
-        const iconColor = toneIconColors[metric.tone] || 'text-[#0969da] dark:text-[#58a6ff]'
-        return (
-          <button
-            key={metric.label}
-            type="button"
-            onClick={() => metric.targetView && onNavigate && onNavigate(metric.targetView)}
-            className="text-left group cursor-pointer focus:outline-hidden"
-          >
-            <Card className="p-3.5 h-full flex flex-col justify-between transition-all duration-200 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] group-hover:border-[#0969da] dark:group-hover:border-[#58a6ff] group-hover:shadow-xs group-hover:-translate-y-0.5">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs text-[#656d76] dark:text-[#8b949e] font-medium group-hover:text-[#1f2328] dark:group-hover:text-[#f0f6fc] transition-colors">
-                  {metric.label}
-                </span>
-                <DynamicIcon name={metric.iconName} className={`size-4 ${iconColor} group-hover:scale-110 transition-transform`} />
-              </div>
-              <div className="text-xl sm:text-2xl font-bold tracking-tight text-[#1f2328] dark:text-[#f0f6fc] font-mono">
-                {metric.value}
-              </div>
-              <div className="mt-1 text-[11px] leading-snug text-[#656d76] dark:text-[#8b949e] truncate">
-                {metric.sub}
-              </div>
-            </Card>
-          </button>
-        )
-      })}
-    </section>
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-6">
+      {metrics.map((metric) => (
+        <Link
+          key={metric.label}
+          href={metric.href}
+          className="group rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 hover:border-[#0969da] dark:hover:border-[#58a6ff] hover:shadow-md transition-all cursor-pointer"
+        >
+          <div className="flex items-center justify-between">
+            <div
+              className={`flex size-8 items-center justify-center rounded-lg ring-1 ${
+                toneClasses[metric.tone] ?? toneClasses.slate
+              }`}
+            >
+              <DynamicIcon name={metric.iconName} className="size-4" />
+            </div>
+          </div>
+          <div className="mt-3 text-2xl font-bold tabular-nums text-[#1f2328] dark:text-[#f0f6fc]">
+            {metric.value}
+          </div>
+          <div className="mt-0.5 text-xs font-semibold text-[#1f2328] dark:text-[#e6edf3]">
+            {metric.label}
+          </div>
+          <div className="mt-0.5 text-[11px] text-[#656d76] dark:text-[#8b949e]">{metric.sub}</div>
+        </Link>
+      ))}
+    </div>
   )
-})
+}

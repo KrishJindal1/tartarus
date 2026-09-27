@@ -2,82 +2,87 @@
 
 import React from 'react'
 import { Modal } from '@/components/ui'
-import { EvidenceItem } from '@/types'
+import { RiskBadge } from '@/components/dashboard'
+import { relTime, formatBytes } from '@/providers/dashboard-provider'
+import type { EvidenceView } from '@/types'
 
 interface EvidencePreviewModalProps {
-  evidence: EvidenceItem | null
+  evidence: EvidenceView | null
   isOpen: boolean
   onClose: () => void
-}
-
-const mockEvidenceContent: Record<string, string> = {
-  'checkout-error.json': JSON.stringify(
-    {
-      timestamp: '2026-09-25T17:42:19Z',
-      event: 'IN_MEMORY_BEACON_FAILED',
-      target_pid: 4192,
-      process: 'explorer.exe',
-      syscall: 'NtProtectVirtualMemory',
-      status: 'ACCESS_VIOLATION_HANDLED',
-      mitigation: 'Dynamic polymorphic routine regeneration triggered',
-    },
-    null,
-    2
-  ),
-  'response-payload.json': JSON.stringify(
-    {
-      status: 200,
-      target: 'us-east-prod-02',
-      memory_state: 'CLEAN',
-      driver_callbacks: 'DISARMED',
-      unhooked_dlls: ['ntdll.dll', 'kernel32.dll'],
-    },
-    null,
-    2
-  ),
-  'deploy-log.txt': `[DEPLOY START] 2026-09-25 17:02:11
-Target Node: us-east-prod-02 (Ubuntu 24.04 LTS)
-Injecting polymorphic runtime: regression-suite (v1.8.2)
-Zero-downtime cache updated.
-Smoke test status: PASSED (16/16 tests)`,
-  'latency-sample.csv': `timestamp,endpoint,latency_ms,status
-2026-09-25T17:40:00Z,/api/v1/checkout,182,200
-2026-09-25T17:40:05Z,/api/v1/users/12,96,200
-2026-09-25T17:40:10Z,/api/v1/notify,1410,504`,
+  onDownload?: (item: EvidenceView) => void
 }
 
 export function EvidencePreviewModal({
   evidence,
   isOpen,
   onClose,
+  onDownload,
 }: EvidencePreviewModalProps) {
   if (!evidence) return null
 
-  const content =
-    mockEvidenceContent[evidence.fileName] ||
-    `[FORENSIC EVIDENCE ARTIFACT]\nFile: ${evidence.fileName}\nSize: ${evidence.size}\nCaptured: ${evidence.captureTime}\nStatus: Immutable Sealed Memory Dump (Read-Only)`
+  let json = ''
+  try {
+    json = JSON.stringify(evidence.data, null, 2)
+  } catch {
+    json = String(evidence.data)
+  }
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Artifact Preview: ${evidence.fileName}`}
-      description={`${evidence.captureTime} · Size: ${evidence.size}`}
-      maxWidth="xl"
+      title={`Evidence · ${evidence.type}`}
+      description={`Captured from ${evidence.hostname ?? 'unknown host'}${
+        evidence.jobId ? ` · job ${evidence.jobId.slice(0, 8).toUpperCase()}` : ''
+      }`}
+      maxWidth="3xl"
     >
       <div className="flex flex-col gap-3">
-        <div className="rounded-lg border border-[#30363d] bg-[#0d1117] p-4 font-mono text-xs text-[#7ee787] max-h-72 overflow-y-auto whitespace-pre-wrap leading-relaxed shadow-inner">
-          {content}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+            <div className="text-[9px] uppercase font-bold text-[#8b949e]">Risk</div>
+            <div className="mt-1">
+              <RiskBadge score={evidence.riskScore} />
+            </div>
+          </div>
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+            <div className="text-[9px] uppercase font-bold text-[#8b949e]">Size</div>
+            <div className="mt-1 font-bold font-mono">{formatBytes(evidence.size)}</div>
+          </div>
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+            <div className="text-[9px] uppercase font-bold text-[#8b949e]">Collected</div>
+            <div className="mt-1 font-bold">{relTime(evidence.collectedAt)}</div>
+          </div>
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+            <div className="text-[9px] uppercase font-bold text-[#8b949e]">Integrity</div>
+            <div
+              className="mt-1 font-mono font-bold truncate"
+              title={evidence.sha256 ?? undefined}
+            >
+              {evidence.sha256 ? `${evidence.sha256.slice(0, 16)}…` : 'pending'}
+            </div>
+          </div>
         </div>
 
-        <div className="flex justify-end pt-3 border-t border-[#d0d7de] dark:border-[#30363d]">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md bg-[#1f883d] hover:bg-[#1a7f37] dark:bg-[#238636] dark:hover:bg-[#2ea043] px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors cursor-pointer"
-          >
-            Close Preview
-          </button>
+        <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#0d1117] overflow-hidden">
+          <div className="flex items-center justify-between border-b border-[#30363d] px-3 py-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#8b949e]">
+              artifact.json
+            </span>
+            {onDownload && (
+              <button
+                type="button"
+                onClick={() => onDownload(evidence)}
+                className="text-[10px] font-bold text-[#58a6ff] hover:underline cursor-pointer"
+              >
+                Download
+              </button>
+            )}
+          </div>
+          <pre className="p-3 max-h-[320px] overflow-auto text-[11px] leading-5 font-mono text-[#e6edf3] whitespace-pre-wrap break-words">
+            {json}
+          </pre>
         </div>
       </div>
     </Modal>
