@@ -66,3 +66,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+# Agent release binaries (downloaded by agent/install/*)
+!releases/
+!releases/*
+releases/tartarus-mac-arm64

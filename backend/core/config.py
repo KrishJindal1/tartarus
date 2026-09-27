@@ -1,6 +1,8 @@
 """
 Configuration settings for the JOCKEY backend using Pydantic BaseSettings.
 """
+from typing import List
+
 from pydantic_settings import BaseSettings
 
 
@@ -16,6 +18,13 @@ class Settings(BaseSettings):
     R2_SECRET_ACCESS_KEY: str = ""
     R2_BUCKET_NAME: str = "jocky-payloads"
     R2_ENDPOINT_URL: str = ""
+
+    # Console origins allowed by CORS (JSON list via env)
+    CORS_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://tartarus.vercel.app",
+    ]
 
     # Auth
     JWT_SECRET: str = "jockey-dev-secret-change-me-in-production-32ch"
