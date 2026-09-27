@@ -1,36 +1,12 @@
 # Render Blueprint — JOCKEY backend (FastAPI + SQLite).
 # Deploy: Render dashboard → New → Blueprint → pick this repo (renders this file),
 #   or New → Web Service → connect repo → Runtime: Docker (uses the settings below).
-# services:
-#   - type: web
-#     name: jockey-backend
-#     runtime: docker
-#     dockerfilePath: ./backend/Dockerfile
-#     dockerContext: ./backend
-#     plan: starter # starter ($7/mo) enables the persistent disk; use free and delete the `disk:` block if you accept SQLite resets
-#     healthCheckPath: /health
-#     envVars:
-#       - key: PORT
-#         value: "10000"
-#       - key: ENVIRONMENT
-#         value: production
-#       - key: AUTH_ENABLED
-#         value: "false" # console has no login UI yet — flip only after adding one
-#       - key: JWT_SECRET
-#         generateValue: true
-#       - key: SEED_ADMIN_PASSWORD
-#         generateValue: true
-#       - key: CORS_ORIGINS
-#         value: '["https://tartarus.vercel.app"]' # set to YOUR vercel URL after frontend deploy, then re-deploy
-#       - key: DATABASE_PATH
-#         value: /app/data/jockey.db
-    
 services:
   - type: web
     name: jockey-backend
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerContext: .
     plan: free
 
     healthCheckPath: /health
