@@ -24,7 +24,4 @@ services:
         value: '["https://tartarus.vercel.app"]' # set to YOUR vercel URL after frontend deploy, then re-deploy
       - key: DATABASE_PATH
         value: /app/data/jockey.db
-    disk:
-      name: jockey-data
-      mountPath: /app/data
-      sizeGB: 1
+    
