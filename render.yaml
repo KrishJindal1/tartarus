@@ -8,9 +8,10 @@ services:
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     plan: starter # starter ($7/mo) enables the persistent disk; use free and delete the `disk:` block if you accept SQLite resets
-    port: 8000
     healthCheckPath: /health
     envVars:
+      - key: PORT
+        value: "10000"
       - key: ENVIRONMENT
         value: production
       - key: AUTH_ENABLED
