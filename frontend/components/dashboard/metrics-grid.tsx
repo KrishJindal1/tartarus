@@ -10,13 +10,13 @@ interface MetricsGridProps {
 }
 
 const toneClasses: Record<string, string> = {
-  sky: 'bg-sky-500/10 text-[#0969da] dark:text-[#58a6ff] ring-sky-500/30',
-  emerald: 'bg-emerald-500/10 text-[#1a7f37] dark:text-[#3fb950] ring-emerald-500/30',
-  violet: 'bg-violet-500/10 text-[#8250df] dark:text-[#a371f7] ring-violet-500/30',
-  cyan: 'bg-cyan-500/10 text-[#0a7d8c] dark:text-[#39c5cf] ring-cyan-500/30',
-  blue: 'bg-blue-500/10 text-[#0969da] dark:text-[#58a6ff] ring-blue-500/30',
-  rose: 'bg-rose-500/10 text-[#cf222e] dark:text-[#ff7b72] ring-rose-500/30',
-  amber: 'bg-amber-500/10 text-[#9a6700] dark:text-[#d29922] ring-amber-500/30',
+  sky: 'bg-teal-500/10 text-[#0F766E] dark:text-[#2DD4BF] ring-teal-500/30',
+  emerald: 'bg-emerald-500/10 text-[#0F766E] dark:text-[#4ADE9E] ring-emerald-500/30',
+  violet: 'bg-violet-500/10 text-[#A78BFA] dark:text-[#B9A6FD] ring-violet-500/30',
+  cyan: 'bg-cyan-500/10 text-[#0F766E] dark:text-[#2DD4BF] ring-cyan-500/30',
+  blue: 'bg-teal-500/10 text-[#0F766E] dark:text-[#2DD4BF] ring-teal-500/30',
+  rose: 'bg-rose-500/10 text-[#D64936] dark:text-[#FF8A7A] ring-rose-500/30',
+  amber: 'bg-amber-500/10 text-[#96690F] dark:text-[#E3B341] ring-amber-500/30',
   slate: 'bg-slate-500/10 text-[#57606a] dark:text-[#8b949e] ring-slate-500/30',
 }
 
@@ -27,7 +27,7 @@ export function MetricsGrid({ metrics }: MetricsGridProps) {
         <Link
           key={metric.label}
           href={metric.href}
-          className="group rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 hover:border-[#0969da] dark:hover:border-[#58a6ff] hover:shadow-md transition-all cursor-pointer"
+          className="group rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] p-4 hover:border-[#12A594] dark:hover:border-[#2DD4BF] hover:shadow-md transition-all cursor-pointer"
         >
           <div className="flex items-center justify-between">
             <div

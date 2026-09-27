@@ -193,7 +193,7 @@ function buildMetrics(
       value: `${deployed}`,
       sub: `${scripts.length} total · JOCKEY DSL`,
       iconName: 'TerminalSquare',
-      tone: 'sky',
+      tone: 'violet',
       href: '/scripts',
     },
     {
@@ -201,7 +201,7 @@ function buildMetrics(
       value: `${running} running`,
       sub: `${queued} queued · ${jobs.length} total`,
       iconName: 'Activity',
-      tone: 'cyan',
+      tone: 'sky',
       href: '/jobs',
     },
     {
@@ -209,7 +209,7 @@ function buildMetrics(
       value: `${evidenceCount}`,
       sub: maxRisk ? `Max risk ${maxRisk}/10` : 'No evidence yet',
       iconName: 'FolderKanban',
-      tone: 'violet',
+      tone: 'amber',
       href: '/evidence',
     },
     {
@@ -217,7 +217,7 @@ function buildMetrics(
       value: `${reports.length}`,
       sub: reports.length ? 'JSON + PDF available' : 'Generated on job completion',
       iconName: 'FileText',
-      tone: 'blue',
+      tone: 'slate',
       href: '/reports',
     },
     {

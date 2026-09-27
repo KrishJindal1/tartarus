@@ -35,7 +35,7 @@ export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: 
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-[240px] flex-col border-r border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#010409] transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-[240px] flex-col border-r border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#0C0E11] transition-transform duration-300 ease-in-out ${
           isMobileOpen
             ? 'translate-x-0 shadow-2xl z-50'
             : isOpen
@@ -44,9 +44,9 @@ export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: 
         }`}
       >
         {/* Brand */}
-        <div className="flex h-16 items-center justify-between border-b border-[#d0d7de] dark:border-[#30363d] px-4">
+        <div className="flex h-16 items-center justify-between border-b border-[#d0d7de] dark:border-[#24282F] px-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-sky-500/10 text-[#0969da] dark:text-[#58a6ff] ring-1 ring-sky-500/30">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-teal-500/10 text-[#0F766E] dark:text-[#2DD4BF] ring-1 ring-teal-500/30">
               <Radar className="size-4" />
             </div>
             <div className="text-sm font-bold tracking-wider text-[#1f2328] dark:text-[#f0f6fc]">
@@ -58,7 +58,7 @@ export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: 
             <button
               type="button"
               onClick={onCloseMobile}
-              className="flex lg:hidden size-7 items-center justify-center rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#161b22] text-[#656d76] dark:text-[#8b949e] hover:bg-[#eff1f3] dark:hover:bg-[#21262d] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors shadow-2xs cursor-pointer"
+              className="flex lg:hidden size-7 items-center justify-center rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#14181E] text-[#656d76] dark:text-[#8b949e] hover:bg-[#eff1f3] dark:hover:bg-[#1B1F26] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors shadow-2xs cursor-pointer"
               title="Close navigation"
               aria-label="Close navigation"
             >
@@ -84,14 +84,14 @@ export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: 
                   onClick={onCloseMobile}
                   className={`flex h-9 w-full items-center gap-3 rounded-md px-3 text-left text-xs transition-colors ${
                     active
-                      ? 'bg-[#f6f8fa] text-[#0969da] dark:bg-[#1f242c] dark:text-[#f0f6fc] font-bold border border-[#d0d7de] dark:border-[#30363d]'
-                      : 'text-[#1f2328] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#161b22] hover:text-[#1f2328] dark:hover:text-[#f0f6fc]'
+                      ? 'bg-[#f6f8fa] text-[#0F766E] dark:bg-[#1B1F26] dark:text-[#f0f6fc] font-bold border border-[#d0d7de] dark:border-[#24282F]'
+                      : 'text-[#1f2328] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#14181E] hover:text-[#1f2328] dark:hover:text-[#f0f6fc]'
                   }`}
                 >
                   <DynamicIcon name={item.iconName} className="size-4 shrink-0" />
                   <span className="flex-1">{item.label}</span>
                   {badge !== undefined && badge > 0 && (
-                    <span className="rounded bg-[#eff1f3] dark:bg-[#21262d] border border-[#d0d7de]/60 dark:border-[#30363d] px-1.5 py-0.5 text-[10px] text-[#656d76] dark:text-[#8b949e] font-mono font-semibold">
+                    <span className="rounded bg-[#eff1f3] dark:bg-[#1B1F26] border border-[#d0d7de]/60 dark:border-[#24282F] px-1.5 py-0.5 text-[10px] text-[#656d76] dark:text-[#8b949e] font-mono font-semibold">
                       {badge}
                     </span>
                   )}
@@ -99,12 +99,6 @@ export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: 
               )
             })}
           </nav>
-        </div>
-
-        {/* Footer: backend status */}
-        <div className="p-3 border-t border-[#d0d7de] dark:border-[#30363d] flex items-center gap-2 text-[11px] text-[#656d76] dark:text-[#8b949e]">
-          <span className="flex size-2 rounded-full bg-[#1a7f37] dark:bg-[#3fb950] animate-pulse" />
-          <span className="font-mono">backend v2.5.0</span>
         </div>
       </aside>
     </>

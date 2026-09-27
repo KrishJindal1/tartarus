@@ -17,7 +17,7 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!loaded) {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
         <Loader2 className="size-4 animate-spin" /> Loading agent…
       </div>
     )
@@ -25,7 +25,7 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!agent) {
     return (
-      <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-16 text-center">
+      <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-16 text-center">
         <Server className="size-6 mx-auto mb-3 text-[#8b949e]" />
         <p className="text-sm font-bold text-[#1f2328] dark:text-[#f0f6fc]">Agent not found</p>
         <p className="mt-1 text-xs text-[#656d76] dark:text-[#8b949e]">
@@ -33,7 +33,7 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
         </p>
         <Link
           href="/agents"
-          className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+          className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
         >
           <ArrowLeft className="size-3.5" /> Back to endpoints
         </Link>
@@ -57,7 +57,7 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
       <div>
         <Link
           href="/agents"
-          className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+          className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
         >
           <ArrowLeft className="size-3" /> Endpoints
         </Link>
@@ -74,7 +74,7 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
         {meta.map(([label, value]) => (
           <div
             key={label}
-            className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-3"
+            className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] p-3"
           >
             <div className="text-[9px] font-bold uppercase tracking-wider text-[#8b949e]">
               {label}

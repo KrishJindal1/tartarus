@@ -15,6 +15,7 @@ function titleForPath(pathname: string): string {
   if (pathname === '/') return 'Overview'
   const first = pathname.split('/').filter(Boolean)[0] ?? ''
   const known: Record<string, string> = {
+    run: 'Run Script',
     agents: 'Agents',
     scripts: 'Scripts',
     jobs: 'Jobs',
@@ -37,27 +38,27 @@ export function Header({
   const title = titleForPath(pathname)
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-[#d0d7de] dark:border-[#30363d] bg-white/95 dark:bg-[#010409]/90 px-4 sm:px-8 backdrop-blur z-20 relative transition-colors duration-200">
+    <header className="flex h-16 items-center justify-between border-b border-[#d0d7de] dark:border-[#24282F] bg-white/95 dark:bg-[#0C0E11]/90 px-4 sm:px-8 backdrop-blur z-20 relative transition-colors duration-200">
       {/* Left: toggle + breadcrumb */}
       <div className="flex items-center gap-2.5 sm:gap-3">
         {onToggleSidebar && (
           <button
             type="button"
             onClick={onToggleSidebar}
-            className="flex size-8 items-center justify-center rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#161b22] text-[#656d76] dark:text-[#e6edf3] hover:bg-[#eff1f3] dark:hover:bg-[#21262d] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors cursor-pointer shadow-2xs"
+            className="flex size-8 items-center justify-center rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#14181E] text-[#656d76] dark:text-[#e6edf3] hover:bg-[#eff1f3] dark:hover:bg-[#1B1F26] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors cursor-pointer shadow-2xs"
             title={isSidebarOpen ? 'Close sidebar (Ctrl+B)' : 'Open sidebar (Ctrl+B)'}
             aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
           >
             {isSidebarOpen ? (
               <PanelLeftClose className="size-4" />
             ) : (
-              <PanelLeftOpen className="size-4 text-[#0969da] dark:text-[#58a6ff]" />
+              <PanelLeftOpen className="size-4 text-[#0F766E] dark:text-[#2DD4BF]" />
             )}
           </button>
         )}
 
         {!isSidebarOpen && (
-          <div className="flex size-8 items-center justify-center rounded-lg bg-sky-500/10 text-[#0969da] dark:text-[#58a6ff] ring-1 ring-sky-500/30">
+          <div className="flex size-8 items-center justify-center rounded-lg bg-teal-500/10 text-[#0F766E] dark:text-[#2DD4BF] ring-1 ring-teal-500/30">
             <Radar className="size-4" />
           </div>
         )}
@@ -75,12 +76,12 @@ export function Header({
           <button
             type="button"
             onClick={onOpenCommandPalette}
-            className="hidden sm:flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#161b22] px-2.5 py-1.5 text-xs text-[#656d76] dark:text-[#8b949e] hover:bg-[#eff1f3] dark:hover:bg-[#21262d] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors shadow-2xs cursor-pointer"
+            className="hidden sm:flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#14181E] px-2.5 py-1.5 text-xs text-[#656d76] dark:text-[#8b949e] hover:bg-[#eff1f3] dark:hover:bg-[#1B1F26] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors shadow-2xs cursor-pointer"
             title="Command palette"
           >
             <Search className="size-3.5" />
             <span>Search…</span>
-            <kbd className="rounded border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-1 py-0.5 text-[10px] font-mono">
+            <kbd className="rounded border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#0C0E11] px-1 py-0.5 text-[10px] font-mono">
               Ctrl K
             </kbd>
           </button>

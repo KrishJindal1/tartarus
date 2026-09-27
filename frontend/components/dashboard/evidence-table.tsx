@@ -32,9 +32,9 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
   }, [evidence, query])
 
   return (
-    <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden">
-      <div className="border-b border-[#d0d7de] dark:border-[#30363d] p-3">
-        <div className="flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] px-2.5 py-1.5 max-w-md">
+    <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
+      <div className="border-b border-[#d0d7de] dark:border-[#24282F] p-3">
+        <div className="flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] px-2.5 py-1.5 max-w-md">
           <Search className="size-3.5 text-[#8b949e]" />
           <input
             value={query}
@@ -47,8 +47,8 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
-          <thead className="bg-[#f6f8fa] dark:bg-[#0d1117]">
-            <tr className="border-b border-[#d0d7de] dark:border-[#30363d]">
+          <thead className="bg-[#f6f8fa] dark:bg-[#0C0E11]">
+            <tr className="border-b border-[#d0d7de] dark:border-[#24282F]">
               <th className={th}>Type</th>
               <th className={th}>Host</th>
               <th className={th}>Job</th>
@@ -63,10 +63,10 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
             {filtered.map((item) => (
               <tr
                 key={item.id}
-                className="border-b border-[#d0d7de]/60 dark:border-[#30363d] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0d1117] transition-colors"
+                className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
               >
                 <td className={td}>
-                  <span className="rounded border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#21262d] px-1.5 py-0.5 font-mono text-[11px] font-semibold">
+                  <span className="rounded border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#1B1F26] px-1.5 py-0.5 font-mono text-[11px] font-semibold">
                     {item.type}
                   </span>
                 </td>
@@ -74,7 +74,7 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
                 <td className={`${td} font-mono text-[10px]`}>
                   <a
                     href={`/jobs/${item.jobId}`}
-                    className="text-[#0969da] dark:text-[#58a6ff] hover:underline"
+                    className="text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
                   >
                     {item.jobId.slice(0, 8).toUpperCase()}
                   </a>
@@ -96,14 +96,14 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
                     <button
                       type="button"
                       onClick={() => onPreview(item)}
-                      className="inline-flex items-center gap-1 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-2 py-1 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-2 py-1 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors cursor-pointer"
                     >
                       <Eye className="size-3" /> View
                     </button>
                     <button
                       type="button"
                       onClick={() => onDownload(item)}
-                      className="inline-flex items-center gap-1 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-2 py-1 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-2 py-1 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors cursor-pointer"
                       title="Download evidence JSON"
                     >
                       <Download className="size-3" />

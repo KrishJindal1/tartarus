@@ -45,10 +45,10 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
   }, [jobs, query, status, compact])
 
   return (
-    <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden">
+    <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
       {!compact && (
-        <div className="flex flex-wrap items-center gap-2 border-b border-[#d0d7de] dark:border-[#30363d] p-3">
-          <div className="flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] px-2.5 py-1.5 flex-1 min-w-[220px]">
+        <div className="flex flex-wrap items-center gap-2 border-b border-[#d0d7de] dark:border-[#24282F] p-3">
+          <div className="flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] px-2.5 py-1.5 flex-1 min-w-[220px]">
             <Search className="size-3.5 text-[#8b949e]" />
             <input
               value={query}
@@ -65,8 +65,8 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
                 onClick={() => setStatus(s)}
                 className={`rounded-md border px-2 py-1 text-[11px] font-medium capitalize cursor-pointer transition-colors ${
                   status === s
-                    ? 'border-[#0969da] dark:border-[#58a6ff] bg-[#ddf4ff] dark:bg-sky-500/15 text-[#0969da] dark:text-[#58a6ff]'
-                    : 'border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] text-[#57606a] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d]'
+                    ? 'border-[#12A594] dark:border-[#2DD4BF] bg-[#D9F5F2] dark:bg-teal-500/15 text-[#0F766E] dark:text-[#2DD4BF]'
+                    : 'border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] text-[#57606a] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26]'
                 }`}
               >
                 {s}
@@ -78,8 +78,8 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
-          <thead className="bg-[#f6f8fa] dark:bg-[#0d1117]">
-            <tr className="border-b border-[#d0d7de] dark:border-[#30363d]">
+          <thead className="bg-[#f6f8fa] dark:bg-[#0C0E11]">
+            <tr className="border-b border-[#d0d7de] dark:border-[#24282F]">
               <th className={th}>Job</th>
               <th className={th}>Script</th>
               <th className={th}>Target</th>
@@ -94,12 +94,12 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
             {filtered.map((job) => (
               <tr
                 key={job.id}
-                className="border-b border-[#d0d7de]/60 dark:border-[#30363d] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0d1117] transition-colors"
+                className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
               >
                 <td className={td}>
                   <Link
                     href={`/jobs/${job.id}`}
-                    className="font-mono font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+                    className="font-mono font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
                   >
                     {job.shortId}
                   </Link>
@@ -127,7 +127,7 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
                 <td className={`${td} text-right`}>
                   <Link
                     href={`/jobs/${job.id}`}
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
                     title="Open job detail"
                   >
                     View <ArrowRight className="size-3" />

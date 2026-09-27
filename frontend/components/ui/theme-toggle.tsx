@@ -61,14 +61,14 @@ export function ThemeToggle({ className = '', compact = false }: ThemeToggleProp
       <button
         type="button"
         onClick={() => toggleTheme()}
-        className={`flex size-8 items-center justify-center rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#21262d] text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#30363d] transition-colors shadow-2xs cursor-pointer ${className}`}
+        className={`flex size-8 items-center justify-center rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#1B1F26] text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#24282F] transition-colors shadow-2xs cursor-pointer ${className}`}
         aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
         title={`Toggle ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
       >
         {theme === 'dark' ? (
           <Sun className="size-4 text-[#e3b341]" />
         ) : (
-          <Moon className="size-4 text-[#0969da]" />
+          <Moon className="size-4 text-[#0F766E]" />
         )}
       </button>
     )
@@ -76,7 +76,7 @@ export function ThemeToggle({ className = '', compact = false }: ThemeToggleProp
 
   return (
     <div
-      className={`flex items-center gap-1 rounded-lg border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#010409] p-1 text-xs ${className}`}
+      className={`flex items-center gap-1 rounded-lg border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] p-1 text-xs ${className}`}
     >
       <button
         type="button"
@@ -87,7 +87,7 @@ export function ThemeToggle({ className = '', compact = false }: ThemeToggleProp
             : 'text-[#656d76] hover:text-[#1f2328] dark:text-[#8b949e] dark:hover:text-[#f0f6fc]'
         }`}
       >
-        <Sun className={`size-3.5 ${theme === 'light' ? 'text-[#9a6700]' : ''}`} />
+        <Sun className={`size-3.5 ${theme === 'light' ? 'text-[#96690F]' : ''}`} />
         <span>Light</span>
       </button>
 
@@ -96,11 +96,11 @@ export function ThemeToggle({ className = '', compact = false }: ThemeToggleProp
         onClick={() => toggleTheme('dark')}
         className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-2.5 py-1 font-semibold transition-all cursor-pointer ${
           theme === 'dark'
-            ? 'bg-[#21262d] text-[#f0f6fc] shadow-xs border border-[#30363d]'
+            ? 'bg-[#1B1F26] text-[#f0f6fc] shadow-xs border border-[#24282F]'
             : 'text-[#656d76] hover:text-[#1f2328] dark:text-[#8b949e] dark:hover:text-[#f0f6fc]'
         }`}
       >
-        <Moon className={`size-3.5 ${theme === 'dark' ? 'text-[#58a6ff]' : ''}`} />
+        <Moon className={`size-3.5 ${theme === 'dark' ? 'text-[#2DD4BF]' : ''}`} />
         <span>Dark</span>
       </button>
     </div>

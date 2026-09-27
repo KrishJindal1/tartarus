@@ -60,7 +60,7 @@ jockey/
 ├── frontend/            # Next.js 16 + React 19 + TypeScript console (multi-page)
 │   ├── lib/api.ts       #   typed backend client
 │   ├── providers/       #   DashboardProvider — 3 s polling React context
-│   ├── app/(dashboard)/ #   routes: /, /agents, /agents/[id], /scripts,
+│   ├── app/(dashboard)/ #   routes: /, /run, /agents, /agents/[id], /scripts,
 │   │                    #   /scripts/new, /scripts/[id], /jobs, /jobs/[id],
 │   │                    #   /evidence, /reports, /reports/[jobId]
 │   └── components/      #   tables, JOCKEY script IDE, layout, modals
@@ -199,10 +199,13 @@ Expected agent log:
 
 1. **Open** <http://localhost:3000> — the *Overview* page shows live KPI cards,
    the endpoint list (`online`/`offline`), and recent jobs (polled every 3 s).
-2. Click **Run Suite** (or Ctrl+K → *run suite now*). This issues
-   `POST /jobs/create` **for every deployed script** against the first online
-   agent (10 jobs for the seeded scripts). You can also open any script in the
-   IDE (`/scripts/new`) and press **Run** there.
+2. **Run a script** — open the guided workflow at `/run` (sidebar *Run*, the
+   overview *Run script* button, or any *Run* link on the Agents/Scripts
+   pages): pick an endpoint → pick a script → **Execute** → watch the response
+   (status, risk, findings, raw JSON, evidence). Preselect with
+   `/run?agent=<id>&script=<id>`. Alternatively **Run Suite** (Ctrl+K) queues
+   every deployed script against the first online agent (10 jobs when seeded),
+   and any script in the IDE (`/scripts/new`) can be run directly.
 3. The agent claims jobs (`GET /jobs/pending/{agent_id}`), executes the
    polymorphic IR **in memory**, and submits results
    (`POST /results/submit`) within seconds.

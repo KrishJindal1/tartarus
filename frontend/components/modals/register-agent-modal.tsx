@@ -39,7 +39,7 @@ export function RegisterAgentModal({ isOpen, onClose }: RegisterAgentModalProps)
               value={hostname}
               onChange={(e) => setHostname(e.target.value)}
               placeholder="e.g. FORENSIC-LNX-11"
-              className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-2.5 py-1.5 text-xs outline-none focus:border-[#0969da] dark:focus:border-[#58a6ff] w-56"
+              className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#0C0E11] px-2.5 py-1.5 text-xs outline-none focus:border-[#12A594] dark:focus:border-[#2DD4BF] w-56"
             />
           </label>
           <label className="flex flex-col gap-1">
@@ -49,7 +49,7 @@ export function RegisterAgentModal({ isOpen, onClose }: RegisterAgentModalProps)
             <select
               value={os}
               onChange={(e) => setOs(e.target.value)}
-              className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-2.5 py-1.5 text-xs outline-none cursor-pointer"
+              className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#0C0E11] px-2.5 py-1.5 text-xs outline-none cursor-pointer"
             >
               <option value="linux">linux</option>
               <option value="windows">windows</option>
@@ -66,13 +66,13 @@ export function RegisterAgentModal({ isOpen, onClose }: RegisterAgentModalProps)
             <button
               type="button"
               onClick={() => copy(cmd, 'Register command')}
-              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1 text-[10px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline cursor-pointer"
             >
               <Copy className="size-3" /> Copy
             </button>
           </div>
-          <div className="flex items-start gap-2 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#0d1117] p-2.5">
-            <Terminal className="size-3.5 text-[#3fb950] mt-0.5 shrink-0" />
+          <div className="flex items-start gap-2 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#0C0E11] p-2.5">
+            <Terminal className="size-3.5 text-[#4ADE9E] mt-0.5 shrink-0" />
             <code className="font-mono text-[11px] text-[#e6edf3] break-all">{cmd}</code>
           </div>
           <p className="mt-1.5 text-[11px] leading-snug text-[#656d76] dark:text-[#8b949e]">
@@ -93,7 +93,7 @@ export function RegisterAgentModal({ isOpen, onClose }: RegisterAgentModalProps)
           </p>
         </div>
 
-        <div className="rounded-md border border-[#54aeff]/40 bg-[#ddf4ff] dark:bg-sky-500/10 p-2.5 text-[11px] leading-snug text-[#0969da] dark:text-[#58a6ff]">
+        <div className="rounded-md border border-[#2DD4BF]/40 bg-[#D9F5F2] dark:bg-teal-500/10 p-2.5 text-[11px] leading-snug text-[#0F766E] dark:text-[#2DD4BF]">
           Cross-compile for other OSes:{' '}
           <code className="font-mono">
             GOOS=windows GOARCH=amd64 go build -o tartarus-agent.exe ./agent

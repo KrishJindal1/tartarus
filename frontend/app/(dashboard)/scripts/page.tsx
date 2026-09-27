@@ -22,14 +22,14 @@ export default function ScriptsPage() {
         </div>
         <Link
           href="/scripts/new"
-          className="inline-flex items-center gap-1.5 rounded-md border border-[#0969da]/50 dark:border-[#58a6ff]/50 bg-[#0969da] dark:bg-[#1f6feb] px-3 py-2 text-xs font-bold text-white hover:bg-[#0550ae] dark:hover:bg-[#388bfd] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-md border border-[#12A594]/50 dark:border-[#2DD4BF]/50 bg-[#0F766E] dark:bg-[#0E8C7F] px-3 py-2 text-xs font-bold text-white hover:bg-[#0B5C53] dark:hover:bg-[#12A594] transition-colors cursor-pointer"
         >
           <Plus className="size-3.5" /> New script
         </Link>
       </div>
 
       {!loaded ? (
-        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
           <Loader2 className="size-4 animate-spin" /> Loading scripts…
         </div>
       ) : (

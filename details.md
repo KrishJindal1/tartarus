@@ -250,11 +250,16 @@ Cross-compile verified: `GOOS=linux`, `GOOS=windows`, `GOOS=darwin` all build.
 ## 5. Frontend (`frontend/`)
 
 Multi-page Next.js 16 App Router console (route group `app/(dashboard)/`), fully driven by the
-live backend — **no mock data remains**.
+live backend — **no mock data remains**. Dark theme is pinned (`html.dark`): background
+`#0C0E11`, cards `#14181E`, borders `#24282F`, accent teal `#12A594`/`#2DD4BF`, mint green
+`#4ADE9E` (success), lavender `#A78BFA` (scripts/keywords), soft red `#E5654E`/orange
+`#E07B39` (critical), warm yellow `#E3B341` (warnings). Dark is the default (no system flash);
+the header light/dark toggle persists via `localStorage['jocky-theme']` and still works.
 
 | Route | Page | Contents |
 |---|---|---|
 | `/` | Overview | 6 live KPI cards (agents, scripts, jobs, evidence, reports, critical findings), recent-jobs table, endpoint list, quick actions, Run suite |
+| `/run` | **Run workflow** | guided 4-step flow — 1 pick endpoint → 2 pick script (searchable) → 3 review + Execute → 4 response: live polling (2s), verdict/risk/evidence/duration tiles, findings, raw result JSON, evidence list, links to job/report. Preselect via `?agent=&script=` |
 | `/agents`, `/agents/[id]` | Endpoints | searchable agent table (status, OS/arch, AV, jobs, last seen) + detail page with metadata and that agent's jobs; "Register endpoint" modal shows the real `scripts/register_agent.py` command |
 | `/scripts` | Scripts | script table: category, risk, target OS, version, IR SHA-256, Edit → IDE, Run → queued on first online agent |
 | `/scripts/new`, `/scripts/[id]` | **JOCKEY script IDE** | custom dependency-free editor: syntax highlighting (keywords, builtins, strings, `#` comments, numbers), line numbers, tab/indent handling; toolbar = Open file (upload `.jky/.txt`), New, **Compile** (dry-run `POST /scripts/compile` → IR listing + AST + SHA-256 without saving), **Save/Create** (`POST`/`PUT`, Ctrl+S), Delete; IR/AST inspector tabs; Run panel (agent picker + last-job link); builtin scripts are read-only → "Save as new" |

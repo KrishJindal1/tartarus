@@ -63,9 +63,9 @@ export function Modal({
 
       {/* Dialog container */}
       <div
-        className={`relative z-10 w-full ${maxWidthMap[maxWidth]} rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] text-[#1f2328] dark:text-[#e6edf3] p-6 shadow-2xl transition-all animate-in zoom-in-95`}
+        className={`relative z-10 w-full ${maxWidthMap[maxWidth]} rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] text-[#1f2328] dark:text-[#e6edf3] p-6 shadow-2xl transition-all animate-in zoom-in-95`}
       >
-        <div className="flex items-start justify-between border-b border-[#d0d7de] dark:border-[#30363d] pb-4">
+        <div className="flex items-start justify-between border-b border-[#d0d7de] dark:border-[#24282F] pb-4">
           <div>
             <h3 id="modal-title" className="text-base font-bold text-[#1f2328] dark:text-[#f0f6fc]">
               {title}
@@ -78,7 +78,7 @@ export function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="rounded-md p-1 text-[#656d76] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors cursor-pointer"
+            className="rounded-md p-1 text-[#656d76] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors cursor-pointer"
           >
             <X className="size-4" />
           </button>

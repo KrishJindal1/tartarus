@@ -56,7 +56,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f8fa] dark:bg-[#0d1117] text-[#1f2328] dark:text-[#e6edf3] antialiased font-sans transition-colors duration-200">
+    <main className="min-h-screen bg-[#f6f8fa] dark:bg-[#0C0E11] text-[#1f2328] dark:text-[#e6edf3] antialiased font-sans transition-colors duration-200">
       <Sidebar
         isOpen={isSidebarOpen}
         onToggle={handleToggleSidebar}

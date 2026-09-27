@@ -4,11 +4,11 @@ import React from 'react'
 import type { JobStatus } from '@/types'
 
 const jobTone: Record<JobStatus, string> = {
-  queued: 'bg-[#eff1f3] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]',
-  dispatched: 'bg-[#ddf4ff] dark:bg-sky-500/15 text-[#0969da] dark:text-[#58a6ff] border-[#54aeff]/40',
-  executing: 'bg-[#ddf4ff] dark:bg-sky-500/15 text-[#0969da] dark:text-[#58a6ff] border-[#54aeff]/40',
-  completed: 'bg-[#dafbe1] dark:bg-emerald-500/15 text-[#1a7f37] dark:text-[#3fb950] border-[#4ac26b]/40',
-  failed: 'bg-[#ffebe9] dark:bg-rose-500/15 text-[#cf222e] dark:text-[#ff7b72] border-[#ff8182]/40',
+  queued: 'bg-[#eff1f3] dark:bg-[#1B1F26] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#24282F]',
+  dispatched: 'bg-[#D9F5F2] dark:bg-teal-500/15 text-[#0F766E] dark:text-[#2DD4BF] border-[#2DD4BF]/40',
+  executing: 'bg-[#D9F5F2] dark:bg-teal-500/15 text-[#0F766E] dark:text-[#2DD4BF] border-[#2DD4BF]/40',
+  completed: 'bg-[#DDF7EC] dark:bg-emerald-500/15 text-[#0F766E] dark:text-[#4ADE9E] border-[#4ADE9E]/40',
+  failed: 'bg-[#FDE8E4] dark:bg-rose-500/15 text-[#D64936] dark:text-[#FF8A7A] border-[#FF8A7A]/40',
 }
 
 export function JobStatusBadge({ status }: { status: JobStatus }) {
@@ -19,12 +19,12 @@ export function JobStatusBadge({ status }: { status: JobStatus }) {
       <span
         className={`size-1.5 rounded-full ${
           status === 'completed'
-            ? 'bg-[#1a7f37] dark:bg-[#3fb950]'
+            ? 'bg-[#0F766E] dark:bg-[#4ADE9E]'
             : status === 'failed'
-            ? 'bg-[#cf222e] dark:bg-[#ff7b72]'
+            ? 'bg-[#D64936] dark:bg-[#FF8A7A]'
             : status === 'queued'
             ? 'bg-[#8b949e]'
-            : 'bg-[#0969da] dark:bg-[#58a6ff] animate-pulse'
+            : 'bg-[#0F766E] dark:bg-[#2DD4BF] animate-pulse'
         }`}
       />
       {status}
@@ -35,10 +35,10 @@ export function JobStatusBadge({ status }: { status: JobStatus }) {
 export function AgentStatusBadge({ status }: { status: string }) {
   const tone =
     status === 'online'
-      ? 'bg-[#dafbe1] dark:bg-emerald-500/15 text-[#1a7f37] dark:text-[#3fb950] border-[#4ac26b]/40'
+      ? 'bg-[#DDF7EC] dark:bg-emerald-500/15 text-[#0F766E] dark:text-[#4ADE9E] border-[#4ADE9E]/40'
       : status === 'busy'
-      ? 'bg-[#ddf4ff] dark:bg-sky-500/15 text-[#0969da] dark:text-[#58a6ff] border-[#54aeff]/40'
-      : 'bg-[#eff1f3] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]'
+      ? 'bg-[#D9F5F2] dark:bg-teal-500/15 text-[#0F766E] dark:text-[#2DD4BF] border-[#2DD4BF]/40'
+      : 'bg-[#eff1f3] dark:bg-[#1B1F26] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#24282F]'
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold capitalize ${tone}`}
@@ -46,9 +46,9 @@ export function AgentStatusBadge({ status }: { status: string }) {
       <span
         className={`size-1.5 rounded-full ${
           status === 'online'
-            ? 'bg-[#1a7f37] dark:bg-[#3fb950]'
+            ? 'bg-[#0F766E] dark:bg-[#4ADE9E]'
             : status === 'busy'
-            ? 'bg-[#0969da] dark:bg-[#58a6ff] animate-pulse'
+            ? 'bg-[#0F766E] dark:bg-[#2DD4BF] animate-pulse'
             : 'bg-[#8b949e]'
         }`}
       />
@@ -59,12 +59,12 @@ export function AgentStatusBadge({ status }: { status: string }) {
 
 const riskTone = (score: number): string =>
   score >= 8
-    ? 'bg-[#ffebe9] dark:bg-rose-500/15 text-[#cf222e] dark:text-[#ff7b72] border-[#ff8182]/40'
+    ? 'bg-[#FDE8E4] dark:bg-rose-500/15 text-[#D64936] dark:text-[#FF8A7A] border-[#FF8A7A]/40'
     : score >= 4
-    ? 'bg-[#fff8c5] dark:bg-amber-500/15 text-[#9a6700] dark:text-[#d29922] border-[#d4a72c]/40'
+    ? 'bg-[#FCF3D9] dark:bg-amber-500/15 text-[#96690F] dark:text-[#E3B341] border-[#E3B341]/40'
     : score > 0
-    ? 'bg-[#ddf4ff] dark:bg-sky-500/15 text-[#0969da] dark:text-[#58a6ff] border-[#54aeff]/40'
-    : 'bg-[#eff1f3] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]'
+    ? 'bg-[#D9F5F2] dark:bg-teal-500/15 text-[#0F766E] dark:text-[#2DD4BF] border-[#2DD4BF]/40'
+    : 'bg-[#eff1f3] dark:bg-[#1B1F26] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#24282F]'
 
 export function RiskBadge({ score }: { score: number | null | undefined }) {
   if (score === null || score === undefined) {

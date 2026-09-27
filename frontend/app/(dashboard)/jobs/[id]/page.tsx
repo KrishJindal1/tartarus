@@ -42,9 +42,9 @@ function toEvidenceView(row: BackendEvidenceRow): EvidenceView {
 }
 
 const card =
-  'rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden'
+  'rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden'
 const cardTitle =
-  'border-b border-[#d0d7de] dark:border-[#30363d] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0d1117] text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]'
+  'border-b border-[#d0d7de] dark:border-[#24282F] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0C0E11] text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]'
 
 export default function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -139,7 +139,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
 
   if (loading && !job) {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-24 text-xs text-[#656d76] dark:text-[#8b949e]">
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-24 text-xs text-[#656d76] dark:text-[#8b949e]">
         <Loader2 className="size-4 animate-spin" /> Loading job…
       </div>
     )
@@ -147,18 +147,18 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
 
   if (error && !job) {
     return (
-      <div className="rounded-xl border border-[#ff8182]/40 bg-[#ffebe9] dark:bg-rose-500/10 p-6 text-center">
-        <p className="text-sm font-bold text-[#cf222e] dark:text-[#ff7b72]">Failed to load job</p>
-        <p className="mt-1 font-mono text-[11px] text-[#cf222e] dark:text-[#ff7b72]">{error}</p>
+      <div className="rounded-xl border border-[#FF8A7A]/40 bg-[#FDE8E4] dark:bg-rose-500/10 p-6 text-center">
+        <p className="text-sm font-bold text-[#D64936] dark:text-[#FF8A7A]">Failed to load job</p>
+        <p className="mt-1 font-mono text-[11px] text-[#D64936] dark:text-[#FF8A7A]">{error}</p>
         <div className="mt-3 flex items-center justify-center gap-3 text-xs">
           <button
             type="button"
             onClick={() => void load()}
-            className="font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline cursor-pointer"
+            className="font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline cursor-pointer"
           >
             Retry
           </button>
-          <Link href="/jobs" className="font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline">
+          <Link href="/jobs" className="font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline">
             Back to jobs
           </Link>
         </div>
@@ -172,7 +172,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
       <Link
         key="s"
         href={`/scripts/${job?.script_id ?? ''}`}
-        className="text-[#0969da] dark:text-[#58a6ff] hover:underline"
+        className="text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
       >
         {scriptName}
       </Link>,
@@ -182,7 +182,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
       <Link
         key="e"
         href={`/agents/${job?.agent_id ?? ''}`}
-        className="text-[#0969da] dark:text-[#58a6ff] hover:underline"
+        className="text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
       >
         {hostname}
       </Link>,
@@ -201,7 +201,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
             toast('IR SHA-256 copied.', 'info')
           }
         }}
-        className="inline-flex items-center gap-1 font-mono text-[10px] text-[#0969da] dark:text-[#58a6ff] hover:underline cursor-pointer"
+        className="inline-flex items-center gap-1 font-mono text-[10px] text-[#0F766E] dark:text-[#2DD4BF] hover:underline cursor-pointer"
       >
         {job?.ir_sha256 ? `${job.ir_sha256.slice(0, 16)}…` : '—'} <Copy className="size-2.5" />
       </button>,
@@ -216,7 +216,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
         <div>
           <Link
             href="/jobs"
-            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
           >
             <ArrowLeft className="size-3" /> Jobs
           </Link>
@@ -236,13 +236,13 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
           <button
             type="button"
             onClick={() => void load()}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors cursor-pointer"
           >
             <RefreshCw className={`size-3 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </button>
           <Link
             href={`/reports/${id}`}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors"
           >
             <FileText className="size-3" /> Report
           </Link>
@@ -250,7 +250,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
             type="button"
             onClick={downloadPdf}
             disabled={downloadingPdf}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors cursor-pointer disabled:opacity-50"
           >
             <Download className="size-3" /> PDF
           </button>
@@ -287,10 +287,10 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                 <div className="flex flex-col items-center pt-0.5">
                   <span
                     className={`size-2.5 rounded-full ${
-                      ts ? 'bg-[#1a7f37] dark:bg-[#3fb950]' : 'bg-[#d0d7de] dark:bg-[#30363d]'
+                      ts ? 'bg-[#0F766E] dark:bg-[#4ADE9E]' : 'bg-[#d0d7de] dark:bg-[#24282F]'
                     } ${idx < 2 ? 'mb-1' : ''}`}
                   />
-                  {idx < 2 && <span className="w-px flex-1 bg-[#d0d7de] dark:bg-[#30363d]" />}
+                  {idx < 2 && <span className="w-px flex-1 bg-[#d0d7de] dark:bg-[#24282F]" />}
                 </div>
                 <div>
                   <div className="font-bold text-[#1f2328] dark:text-[#e6edf3]">{label}</div>
@@ -311,17 +311,17 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
             </p>
             {job?.risk_score != null && (
               <div className="mt-3 flex items-center gap-2 text-[11px] text-[#656d76] dark:text-[#8b949e]">
-                <CheckCircle2 className="size-3.5 text-[#1a7f37] dark:text-[#3fb950]" />
+                <CheckCircle2 className="size-3.5 text-[#0F766E] dark:text-[#4ADE9E]" />
                 Risk score <RiskBadge score={job.risk_score} /> computed by the backend from
                 evidence severity.
               </div>
             )}
             {irListing && (
               <details className="mt-3">
-                <summary className="cursor-pointer text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff]">
+                <summary className="cursor-pointer text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF]">
                   Executed IR listing ({irListing.split('\n').length} instructions)
                 </summary>
-                <pre className="mt-2 max-h-56 overflow-auto rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#0d1117] p-3 text-[10px] leading-4 font-mono text-[#e6edf3]">
+                <pre className="mt-2 max-h-56 overflow-auto rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#0C0E11] p-3 text-[10px] leading-4 font-mono text-[#e6edf3]">
                   {irListing}
                 </pre>
               </details>
@@ -338,15 +338,15 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
         {results.length === 0 ? (
           <p className="p-4 text-xs text-[#8b949e]">No result submitted yet.</p>
         ) : (
-          <div className="divide-y divide-[#d0d7de]/60 dark:divide-[#30363d]">
+          <div className="divide-y divide-[#d0d7de]/60 dark:divide-[#24282F]">
             {results.map((r) => (
               <div key={r.id} className="p-4 flex flex-col gap-2">
                 <div className="flex flex-wrap items-center gap-3 text-[11px]">
                   <span
                     className={`rounded-full border px-2 py-0.5 font-bold ${
                       r.status === 'success'
-                        ? 'border-[#4ac26b]/40 bg-[#dafbe1] text-[#1a7f37] dark:bg-emerald-500/15 dark:text-[#3fb950]'
-                        : 'border-[#ff8182]/40 bg-[#ffebe9] text-[#cf222e] dark:bg-rose-500/15 dark:text-[#ff7b72]'
+                        ? 'border-[#4ADE9E]/40 bg-[#DDF7EC] text-[#0F766E] dark:bg-emerald-500/15 dark:text-[#4ADE9E]'
+                        : 'border-[#FF8A7A]/40 bg-[#FDE8E4] text-[#D64936] dark:bg-rose-500/15 dark:text-[#FF8A7A]'
                     }`}
                   >
                     {r.status}
@@ -359,10 +359,10 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                   </span>
                 </div>
                 <details>
-                  <summary className="cursor-pointer text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff]">
+                  <summary className="cursor-pointer text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF]">
                     Raw payload
                   </summary>
-                  <pre className="mt-2 max-h-72 overflow-auto rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#0d1117] p-3 text-[10px] leading-4 font-mono text-[#e6edf3] whitespace-pre-wrap break-all">
+                  <pre className="mt-2 max-h-72 overflow-auto rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#0C0E11] p-3 text-[10px] leading-4 font-mono text-[#e6edf3] whitespace-pre-wrap break-all">
                     {(() => {
                       try {
                         return JSON.stringify(JSON.parse(r.raw ?? r.message ?? '{}'), null, 2)

@@ -35,8 +35,15 @@ export default function OverviewPage() {
         </div>
         <div className="flex items-center gap-2">
           <Link
+            href="/run"
+            className="inline-flex items-center gap-1.5 rounded-md bg-[#0F766E] dark:bg-[#0E8C7F] px-3 py-2 text-xs font-bold text-white hover:bg-[#0B5C53] dark:hover:bg-[#12A594] transition-colors cursor-pointer"
+            title="Guided workflow: endpoint → script → execute → response"
+          >
+            <Play className="size-3.5" /> Run script
+          </Link>
+          <Link
             href="/scripts/new"
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-3 py-2 text-xs font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-3 py-2 text-xs font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors cursor-pointer"
           >
             <Plus className="size-3.5" /> New script
           </Link>
@@ -44,7 +51,7 @@ export default function OverviewPage() {
             type="button"
             onClick={handleRunSuite}
             disabled={running || !loaded}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#1a7f37]/40 dark:border-[#3fb950]/40 bg-[#dafbe1] dark:bg-emerald-500/15 px-3 py-2 text-xs font-bold text-[#1a7f37] dark:text-[#3fb950] hover:bg-[#bcf7cb] dark:hover:bg-emerald-500/25 transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#0E8C7F]/40 dark:border-[#4ADE9E]/40 bg-[#DDF7EC] dark:bg-emerald-500/15 px-3 py-2 text-xs font-bold text-[#0F766E] dark:text-[#4ADE9E] hover:bg-[#C6F0DE] dark:hover:bg-emerald-500/25 transition-colors cursor-pointer disabled:opacity-50"
             title="Dispatch every deployed script to the first online agent"
           >
             {running ? <Loader2 className="size-3.5 animate-spin" /> : <Play className="size-3.5" />}
@@ -62,7 +69,7 @@ export default function OverviewPage() {
             <h2 className="text-sm font-bold text-[#1f2328] dark:text-[#f0f6fc]">Recent jobs</h2>
             <Link
               href="/jobs"
-              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
             >
               All jobs <ArrowRight className="size-3" />
             </Link>
@@ -73,24 +80,24 @@ export default function OverviewPage() {
         {/* Side column */}
         <section className="flex flex-col gap-4">
           {/* Agents */}
-          <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[#d0d7de] dark:border-[#30363d] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0d1117]">
+          <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
+            <div className="flex items-center justify-between border-b border-[#d0d7de] dark:border-[#24282F] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0C0E11]">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]">
                 Endpoints
               </span>
               <Link
                 href="/agents"
-                className="text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+                className="text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
               >
                 Manage
               </Link>
             </div>
-            <ul className="divide-y divide-[#d0d7de]/60 dark:divide-[#30363d]">
+            <ul className="divide-y divide-[#d0d7de]/60 dark:divide-[#24282F]">
               {agents.slice(0, 6).map((a) => (
                 <li key={a.agentId}>
                   <Link
                     href={`/agents/${a.agentId}`}
-                    className="flex items-center justify-between gap-2 px-4 py-2.5 hover:bg-[#f6f8fa] dark:hover:bg-[#0d1117] transition-colors"
+                    className="flex items-center justify-between gap-2 px-4 py-2.5 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
                   >
                     <div className="min-w-0">
                       <div className="truncate text-xs font-semibold text-[#1f2328] dark:text-[#f0f6fc]">
@@ -120,11 +127,12 @@ export default function OverviewPage() {
           </div>
 
           {/* Quick links */}
-          <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 flex flex-col gap-2">
+          <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] p-4 flex flex-col gap-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]">
               Quick actions
             </span>
             {[
+              { label: 'Run a script (endpoint → response)', href: '/run', icon: Play },
               { label: 'Write a script in the IDE', href: '/scripts/new', icon: Plus },
               { label: 'Browse evidence artifacts', href: '/evidence', icon: ArrowRight },
               { label: 'Open forensic reports', href: '/reports', icon: ArrowRight },
@@ -133,7 +141,7 @@ export default function OverviewPage() {
                 key={action.href}
                 type="button"
                 onClick={() => router.push(action.href)}
-                className="flex items-center justify-between rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] px-3 py-2 text-xs font-semibold text-[#1f2328] dark:text-[#e6edf3] hover:border-[#0969da] dark:hover:border-[#58a6ff] transition-colors cursor-pointer text-left"
+                className="flex items-center justify-between rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] px-3 py-2 text-xs font-semibold text-[#1f2328] dark:text-[#e6edf3] hover:border-[#12A594] dark:hover:border-[#2DD4BF] transition-colors cursor-pointer text-left"
               >
                 {action.label}
                 <action.icon className="size-3.5 text-[#8b949e]" />

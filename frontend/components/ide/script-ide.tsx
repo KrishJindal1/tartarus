@@ -51,13 +51,13 @@ type CompileState =
   | { status: 'error'; error: string }
 
 const btn =
-  'inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+  'inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
 const btnPrimary =
-  'inline-flex items-center gap-1.5 rounded-md border border-[#0969da]/50 dark:border-[#58a6ff]/50 bg-[#0969da] dark:bg-[#1f6feb] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#0550ae] dark:hover:bg-[#388bfd] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+  'inline-flex items-center gap-1.5 rounded-md border border-[#12A594]/50 dark:border-[#2DD4BF]/50 bg-[#0F766E] dark:bg-[#0E8C7F] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#0B5C53] dark:hover:bg-[#12A594] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
 const btnRun =
-  'inline-flex items-center gap-1.5 rounded-md border border-[#1a7f37]/40 dark:border-[#3fb950]/40 bg-[#dafbe1] dark:bg-emerald-500/15 px-2.5 py-1.5 text-[11px] font-bold text-[#1a7f37] dark:text-[#3fb950] hover:bg-[#bcf7cb] dark:hover:bg-emerald-500/25 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+  'inline-flex items-center gap-1.5 rounded-md border border-[#0E8C7F]/40 dark:border-[#4ADE9E]/40 bg-[#DDF7EC] dark:bg-emerald-500/15 px-2.5 py-1.5 text-[11px] font-bold text-[#0F766E] dark:text-[#4ADE9E] hover:bg-[#C6F0DE] dark:hover:bg-emerald-500/25 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
 const selectCls =
-  'rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-2 py-1.5 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3] outline-none cursor-pointer'
+  'rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#0C0E11] px-2 py-1.5 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3] outline-none cursor-pointer'
 
 interface ScriptIdeProps {
   scriptId?: string
@@ -292,7 +292,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-24 text-xs text-[#656d76] dark:text-[#8b949e]">
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-24 text-xs text-[#656d76] dark:text-[#8b949e]">
         <Loader2 className="size-4 animate-spin" /> Loading script…
       </div>
     )
@@ -301,7 +301,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Toolbar */}
-      <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-3 flex flex-wrap items-center gap-2">
+      <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] p-3 flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-2 flex-1 min-w-[200px]">
           <input
             value={name}
@@ -311,7 +311,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
             }}
             placeholder="script-name"
             disabled={isPredefined}
-            className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] px-2.5 py-1.5 text-xs font-bold text-[#1f2328] dark:text-[#f0f6fc] outline-none focus:border-[#0969da] dark:focus:border-[#58a6ff] min-w-0 flex-1 disabled:opacity-60"
+            className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] px-2.5 py-1.5 text-xs font-bold text-[#1f2328] dark:text-[#f0f6fc] outline-none focus:border-[#12A594] dark:focus:border-[#2DD4BF] min-w-0 flex-1 disabled:opacity-60"
           />
           <select
             value={category}
@@ -405,7 +405,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
           {currentId && !isPredefined && (
             <button
               type="button"
-              className={`${btn} text-[#cf222e] dark:text-[#ff7b72]`}
+              className={`${btn} text-[#D64936] dark:text-[#FF8A7A]`}
               onClick={handleDelete}
               title="Delete script"
             >
@@ -425,12 +425,12 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
             <span>unsaved draft</span>
           )}
           {dirty && (
-            <span className="rounded border border-amber-400/40 bg-amber-500/10 px-1.5 py-0.5 font-bold text-[#9a6700] dark:text-[#d29922]">
+            <span className="rounded border border-amber-400/40 bg-amber-500/10 px-1.5 py-0.5 font-bold text-[#96690F] dark:text-[#E3B341]">
               unsaved changes
             </span>
           )}
           {isPredefined && (
-            <span className="rounded border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#21262d] px-1.5 py-0.5 font-bold text-[#8b949e]">
+            <span className="rounded border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#1B1F26] px-1.5 py-0.5 font-bold text-[#8b949e]">
               builtin · read-only (Save as new)
             </span>
           )}
@@ -440,8 +440,8 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
       {/* Editor + inspector */}
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px] gap-4">
         {/* Editor */}
-        <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden">
-          <div className="flex items-center justify-between border-b border-[#d0d7de] dark:border-[#30363d] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0d1117]">
+        <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
+          <div className="flex items-center justify-between border-b border-[#d0d7de] dark:border-[#24282F] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0C0E11]">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]">
               JOCKEY source
             </span>
@@ -455,15 +455,15 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
         {/* Inspector */}
         <div className="flex flex-col gap-4">
           {/* compile status */}
-          <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[#d0d7de] dark:border-[#30363d] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0d1117]">
+          <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
+            <div className="flex items-center justify-between border-b border-[#d0d7de] dark:border-[#24282F] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0C0E11]">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]">
                 Compiler
               </span>
               {compile.status === 'ok' && (
                 <button
                   type="button"
-                  className="text-[10px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline cursor-pointer"
+                  className="text-[10px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline cursor-pointer"
                   onClick={() => {
                     navigator.clipboard.writeText(compile.sha)
                     toast('IR SHA-256 copied.', 'info')
@@ -487,26 +487,26 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
                 </p>
               )}
               {compile.status === 'error' && (
-                <div className="rounded-md border border-[#ff8182]/40 bg-[#ffebe9] dark:bg-rose-500/10 p-2.5">
-                  <div className="flex items-center gap-1.5 font-bold text-[#cf222e] dark:text-[#ff7b72] mb-1">
+                <div className="rounded-md border border-[#FF8A7A]/40 bg-[#FDE8E4] dark:bg-rose-500/10 p-2.5">
+                  <div className="flex items-center gap-1.5 font-bold text-[#D64936] dark:text-[#FF8A7A] mb-1">
                     <AlertTriangle className="size-3.5" /> Compile error
                   </div>
-                  <pre className="whitespace-pre-wrap break-words font-mono text-[10px] text-[#cf222e] dark:text-[#ff7b72]">
+                  <pre className="whitespace-pre-wrap break-words font-mono text-[10px] text-[#D64936] dark:text-[#FF8A7A]">
                     {compile.error}
                   </pre>
                 </div>
               )}
               {compile.status === 'ok' && (
                 <div className="space-y-1.5">
-                  <div className="flex items-center gap-1.5 font-bold text-[#1a7f37] dark:text-[#3fb950]">
+                  <div className="flex items-center gap-1.5 font-bold text-[#0F766E] dark:text-[#4ADE9E]">
                     <CheckCircle2 className="size-3.5" /> Compile OK
                   </div>
                   <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-                    <div className="rounded bg-[#f6f8fa] dark:bg-[#0d1117] border border-[#d0d7de] dark:border-[#30363d] p-2">
+                    <div className="rounded bg-[#f6f8fa] dark:bg-[#0C0E11] border border-[#d0d7de] dark:border-[#24282F] p-2">
                       <div className="text-[9px] uppercase font-bold text-[#8b949e]">IR size</div>
                       <div className="font-mono font-bold">{compile.size} bytes</div>
                     </div>
-                    <div className="rounded bg-[#f6f8fa] dark:bg-[#0d1117] border border-[#d0d7de] dark:border-[#30363d] p-2">
+                    <div className="rounded bg-[#f6f8fa] dark:bg-[#0C0E11] border border-[#d0d7de] dark:border-[#24282F] p-2">
                       <div className="text-[9px] uppercase font-bold text-[#8b949e]">
                         SHA-256
                       </div>
@@ -521,8 +521,8 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
           </div>
 
           {/* IR / AST tabs */}
-          <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden flex-1">
-            <div className="flex border-b border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117]">
+          <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden flex-1">
+            <div className="flex border-b border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11]">
               {(
                 [
                   ['ir', 'IR listing'],
@@ -535,7 +535,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
                   onClick={() => setTab(key)}
                   className={`px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer border-b-2 -mb-px ${
                     tab === key
-                      ? 'border-[#0969da] dark:border-[#58a6ff] text-[#0969da] dark:text-[#58a6ff]'
+                      ? 'border-[#12A594] dark:border-[#2DD4BF] text-[#0F766E] dark:text-[#2DD4BF]'
                       : 'border-transparent text-[#656d76] dark:text-[#8b949e] hover:text-[#1f2328] dark:hover:text-[#f0f6fc]'
                   }`}
                 >
@@ -559,7 +559,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
           </div>
 
           {/* Run panel */}
-          <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-3">
+          <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] p-3">
             <div className="text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e] mb-2">
               Run on endpoint
             </div>
@@ -595,7 +595,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
               <button
                 type="button"
                 onClick={() => router.push(`/jobs/${lastJobId}`)}
-                className="mt-2 w-full flex items-center justify-between rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] px-2.5 py-2 text-[11px] font-semibold text-[#0969da] dark:text-[#58a6ff] hover:bg-[#ddf4ff] dark:hover:bg-sky-500/10 transition-colors cursor-pointer"
+                className="mt-2 w-full flex items-center justify-between rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] px-2.5 py-2 text-[11px] font-semibold text-[#0F766E] dark:text-[#2DD4BF] hover:bg-[#D9F5F2] dark:hover:bg-teal-500/10 transition-colors cursor-pointer"
               >
                 Last job {lastJobId.slice(0, 8).toUpperCase()}
                 <ArrowRight className="size-3" />

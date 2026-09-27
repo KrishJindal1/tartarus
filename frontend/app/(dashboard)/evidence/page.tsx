@@ -58,7 +58,7 @@ export default function EvidencePage() {
               a.remove()
               URL.revokeObjectURL(url)
             }}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-3 py-2 text-xs font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-3 py-2 text-xs font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors cursor-pointer"
           >
             <Download className="size-3.5" /> Export all
           </button>
@@ -70,11 +70,11 @@ export default function EvidencePage() {
           {byType.map(([type, stats]) => (
             <span
               key={type}
-              className="inline-flex items-center gap-2 rounded-full border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-3 py-1.5 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3]"
+              className="inline-flex items-center gap-2 rounded-full border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-3 py-1.5 text-[11px] font-semibold text-[#1f2328] dark:text-[#e6edf3]"
               title={`Average risk ${stats.avg_risk.toFixed(1)}/10`}
             >
               <span className="font-mono">{type}</span>
-              <span className="rounded-full bg-[#f6f8fa] dark:bg-[#21262d] px-1.5 text-[10px] font-bold text-[#656d76] dark:text-[#8b949e]">
+              <span className="rounded-full bg-[#f6f8fa] dark:bg-[#1B1F26] px-1.5 text-[10px] font-bold text-[#656d76] dark:text-[#8b949e]">
                 {stats.count}
               </span>
             </span>
@@ -83,7 +83,7 @@ export default function EvidencePage() {
       )}
 
       {!loaded ? (
-        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
           <Loader2 className="size-4 animate-spin" /> Loading evidence…
         </div>
       ) : (

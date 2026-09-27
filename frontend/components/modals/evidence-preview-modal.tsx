@@ -40,21 +40,21 @@ export function EvidencePreviewModal({
     >
       <div className="flex flex-col gap-3">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] p-2">
             <div className="text-[9px] uppercase font-bold text-[#8b949e]">Risk</div>
             <div className="mt-1">
               <RiskBadge score={evidence.riskScore} />
             </div>
           </div>
-          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] p-2">
             <div className="text-[9px] uppercase font-bold text-[#8b949e]">Size</div>
             <div className="mt-1 font-bold font-mono">{formatBytes(evidence.size)}</div>
           </div>
-          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] p-2">
             <div className="text-[9px] uppercase font-bold text-[#8b949e]">Collected</div>
             <div className="mt-1 font-bold">{relTime(evidence.collectedAt)}</div>
           </div>
-          <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] p-2">
+          <div className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] p-2">
             <div className="text-[9px] uppercase font-bold text-[#8b949e]">Integrity</div>
             <div
               className="mt-1 font-mono font-bold truncate"
@@ -65,8 +65,8 @@ export function EvidencePreviewModal({
           </div>
         </div>
 
-        <div className="rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#0d1117] overflow-hidden">
-          <div className="flex items-center justify-between border-b border-[#30363d] px-3 py-2">
+        <div className="rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#0C0E11] overflow-hidden">
+          <div className="flex items-center justify-between border-b border-[#24282F] px-3 py-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#8b949e]">
               artifact.json
             </span>
@@ -74,7 +74,7 @@ export function EvidencePreviewModal({
               <button
                 type="button"
                 onClick={() => onDownload(evidence)}
-                className="text-[10px] font-bold text-[#58a6ff] hover:underline cursor-pointer"
+                className="text-[10px] font-bold text-[#2DD4BF] hover:underline cursor-pointer"
               >
                 Download
               </button>

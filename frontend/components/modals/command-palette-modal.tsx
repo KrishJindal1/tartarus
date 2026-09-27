@@ -38,6 +38,7 @@ export function CommandPaletteModal({ isOpen, onClose, onAction }: CommandPalett
 
   const actions = [
     { label: 'Go to Overview', icon: LayoutDashboard, run: () => router.push('/'), category: 'Navigation' },
+    { label: 'Run a script (endpoint → script → response)', icon: Play, run: () => router.push('/run'), category: 'Navigation' },
     { label: 'Go to Agents', icon: Server, run: () => router.push('/agents'), category: 'Navigation' },
     { label: 'Go to Scripts', icon: TerminalSquare, run: () => router.push('/scripts'), category: 'Navigation' },
     { label: 'Go to Jobs', icon: Activity, run: () => router.push('/jobs'), category: 'Navigation' },
@@ -87,9 +88,9 @@ export function CommandPaletteModal({ isOpen, onClose, onAction }: CommandPalett
                 type="button"
                 key={item.label}
                 onClick={() => handleSelect(item.run)}
-                className="flex items-center gap-3 p-2.5 rounded-md text-left hover:bg-sky-50 dark:hover:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 transition-colors group cursor-pointer"
+                className="flex items-center gap-3 p-2.5 rounded-md text-left hover:bg-teal-50 dark:hover:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 transition-colors group cursor-pointer"
               >
-                <div className="flex size-6 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 group-hover:bg-sky-100 dark:group-hover:bg-sky-950 text-slate-600 dark:text-slate-400 group-hover:text-sky-800 dark:group-hover:text-sky-400 transition-colors">
+                <div className="flex size-6 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 group-hover:bg-teal-100 dark:group-hover:bg-teal-950 text-slate-600 dark:text-slate-400 group-hover:text-teal-800 dark:group-hover:text-teal-400 transition-colors">
                   <Icon className="size-3.5" />
                 </div>
                 <span className="flex-1 font-medium">{item.label}</span>

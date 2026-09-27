@@ -30,7 +30,7 @@ export default function JobsPage() {
       </div>
 
       {!loaded ? (
-        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-20 text-xs text-[#656d76] dark:text-[#8b949e]">
           <Loader2 className="size-4 animate-spin" /> Loading jobs…
         </div>
       ) : (

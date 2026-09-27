@@ -2,6 +2,7 @@ import { NavItem } from '@/types'
 
 export const navItems: NavItem[] = [
   { label: 'Overview', href: '/', iconName: 'LayoutDashboard' },
+  { label: 'Run', href: '/run', iconName: 'Play' },
   { label: 'Agents', href: '/agents', iconName: 'Server', badgeKey: 'agents' },
   { label: 'Scripts', href: '/scripts', iconName: 'TerminalSquare', badgeKey: 'scripts' },
   { label: 'Jobs', href: '/jobs', iconName: 'Activity', badgeKey: 'jobs' },

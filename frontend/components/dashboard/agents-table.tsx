@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Search, Server, ArrowRight } from 'lucide-react'
+import { Search, Server, ArrowRight, Play } from 'lucide-react'
 import { AgentStatusBadge } from './status-badge'
 import { relTime } from '@/providers/dashboard-provider'
 import type { AgentView } from '@/types'
@@ -31,9 +31,9 @@ export function AgentsTable({ agents }: AgentsTableProps) {
   }, [agents, query])
 
   return (
-    <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden">
-      <div className="border-b border-[#d0d7de] dark:border-[#30363d] p-3">
-        <div className="flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117] px-2.5 py-1.5 max-w-md">
+    <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
+      <div className="border-b border-[#d0d7de] dark:border-[#24282F] p-3">
+        <div className="flex items-center gap-2 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11] px-2.5 py-1.5 max-w-md">
           <Search className="size-3.5 text-[#8b949e]" />
           <input
             value={query}
@@ -46,27 +46,27 @@ export function AgentsTable({ agents }: AgentsTableProps) {
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
-          <thead className="bg-[#f6f8fa] dark:bg-[#0d1117]">
-            <tr className="border-b border-[#d0d7de] dark:border-[#30363d]">
+          <thead className="bg-[#f6f8fa] dark:bg-[#0C0E11]">
+            <tr className="border-b border-[#d0d7de] dark:border-[#24282F]">
               <th className={th}>Hostname</th>
               <th className={th}>Status</th>
               <th className={th}>OS / Arch</th>
               <th className={th}>AV Present</th>
               <th className={th}>Jobs</th>
               <th className={th}>Last Seen</th>
-              <th className={`${th} text-right`}>Detail</th>
+              <th className={`${th} text-right`}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((agent) => (
               <tr
                 key={agent.agentId}
-                className="border-b border-[#d0d7de]/60 dark:border-[#30363d] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0d1117] transition-colors"
+                className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
               >
                 <td className={td}>
                   <Link
                     href={`/agents/${agent.agentId}`}
-                    className="font-semibold text-[#1f2328] dark:text-[#f0f6fc] hover:text-[#0969da] dark:hover:text-[#58a6ff] hover:underline"
+                    className="font-semibold text-[#1f2328] dark:text-[#f0f6fc] hover:text-[#0F766E] dark:hover:text-[#2DD4BF] hover:underline"
                   >
                     {agent.hostname}
                   </Link>
@@ -87,7 +87,7 @@ export function AgentsTable({ agents }: AgentsTableProps) {
                 <td className={`${td} tabular-nums`}>
                   {agent.jobCount}
                   {agent.runningJobs > 0 && (
-                    <span className="ml-1.5 text-[10px] font-bold text-[#0969da] dark:text-[#58a6ff]">
+                    <span className="ml-1.5 text-[10px] font-bold text-[#0F766E] dark:text-[#2DD4BF]">
                       {agent.runningJobs} active
                     </span>
                   )}
@@ -95,13 +95,22 @@ export function AgentsTable({ agents }: AgentsTableProps) {
                 <td className={`${td} text-[#656d76] dark:text-[#8b949e] whitespace-nowrap`}>
                   {relTime(agent.lastSeenAt)}
                 </td>
-                <td className={`${td} text-right`}>
-                  <Link
-                    href={`/agents/${agent.agentId}`}
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0969da] dark:text-[#58a6ff] hover:underline"
-                  >
-                    View <ArrowRight className="size-3" />
-                  </Link>
+                <td className={`${td} text-right whitespace-nowrap`}>
+                  <div className="inline-flex items-center gap-3">
+                    <Link
+                      href={`/run?agent=${agent.agentId}`}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0F766E] dark:text-[#4ADE9E] hover:underline"
+                      title="Run a script on this endpoint"
+                    >
+                      <Play className="size-3" /> Run
+                    </Link>
+                    <Link
+                      href={`/agents/${agent.agentId}`}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
+                    >
+                      View <ArrowRight className="size-3" />
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}

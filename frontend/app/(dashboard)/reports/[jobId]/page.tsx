@@ -42,9 +42,9 @@ interface ReportData {
 }
 
 const card =
-  'rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] overflow-hidden'
+  'rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden'
 const cardTitle =
-  'border-b border-[#d0d7de] dark:border-[#30363d] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0d1117] text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]'
+  'border-b border-[#d0d7de] dark:border-[#24282F] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0C0E11] text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]'
 
 function asList(value: unknown): unknown[] {
   if (Array.isArray(value)) {
@@ -103,7 +103,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] py-24 text-xs text-[#656d76] dark:text-[#8b949e]">
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] py-24 text-xs text-[#656d76] dark:text-[#8b949e]">
         <Loader2 className="size-4 animate-spin" /> Loading report…
       </div>
     )
@@ -111,22 +111,22 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
 
   if (error || !report) {
     return (
-      <div className="rounded-xl border border-[#ff8182]/40 bg-[#ffebe9] dark:bg-rose-500/10 p-6 text-center">
-        <p className="text-sm font-bold text-[#cf222e] dark:text-[#ff7b72]">
+      <div className="rounded-xl border border-[#FF8A7A]/40 bg-[#FDE8E4] dark:bg-rose-500/10 p-6 text-center">
+        <p className="text-sm font-bold text-[#D64936] dark:text-[#FF8A7A]">
           Report not available
         </p>
-        <p className="mt-1 font-mono text-[11px] text-[#cf222e] dark:text-[#ff7b72]">{error}</p>
+        <p className="mt-1 font-mono text-[11px] text-[#D64936] dark:text-[#FF8A7A]">{error}</p>
         <div className="mt-3 flex items-center justify-center gap-3 text-xs">
           <button
             type="button"
             onClick={() => void load()}
-            className="font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline cursor-pointer"
+            className="font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline cursor-pointer"
           >
             Retry
           </button>
           <Link
             href="/reports"
-            className="font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+            className="font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
           >
             Back to reports
           </Link>
@@ -138,12 +138,12 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
   const risk = Number(report.risk_score)
   const severityTone =
     report.severity === 'CRITICAL'
-      ? 'border-[#ff8182]/40 bg-[#ffebe9] dark:bg-rose-500/10 text-[#cf222e] dark:text-[#ff7b72]'
+      ? 'border-[#FF8A7A]/40 bg-[#FDE8E4] dark:bg-rose-500/10 text-[#D64936] dark:text-[#FF8A7A]'
       : report.severity === 'HIGH'
-      ? 'border-[#d4a72c]/40 bg-[#fff8c5] dark:bg-amber-500/10 text-[#9a6700] dark:text-[#d29922]'
+      ? 'border-[#E3B341]/40 bg-[#FCF3D9] dark:bg-amber-500/10 text-[#96690F] dark:text-[#E3B341]'
       : report.severity === 'MEDIUM'
-      ? 'border-[#54aeff]/40 bg-[#ddf4ff] dark:bg-sky-500/10 text-[#0969da] dark:text-[#58a6ff]'
-      : 'border-[#4ac26b]/40 bg-[#dafbe1] dark:bg-emerald-500/10 text-[#1a7f37] dark:text-[#3fb950]'
+      ? 'border-[#2DD4BF]/40 bg-[#D9F5F2] dark:bg-teal-500/10 text-[#0F766E] dark:text-[#2DD4BF]'
+      : 'border-[#4ADE9E]/40 bg-[#DDF7EC] dark:bg-emerald-500/10 text-[#0F766E] dark:text-[#4ADE9E]'
 
   return (
     <div className="flex flex-col gap-5">
@@ -152,7 +152,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
         <div>
           <Link
             href="/reports"
-            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
           >
             <ArrowLeft className="size-3" /> Reports
           </Link>
@@ -175,7 +175,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
         <div className="flex items-center gap-2">
           <Link
             href={`/jobs/${report.job_id}`}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] px-2.5 py-1.5 text-[11px] font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#1B1F26] transition-colors"
           >
             <FileText className="size-3" /> Job detail
           </Link>
@@ -183,7 +183,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
             type="button"
             onClick={downloadPdf}
             disabled={downloading}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#0969da]/50 dark:border-[#58a6ff]/50 bg-[#0969da] dark:bg-[#1f6feb] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#0550ae] dark:hover:bg-[#388bfd] transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#12A594]/50 dark:border-[#2DD4BF]/50 bg-[#0F766E] dark:bg-[#0E8C7F] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#0B5C53] dark:hover:bg-[#12A594] transition-colors cursor-pointer disabled:opacity-50"
           >
             <Download className="size-3" /> {downloading ? '…' : 'PDF'}
           </button>
@@ -233,9 +233,9 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
             {report.timeline.map((ev, idx) => (
               <li key={`${ev.event}-${idx}`} className="flex items-start gap-3">
                 <div className="flex flex-col items-center pt-1">
-                  <span className="size-2 rounded-full bg-[#0969da] dark:bg-[#58a6ff]" />
+                  <span className="size-2 rounded-full bg-[#0F766E] dark:bg-[#2DD4BF]" />
                   {idx < report.timeline.length - 1 && (
-                    <span className="w-px flex-1 bg-[#d0d7de] dark:bg-[#30363d]" />
+                    <span className="w-px flex-1 bg-[#d0d7de] dark:bg-[#24282F]" />
                   )}
                 </div>
                 <div className="flex-1 flex items-center justify-between gap-2">
@@ -259,7 +259,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
           <div className={cardTitle}>Evidence summary</div>
           <table className="w-full border-collapse text-xs">
             <thead>
-              <tr className="border-b border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#0d1117]">
+              <tr className="border-b border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#0C0E11]">
                 <th className="px-4 py-2 text-left text-[10px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]">
                   Type
                 </th>
@@ -278,7 +278,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
               {report.evidence_summary.map((ev) => (
                 <tr
                   key={ev.type + ev.sha256}
-                  className="border-b border-[#d0d7de]/60 dark:border-[#30363d] last:border-0"
+                  className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0"
                 >
                   <td className="px-4 py-2.5 font-mono font-semibold">{ev.type}</td>
                   <td className="px-4 py-2.5 tabular-nums">{ev.items}</td>
@@ -306,7 +306,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
                 href={`https://attack.mitre.org/techniques/${t.replace('.', '/')}/`}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-[#54aeff]/40 bg-[#ddf4ff] dark:bg-sky-500/15 px-3 py-1 font-mono text-[11px] font-bold text-[#0969da] dark:text-[#58a6ff] hover:underline"
+                className="rounded-full border border-[#2DD4BF]/40 bg-[#D9F5F2] dark:bg-teal-500/15 px-3 py-1 font-mono text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF] hover:underline"
                 title="Open on attack.mitre.org"
               >
                 {t}
@@ -319,18 +319,18 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
       {/* Findings (raw, collapsible per category) */}
       <div className={card}>
         <div className={cardTitle}>Findings</div>
-        <div className="divide-y divide-[#d0d7de]/60 dark:divide-[#30363d]">
+        <div className="divide-y divide-[#d0d7de]/60 dark:divide-[#24282F]">
           {Object.entries(report.findings).map(([category, value]) => {
             const items = asList(value)
             return (
               <details key={category} className="group">
-                <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-xs font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#0d1117]">
+                <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-xs font-bold text-[#1f2328] dark:text-[#e6edf3] hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11]">
                   <span className="font-mono">{category}</span>
-                  <span className="rounded-full bg-[#f6f8fa] dark:bg-[#21262d] border border-[#d0d7de] dark:border-[#30363d] px-2 py-0.5 text-[10px] font-bold text-[#656d76] dark:text-[#8b949e]">
+                  <span className="rounded-full bg-[#f6f8fa] dark:bg-[#1B1F26] border border-[#d0d7de] dark:border-[#24282F] px-2 py-0.5 text-[10px] font-bold text-[#656d76] dark:text-[#8b949e]">
                     {items.length} item(s)
                   </span>
                 </summary>
-                <pre className="max-h-72 overflow-auto bg-[#0d1117] p-4 text-[10px] leading-4 font-mono text-[#e6edf3] whitespace-pre-wrap break-all">
+                <pre className="max-h-72 overflow-auto bg-[#0C0E11] p-4 text-[10px] leading-4 font-mono text-[#e6edf3] whitespace-pre-wrap break-all">
                   {JSON.stringify(items, null, 2)}
                 </pre>
               </details>

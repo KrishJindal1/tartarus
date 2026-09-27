@@ -42,15 +42,15 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             key={item.id}
             className={`pointer-events-auto flex items-center gap-3 rounded-lg border p-3.5 shadow-xl text-xs font-medium transition-all animate-in slide-in-from-bottom-5 ${
               item.type === 'success'
-                ? 'border-[#4ac26b]/50 bg-[#dafbe1] text-[#1a7f37] dark:border-[#238636]/60 dark:bg-[#161b22] dark:text-[#3fb950]'
+                ? 'border-[#4ADE9E]/50 bg-[#DDF7EC] text-[#0F766E] dark:border-[#4ADE9E]/60 dark:bg-[#14181E] dark:text-[#4ADE9E]'
                 : item.type === 'error'
-                ? 'border-[#ff8182]/50 bg-[#ffebe9] text-[#cf222e] dark:border-[#f85149]/60 dark:bg-[#161b22] dark:text-[#f85149]'
-                : 'border-[#d0d7de] bg-white text-[#1f2328] dark:border-[#30363d] dark:bg-[#161b22] dark:text-[#e6edf3]'
+                ? 'border-[#FF8A7A]/50 bg-[#FDE8E4] text-[#D64936] dark:border-[#F0654E]/60 dark:bg-[#14181E] dark:text-[#F0654E]'
+                : 'border-[#d0d7de] bg-white text-[#1f2328] dark:border-[#24282F] dark:bg-[#14181E] dark:text-[#e6edf3]'
             }`}
           >
-            {item.type === 'success' && <CheckCircle2 className="size-4 text-[#1a7f37] dark:text-[#3fb950] shrink-0" />}
-            {item.type === 'error' && <AlertCircle className="size-4 text-[#cf222e] dark:text-[#f85149] shrink-0" />}
-            {item.type === 'info' && <Info className="size-4 text-[#0969da] dark:text-[#58a6ff] shrink-0" />}
+            {item.type === 'success' && <CheckCircle2 className="size-4 text-[#0F766E] dark:text-[#4ADE9E] shrink-0" />}
+            {item.type === 'error' && <AlertCircle className="size-4 text-[#D64936] dark:text-[#F0654E] shrink-0" />}
+            {item.type === 'info' && <Info className="size-4 text-[#0F766E] dark:text-[#2DD4BF] shrink-0" />}
             <span className="flex-1 leading-snug">{item.message}</span>
             <button
               type="button"

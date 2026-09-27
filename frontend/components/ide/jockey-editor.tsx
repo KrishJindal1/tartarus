@@ -174,18 +174,18 @@ export function JockeyEditor({
 
   const shared =
     'm-0 box-border border-0 p-3 pl-12 text-[13px] leading-[20px] font-mono whitespace-pre overflow-auto ' +
-    'tab-size-2 selection:bg-sky-500/30'
+    'tab-size-2 selection:bg-teal-500/30'
 
   return (
     <div
-      className="relative overflow-hidden rounded-b-xl bg-white dark:bg-[#0d1117]"
+      className="relative overflow-hidden rounded-b-xl bg-white dark:bg-[#0C0E11]"
       style={{ height: minHeight }}
     >
       {/* line-number gutter */}
       <pre
         ref={gutterRef}
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 top-0 bottom-0 z-10 m-0 overflow-hidden border-r border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#161b22] p-3 pr-2 text-right text-[13px] leading-[20px] font-mono text-[#8b949e] select-none w-11"
+        className="pointer-events-none absolute left-0 top-0 bottom-0 z-10 m-0 overflow-hidden border-r border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#14181E] p-3 pr-2 text-right text-[13px] leading-[20px] font-mono text-[#8b949e] select-none w-11"
       >
         {gutter}
       </pre>
@@ -209,7 +209,7 @@ export function JockeyEditor({
         spellCheck={false}
         autoCapitalize="off"
         autoCorrect="off"
-        className={`jockey-editor-ta absolute inset-0 z-20 resize-none bg-transparent text-transparent caret-[#0969da] dark:caret-[#58a6ff] outline-none ${shared}`}
+        className={`jockey-editor-ta absolute inset-0 z-20 resize-none bg-transparent text-transparent caret-[#12A594] dark:caret-[#2DD4BF] outline-none ${shared}`}
         style={{ height: minHeight }}
         aria-label="JOCKEY script source"
       />
