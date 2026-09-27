@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Search, TerminalSquare, Code2, Play, FileCode2 } from 'lucide-react'
+import { TablePagination } from './table-pagination'
 import type { ScriptView } from '@/types'
 
 interface ScriptsTableProps {
@@ -22,8 +23,11 @@ const riskTone = (risk: string): string =>
     ? 'text-[#96690F] dark:text-[#E3B341] font-semibold'
     : 'text-[#0F766E] dark:text-[#4ADE9E] font-semibold'
 
+const PAGE_SIZE = 10
+
 export function ScriptsTable({ scripts }: ScriptsTableProps) {
   const [query, setQuery] = useState('')
+  const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -36,6 +40,10 @@ export function ScriptsTable({ scripts }: ScriptsTableProps) {
     )
   }, [scripts, query])
 
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const current = Math.min(page, pageCount)
+  const shown = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
+
   return (
     <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
       <div className="border-b border-[#d0d7de] dark:border-[#24282F] p-3">
@@ -43,7 +51,10 @@ export function ScriptsTable({ scripts }: ScriptsTableProps) {
           <Search className="size-3.5 text-[#8b949e]" />
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setPage(1)
+            }}
             placeholder="Search scripts by name, category, risk…"
             className="w-full bg-transparent text-xs outline-none placeholder:text-[#8b949e]"
           />
@@ -64,7 +75,7 @@ export function ScriptsTable({ scripts }: ScriptsTableProps) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((script) => (
+            {shown.map((script) => (
               <tr
                 key={script.id}
                 className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
@@ -142,12 +153,14 @@ export function ScriptsTable({ scripts }: ScriptsTableProps) {
         </table>
       </div>
 
-      <div className="border-t border-[#d0d7de] dark:border-[#24282F] px-4 py-2 flex items-center justify-between text-[11px] text-[#656d76] dark:text-[#8b949e]">
-        <span>
-          {filtered.length} of {scripts.length} script(s)
-        </span>
-        <span>IR is re-generated on every compile (polymorphic)</span>
-      </div>
+      <TablePagination
+        page={current}
+        pageCount={pageCount}
+        total={filtered.length}
+        pageSize={PAGE_SIZE}
+        onPage={setPage}
+        note="IR is re-generated on every compile (polymorphic)"
+      />
     </div>
   )
 }

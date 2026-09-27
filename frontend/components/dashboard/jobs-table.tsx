@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Search, Activity, ArrowRight } from 'lucide-react'
 import { JobStatusBadge, RiskBadge } from './status-badge'
+import { TablePagination } from './table-pagination'
 import type { JobView, JobStatus } from '@/types'
 
 interface JobsTableProps {
@@ -24,9 +25,12 @@ const th =
   'px-4 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]'
 const td = 'px-4 py-3 text-xs align-middle'
 
+const PAGE_SIZE = 10
+
 export function JobsTable({ jobs, compact = false }: JobsTableProps) {
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<JobStatus | 'all'>('all')
+  const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -41,8 +45,14 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
           (j.findingsSummary ?? '').toLowerCase().includes(q)
       )
     }
-    return compact ? list.slice(0, 6) : list
-  }, [jobs, query, status, compact])
+    return list
+  }, [jobs, query, status])
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const current = Math.min(page, pageCount)
+  const shown = compact
+    ? filtered.slice(0, 6)
+    : filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
 
   return (
     <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
@@ -52,7 +62,10 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
             <Search className="size-3.5 text-[#8b949e]" />
             <input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                setPage(1)
+              }}
               placeholder="Search job id, script, host, findings…"
               className="w-full bg-transparent text-xs outline-none placeholder:text-[#8b949e]"
             />
@@ -62,7 +75,10 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
               <button
                 key={s}
                 type="button"
-                onClick={() => setStatus(s)}
+                onClick={() => {
+                  setStatus(s)
+                  setPage(1)
+                }}
                 className={`rounded-md border px-2 py-1 text-[11px] font-medium capitalize cursor-pointer transition-colors ${
                   status === s
                     ? 'border-[#12A594] dark:border-[#2DD4BF] bg-[#D9F5F2] dark:bg-teal-500/15 text-[#0F766E] dark:text-[#2DD4BF]'
@@ -91,7 +107,7 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((job) => (
+            {shown.map((job) => (
               <tr
                 key={job.id}
                 className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
@@ -148,6 +164,15 @@ export function JobsTable({ jobs, compact = false }: JobsTableProps) {
           </tbody>
         </table>
       </div>
+      {!compact && (
+        <TablePagination
+          page={current}
+          pageCount={pageCount}
+          total={filtered.length}
+          pageSize={PAGE_SIZE}
+          onPage={setPage}
+        />
+      )}
     </div>
   )
 }

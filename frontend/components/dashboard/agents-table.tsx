@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Search, Server, ArrowRight, Play } from 'lucide-react'
 import { AgentStatusBadge } from './status-badge'
+import { TablePagination } from './table-pagination'
 import { relTime } from '@/providers/dashboard-provider'
 import type { AgentView } from '@/types'
 
@@ -15,8 +16,11 @@ const th =
   'px-4 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]'
 const td = 'px-4 py-3 text-xs align-middle'
 
+const PAGE_SIZE = 10
+
 export function AgentsTable({ agents }: AgentsTableProps) {
   const [query, setQuery] = useState('')
+  const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -30,6 +34,10 @@ export function AgentsTable({ agents }: AgentsTableProps) {
     )
   }, [agents, query])
 
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const current = Math.min(page, pageCount)
+  const shown = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
+
   return (
     <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
       <div className="border-b border-[#d0d7de] dark:border-[#24282F] p-3">
@@ -37,7 +45,10 @@ export function AgentsTable({ agents }: AgentsTableProps) {
           <Search className="size-3.5 text-[#8b949e]" />
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setPage(1)
+            }}
             placeholder="Search hostname, OS, status, agent id…"
             className="w-full bg-transparent text-xs outline-none placeholder:text-[#8b949e]"
           />
@@ -58,7 +69,7 @@ export function AgentsTable({ agents }: AgentsTableProps) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((agent) => (
+            {shown.map((agent) => (
               <tr
                 key={agent.agentId}
                 className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
@@ -127,6 +138,13 @@ export function AgentsTable({ agents }: AgentsTableProps) {
           </tbody>
         </table>
       </div>
+      <TablePagination
+        page={current}
+        pageCount={pageCount}
+        total={filtered.length}
+        pageSize={PAGE_SIZE}
+        onPage={setPage}
+      />
     </div>
   )
 }

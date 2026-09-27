@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Search, FileText, ArrowRight, Download } from 'lucide-react'
 import { useToast } from '@/components/ui'
 import { RiskBadge } from './status-badge'
+import { TablePagination } from './table-pagination'
 import { api } from '@/lib/api'
 import { relTime } from '@/providers/dashboard-provider'
 import type { ReportView } from '@/types'
@@ -13,9 +14,12 @@ const th =
   'px-4 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]'
 const td = 'px-4 py-3 text-xs align-middle'
 
+const PAGE_SIZE = 10
+
 export function ReportsTable({ reports }: { reports: ReportView[] }) {
   const { toast } = useToast()
   const [query, setQuery] = useState('')
+  const [page, setPage] = useState(1)
   const [downloading, setDownloading] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
@@ -28,6 +32,10 @@ export function ReportsTable({ reports }: { reports: ReportView[] }) {
         r.jobId.toLowerCase().includes(q)
     )
   }, [reports, query])
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const current = Math.min(page, pageCount)
+  const shown = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
 
   const handlePdf = async (report: ReportView) => {
     setDownloading(report.jobId)
@@ -56,7 +64,10 @@ export function ReportsTable({ reports }: { reports: ReportView[] }) {
           <Search className="size-3.5 text-[#8b949e]" />
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setPage(1)
+            }}
             placeholder="Search reports by title, target, job…"
             className="w-full bg-transparent text-xs outline-none placeholder:text-[#8b949e]"
           />
@@ -77,7 +88,7 @@ export function ReportsTable({ reports }: { reports: ReportView[] }) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((report) => (
+            {shown.map((report) => (
               <tr
                 key={report.jobId}
                 className="border-b border-[#d0d7de]/60 dark:border-[#24282F] last:border-0 hover:bg-[#f6f8fa] dark:hover:bg-[#0C0E11] transition-colors"
@@ -149,6 +160,13 @@ export function ReportsTable({ reports }: { reports: ReportView[] }) {
           </tbody>
         </table>
       </div>
+      <TablePagination
+        page={current}
+        pageCount={pageCount}
+        total={filtered.length}
+        pageSize={PAGE_SIZE}
+        onPage={setPage}
+      />
     </div>
   )
 }
