@@ -8,12 +8,12 @@ import {
   EndpointAgentsTable,
   RecentForensicJobsTable,
 } from '@/components/dashboard'
-import { metricsData } from '@/data/metrics'
-import { forensicJobsData } from '@/data/forensicJobs'
-import { Endpoint, ForensicJob } from '@/types'
+import { Endpoint, ForensicJob, MetricCard } from '@/types'
 
 interface OverviewViewProps {
   running: boolean
+  jobs: ForensicJob[]
+  metrics: MetricCard[]
   onRun: () => void
   onExport: () => void
   filteredEndpoints: Endpoint[]
@@ -29,6 +29,8 @@ interface OverviewViewProps {
 
 export function OverviewView({
   running,
+  jobs,
+  metrics,
   onRun,
   onExport,
   filteredEndpoints,
@@ -98,7 +100,7 @@ export function OverviewView({
       </div>
 
       {/* 6 Top KPI Metrics Cards */}
-      <MetricsGrid metrics={metricsData} onNavigate={onNavigate} />
+      <MetricsGrid metrics={metrics} onNavigate={onNavigate} />
 
       {/* Primary Section: ENDPOINT AGENTS (8) */}
       <EndpointAgentsTable
@@ -114,7 +116,7 @@ export function OverviewView({
 
       {/* Secondary Section: RECENT FORENSIC JOBS (8) */}
       <RecentForensicJobsTable
-        jobs={forensicJobsData}
+        jobs={jobs}
         onSelectJob={(job: ForensicJob) => {
           toast(`Selected job ${job.id}: ${job.findings}`, 'info')
           onNavigate('Results')

@@ -1,24 +1,55 @@
 """
-Main FastAPI Application Entrypoint for Tartarus / JOCKY Backend.
+Main FastAPI Application Entrypoint for the JOCKY Management Server.
 """
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from routers import agents, jobs, results, scripts, evidence, auth, reports
+
+from core import db
+from core.seed import seed_all
+from routers import agents, auth, evidence, jobs, reports, results, scripts
+from services import audit_logger
 
 app = FastAPI(
-    title="Tartarus Management Server",
-    version="2.4.1",
+    title="JOCKEY Management Server",
+    version="2.5.0",
     docs_url="/api/docs",
 )
 
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://tartarus.vercel.app"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "https://tartarus.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    """Create local store and seed predefined scripts + console admin."""
+    db.init_db()
+    seed_all()
+
+
+@app.middleware("http")
+async def audit_middleware(request: Request, call_next):
+    """Auto-log every mutating request to the audit log."""
+    response = await call_next(request)
+    if request.method in ("POST", "PUT", "PATCH", "DELETE") and request.url.path != "/health":
+        try:
+            audit_logger.log_action(
+                user_id=None,
+                action=f"http.{request.method.lower()}",
+                resource_type="http",
+                resource_id=request.url.path,
+                ip_address=request.client.host if request.client else None,
+                metadata={"status": response.status_code},
+            )
+        except Exception:
+            pass  # never break the request path on audit failure
+    return response
+
 
 # Register routers
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
@@ -32,4 +63,10 @@ app.include_router(reports.router, prefix="/reports", tags=["Reports"])
 
 @app.get("/health")
 def health():
-    return {"status": "operational", "version": "2.4.1"}
+    return {"status": "operational", "version": "2.5.0"}
+
+
+@app.get("/audit")
+def audit_trail(limit: int = 100):
+    """Tamper-evident chronological audit trail (frontend Timeline view)."""
+    return audit_logger.recent(limit)

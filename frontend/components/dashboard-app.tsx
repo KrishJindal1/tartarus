@@ -31,6 +31,8 @@ export function DashboardApp() {
     scripts,
     reports,
     evidence,
+    jobs,
+    metrics,
     alertsPaused,
     handleRun,
     addEndpoint,
@@ -149,6 +151,8 @@ export function DashboardApp() {
         return (
           <OverviewView
             running={running}
+            jobs={jobs}
+            metrics={metrics}
             onRun={handleRun}
             onExport={exportWorkspaceData}
             filteredEndpoints={filteredEndpoints}

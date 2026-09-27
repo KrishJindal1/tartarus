@@ -1,12 +1,19 @@
 /**
  * Cloudflare Worker: API Gateway and edge proxy for agent telemetry and R2 storage offloading.
+ *
+ * Bindings (wrangler.toml):
+ *   [vars] BACKEND_URL    -> backend origin, e.g. https://api.example.com
+ *   [vars] WORKER_SECRET  -> shared secret for worker -> backend calls
+ *   R2 bucket binding     -> R2_BUCKET
  */
-
-const BACKEND_URL = "https://your-backend.com";
-const WORKER_SECRET = "<from_env>";
-
 export default {
   async fetch(request, env) {
+    const BACKEND_URL = env.BACKEND_URL;
+    const WORKER_SECRET = env.WORKER_SECRET || "";
+    if (!BACKEND_URL) {
+      return new Response("Worker not configured (BACKEND_URL missing)", { status: 500 });
+    }
+
     const url = new URL(request.url);
 
     // Validate agent bearer token from Authorization header
@@ -21,9 +28,9 @@ export default {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Worker-Secret": WORKER_SECRET
+        "X-Worker-Secret": WORKER_SECRET,
       },
-      body: JSON.stringify({ token: agentToken })
+      body: JSON.stringify({ token: agentToken }),
     });
     if (!verifyResp.ok) return new Response("Unauthorized", { status: 401 });
 
@@ -33,11 +40,14 @@ export default {
     if (request.method === "GET" && pathParts[0] === "poll") {
       const agentId = pathParts[1];
       const jobResp = await fetch(`${BACKEND_URL}/jobs/pending/${agentId}`, {
-        headers: { "X-Worker-Secret": WORKER_SECRET }
+        headers: {
+          "Authorization": `Bearer ${agentToken}`,
+          "X-Worker-Secret": WORKER_SECRET,
+        },
       });
       return new Response(await jobResp.text(), {
         status: jobResp.status,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -50,14 +60,18 @@ export default {
       // Notify backend to ingest findings
       await fetch(`${BACKEND_URL}/results/ingest/${jobId}`, {
         method: "POST",
-        headers: { "X-Worker-Secret": WORKER_SECRET }
+        headers: {
+          "Content-Type": "application/json",
+          "X-Worker-Secret": WORKER_SECRET,
+        },
+        body: JSON.stringify({ agent_id: "", status: "success" }),
       });
 
       return new Response(JSON.stringify({ status: "received" }), {
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
     return new Response("Not Found", { status: 404 });
-  }
+  },
 };
