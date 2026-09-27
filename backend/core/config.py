@@ -38,6 +38,8 @@ class Settings(BaseSettings):
 
     # Local persistence (SQLite) - used when SUPABASE_URL is not configured
     DATABASE_PATH: str = "jockey.db"
+    # Optional PostgreSQL (Supabase/Render): set to persist beyond container resets.
+    DATABASE_URL: str = ""
 
     # Seeded console account (dev bootstrap)
     SEED_ADMIN_EMAIL: str = "admin@jockey.local"

@@ -29,3 +29,6 @@ services:
 
       - key: DATABASE_PATH
         value: /tmp/jockey.db
+
+      - key: DATABASE_URL
+        sync: false # set in Render dashboard (Secret): postgresql://... (Supabase pooler)
