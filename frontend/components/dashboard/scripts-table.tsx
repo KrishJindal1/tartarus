@@ -2,8 +2,11 @@
 
 import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Search, TerminalSquare, Code2, Play, FileCode2 } from 'lucide-react'
+import { Search, TerminalSquare, Code2, Play, FileCode2, Trash2, Loader2 } from 'lucide-react'
 import { TablePagination } from './table-pagination'
+import { useToast } from '@/components/ui'
+import { api } from '@/lib/api'
+import { useDashboard } from '@/providers/dashboard-provider'
 import type { ScriptView } from '@/types'
 
 interface ScriptsTableProps {
@@ -26,8 +29,25 @@ const riskTone = (risk: string): string =>
 const PAGE_SIZE = 10
 
 export function ScriptsTable({ scripts }: ScriptsTableProps) {
+  const { toast } = useToast()
+  const { refresh } = useDashboard()
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  const handleDelete = async (script: ScriptView) => {
+    if (!window.confirm(`Delete “${script.name}”? This cannot be undone.`)) return
+    setDeletingId(script.id)
+    try {
+      await api.deleteScript(script.id)
+      toast(`Deleted “${script.name}”.`, 'success')
+      await refresh()
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'Delete failed', 'error')
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -135,6 +155,22 @@ export function ScriptsTable({ scripts }: ScriptsTableProps) {
                       <Play className="size-3" />
                       Run
                     </Link>
+                    {!script.isPredefined && (
+                      <button
+                        type="button"
+                        onClick={() => void handleDelete(script)}
+                        disabled={deletingId === script.id}
+                        className="inline-flex items-center gap-1 rounded-md border border-[#CF222E]/40 dark:border-[#DA3633]/50 bg-[#FFF1F0] dark:bg-rose-500/15 px-2 py-1 text-[11px] font-bold text-[#CF222E] dark:text-[#FF8A7A] hover:bg-[#FFE9E8] dark:hover:bg-rose-500/25 transition-colors cursor-pointer disabled:opacity-50"
+                        title="Delete this script"
+                      >
+                        {deletingId === script.id ? (
+                          <Loader2 className="size-3 animate-spin" />
+                        ) : (
+                          <Trash2 className="size-3" />
+                        )}
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
