@@ -1,5 +1,5 @@
 """
-Configuration settings for the JOCKEY backend using Pydantic BaseSettings.
+Configuration settings for the Tartarus backend using Pydantic BaseSettings.
 """
 from typing import List
 
@@ -42,8 +42,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str = ""
 
     # Seeded console account (dev bootstrap)
-    SEED_ADMIN_EMAIL: str = "admin@jockey.local"
-    SEED_ADMIN_PASSWORD: str = "Jockey#Admin1"
+    SEED_ADMIN_EMAIL: str = "admin@tartarus.local"
+    SEED_ADMIN_PASSWORD: str = "Tartarus#Admin1"
 
     class Config:
         env_file = ".env"

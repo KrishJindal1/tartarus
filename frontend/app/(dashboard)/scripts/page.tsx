@@ -13,7 +13,7 @@ export default function ScriptsPage() {
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-lg font-bold text-[#1f2328] dark:text-[#f0f6fc]">JOCKEY scripts</h1>
+          <h1 className="text-lg font-bold text-[#1f2328] dark:text-[#f0f6fc]">Tartarus scripts</h1>
           <p className="text-xs text-[#656d76] dark:text-[#8b949e]">
             {loaded
               ? `${scripts.length} script(s) staged · each compile produces a unique polymorphic IR`

@@ -64,7 +64,7 @@ export function Header({
         )}
 
         <div className="flex items-center gap-1.5 text-xs text-[#656d76] dark:text-[#8b949e] font-medium">
-          <span>JOCKEY</span>
+          <span>TARTARUS</span>
           <span className="text-[#afb8c1] dark:text-[#6e7681]">/</span>
           <span className="text-[#1f2328] dark:text-[#f0f6fc] font-semibold">{title}</span>
         </div>

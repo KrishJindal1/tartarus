@@ -1,19 +1,44 @@
 'use client'
 
-import React, { use } from 'react'
+import React, { use, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Server } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Loader2, Server, Trash2 } from 'lucide-react'
 import { JobsTable } from '@/components/dashboard'
 import { AgentStatusBadge } from '@/components/dashboard/status-badge'
+import { useToast } from '@/components/ui'
+import { api } from '@/lib/api'
 import { relTime } from '@/providers/dashboard-provider'
 import { useDashboard } from '@/providers/dashboard-provider'
 
 export default function AgentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const { agents, jobs, loaded } = useDashboard()
+  const { agents, jobs, loaded, refresh } = useDashboard()
+  const { toast } = useToast()
+  const router = useRouter()
+  const [deleting, setDeleting] = useState(false)
 
   const agent = agents.find((a) => a.agentId === id)
   const agentJobs = jobs.filter((j) => j.agentId === id)
+
+  const handleDelete = async () => {
+    if (!agent) return
+    const ok = window.confirm(
+      `Delete ${agent.hostname} (${agent.agentId.slice(0, 8)})? It will be removed from the registry.`
+    )
+    if (!ok) return
+    setDeleting(true)
+    try {
+      await api.deleteAgent(agent.agentId)
+      toast(`Removed ${agent.hostname} from the registry.`, 'success')
+      await refresh()
+      router.push('/agents')
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'Delete failed', 'error')
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   if (!loaded) {
     return (
@@ -64,6 +89,20 @@ export default function AgentDetailPage({ params }: { params: Promise<{ id: stri
         <div className="mt-1.5 flex flex-wrap items-center gap-3">
           <h1 className="text-lg font-bold text-[#1f2328] dark:text-[#f0f6fc]">{agent.hostname}</h1>
           <AgentStatusBadge status={agent.status} />
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={deleting}
+            title="Delete this endpoint from the registry"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1.5 text-[11px] font-bold text-[#CF222E] dark:text-[#FF8A7A] hover:bg-rose-100 dark:hover:bg-rose-500/20 disabled:opacity-50 transition-colors shadow-2xs cursor-pointer"
+          >
+            {deleting ? (
+              <Loader2 className="size-3 animate-spin" />
+            ) : (
+              <Trash2 className="size-3" />
+            )}
+            {deleting ? 'Deleting…' : 'Delete endpoint'}
+          </button>
         </div>
         <p className="text-xs text-[#656d76] dark:text-[#8b949e]">
           Registered agent — receives polymorphic IR jobs and executes them in memory.

@@ -1,5 +1,5 @@
 """
-Compiler service: compiles JOCKY DSL scripts to IR bytes via the compiler/
+Compiler service: compiles Tartarus DSL scripts to IR bytes via the compiler/
 package at the repository root, then runs the polymorphic engine so every
 deployment instance has a unique hash.
 """

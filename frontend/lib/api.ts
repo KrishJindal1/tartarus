@@ -1,11 +1,11 @@
-// Typed client for the JOCKEY backend (FastAPI).
+// Typed client for the Tartarus backend (FastAPI).
 // Base URL: NEXT_PUBLIC_API_BASE_URL or http://127.0.0.1:8000.
 // A JWT from localStorage is attached when present (AUTH_ENABLED=false dev
 // mode works without a token).
 
 const BASE = (process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '')
 
-const TOKEN_KEY = 'jockey_token'
+const TOKEN_KEY = 'tartarus_token'
 
 export function setAuthToken(token: string | null): void {
   if (typeof window === 'undefined') return

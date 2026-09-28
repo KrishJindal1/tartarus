@@ -22,7 +22,7 @@ def mutate_ir(ir_bytes: bytes) -> bytes:
 
 
 def mutate_source(source: str):
-    """Compile JOCKY source straight to unique polymorphic IR: (bytes, sha256)."""
+    """Compile Tartarus source straight to unique polymorphic IR: (bytes, sha256)."""
     from compiler.polymorphic_engine import generate_unique_ir
 
     return generate_unique_ir(source)

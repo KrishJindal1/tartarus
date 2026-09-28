@@ -17,7 +17,7 @@ from fastapi import HTTPException
 from core import db, r2_client
 from core.config import settings
 from core.crypto import aes_decrypt
-from services import audit_logger
+from services import agent_monitor, audit_logger
 
 # agent result section -> evidence.type
 SECTION_TYPES = {
@@ -159,7 +159,7 @@ def ingest_result(
         count = len(data) if isinstance(data, list) else 1
         summary_parts.append(f"{count} {etype}")
 
-    # Script outputs (the values the JOCKY script emitted)
+    # Script outputs (the values the Tartarus script emitted)
     if findings.get("outputs"):
         data = {"outputs": findings["outputs"]}
         evidence_rows.append({
@@ -202,6 +202,7 @@ def ingest_result(
            WHERE id = ?""",
         (job_status, db.now_iso(), summary, max_risk, job_id),
     )
+    agent_monitor.sync_activity(payload.get("agent_id") or job.get("agent_id") or "")
 
     audit_logger.log_action(
         user_id=None,
@@ -256,7 +257,7 @@ def worker_loop(interval: int = 5) -> None:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="JOCKEY result ingester worker")
+    parser = argparse.ArgumentParser(description="Tartarus result ingester worker")
     parser.add_argument("--worker", action="store_true", help="run continuous ingest loop")
     parser.add_argument("--interval", type=int, default=5)
     args = parser.parse_args()

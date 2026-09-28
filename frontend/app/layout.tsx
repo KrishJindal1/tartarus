@@ -4,7 +4,7 @@ import { ToastProvider } from '@/components/ui'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'JOCKEY | Forensic Operations Control Plane',
+  title: 'Tartarus | Forensic Operations Control Plane',
   description: 'Enterprise multi-system forensic telemetry, in-memory execution, and volatile memory inspection platform.',
   icons: {
     icon: [

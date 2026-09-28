@@ -266,7 +266,7 @@ func (c *Client) submitStatus(jobID, status, message string) error {
 }
 
 // StartPollLoop starts the periodic job polling loop with jittered intervals
-// and idle heartbeats.
+// and time-based heartbeats.
 func (c *Client) StartPollLoop() {
 	minI := c.Cfg.PollMin
 	if minI <= 0 {
@@ -277,21 +277,17 @@ func (c *Client) StartPollLoop() {
 		maxI = minI * 3
 	}
 
-	idle := 0
+	const hbEvery = 15 * time.Second
+	lastHB := time.Now()
 	for {
-		worked, err := c.PollOnce()
-		if err != nil {
+		if _, err := c.PollOnce(); err != nil {
 			logf("[TARTARUS-AGENT] poll error: %v", err)
 		}
-		if worked {
-			idle = 0
-		} else {
-			idle++
-			if idle%5 == 0 {
-				if err := c.Heartbeat(); err != nil {
-					logf("[TARTARUS-AGENT] heartbeat error: %v", err)
-				}
+		if time.Since(lastHB) >= hbEvery {
+			if err := c.Heartbeat(); err != nil {
+				logf("[TARTARUS-AGENT] heartbeat error: %v", err)
 			}
+			lastHB = time.Now()
 		}
 
 		wait := minI + rand.Intn(maxI-minI+1)

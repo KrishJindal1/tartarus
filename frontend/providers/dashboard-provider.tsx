@@ -191,7 +191,7 @@ function buildMetrics(
     {
       label: 'Scripts Staged',
       value: `${deployed}`,
-      sub: `${scripts.length} total · JOCKEY DSL`,
+      sub: `${scripts.length} total · Tartarus DSL`,
       iconName: 'TerminalSquare',
       tone: 'violet',
       href: '/scripts',

@@ -44,7 +44,7 @@ export function CommandPaletteModal({ isOpen, onClose, onAction }: CommandPalett
     { label: 'Go to Jobs', icon: Activity, run: () => router.push('/jobs'), category: 'Navigation' },
     { label: 'Go to Evidence', icon: FolderKanban, run: () => router.push('/evidence'), category: 'Navigation' },
     { label: 'Go to Reports', icon: FileText, run: () => router.push('/reports'), category: 'Navigation' },
-    { label: 'Create new JOCKEY script', icon: Plus, run: () => router.push('/scripts/new'), category: 'Actions' },
+    { label: 'Create new Tartarus script', icon: Plus, run: () => router.push('/scripts/new'), category: 'Actions' },
     { label: 'Run suite now (all deployed scripts)', icon: Play, run: () => onAction('run-suite'), category: 'Actions' },
   ]
 

@@ -37,7 +37,7 @@ const OS_TARGETS = [
   { value: 'both', label: 'both' },
 ]
 
-const NEW_TEMPLATE = `# New JOCKEY script — see documentation.md for the language reference
+const NEW_TEMPLATE = `# New Tartarus script — see documentation.md for the language reference
 fn main() {
   let procs = collect_processes()
   output procs
@@ -443,7 +443,7 @@ export function ScriptIde({ scriptId }: ScriptIdeProps) {
         <div className="rounded-xl border border-[#d0d7de] dark:border-[#24282F] bg-white dark:bg-[#14181E] overflow-hidden">
           <div className="flex items-center justify-between border-b border-[#d0d7de] dark:border-[#24282F] px-4 py-2.5 bg-[#f6f8fa] dark:bg-[#0C0E11]">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#656d76] dark:text-[#8b949e]">
-              JOCKEY source
+              Tartarus source
             </span>
             <span className="text-[10px] font-mono text-[#8b949e]">
               {source.split('\n').length} lines

@@ -89,7 +89,7 @@ export function RegisterAgentModal({ isOpen, onClose }: RegisterAgentModalProps)
             Run the command printed by the script — it includes the agent id, private key path and
             backend URL. The agent then polls{' '}
             <code className="font-mono">GET /jobs/pending/&#123;agent_id&#125;</code> and executes
-            dispatched JOCKEY IR in memory. It appears here within one heartbeat (~15s).
+            dispatched Tartarus IR in memory. It appears here within one heartbeat (~15s).
           </p>
         </div>
 

@@ -88,7 +88,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ jobId: 
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `jockey_report_${jobId.slice(0, 8)}.pdf`
+      a.download = `tartarus_report_${jobId.slice(0, 8)}.pdf`
       document.body.appendChild(a)
       a.click()
       a.remove()

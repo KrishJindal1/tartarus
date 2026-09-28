@@ -1,5 +1,5 @@
 """
-Main FastAPI Application Entrypoint for the JOCKY Management Server.
+Main FastAPI Application Entrypoint for the Tartarus Management Server.
 """
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,10 +8,10 @@ from core import db
 from core.config import settings
 from core.seed import seed_all
 from routers import agents, auth, evidence, jobs, reports, results, scripts
-from services import audit_logger
+from services import agent_monitor, audit_logger
 
 app = FastAPI(
-    title="JOCKEY Management Server",
+    title="Tartarus Management Server",
     version="2.5.0",
     docs_url="/api/docs",
 )
@@ -28,9 +28,10 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup() -> None:
-    """Create local store and seed predefined scripts + console admin."""
+    """Create local store, seed predefined scripts + admin, start status sweeper."""
     db.init_db()
     seed_all()
+    agent_monitor.start_sweeper()
 
 
 @app.middleware("http")

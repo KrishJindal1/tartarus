@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from core import db
 from core.config import settings
 from core.security import create_agent_token, decode_token, require_role
-from services import audit_logger
+from services import agent_monitor, audit_logger
 
 router = APIRouter()
 
@@ -36,7 +36,7 @@ def _serialize(row: dict) -> dict:
         "hostname": row["hostname"],
         "os": row["os_type"],
         "architecture": row.get("architecture", ""),
-        "status": row["status"],
+        "status": agent_monitor.effective_status(row),
         "public_key": bool(row.get("public_key")),
         "av_present": row.get("av_present"),
         "agent_version": row.get("agent_version"),
@@ -107,12 +107,12 @@ def update_agent_status(agent_id: str, status: str, user=Depends(require_role("a
 
 @router.patch("/{agent_id}/heartbeat")
 def agent_heartbeat(agent_id: str):
-    """Handle periodic heartbeat ping from agent."""
+    """Handle periodic heartbeat ping from agent (also derives busy/online)."""
     agent = db.query_one("SELECT * FROM agents WHERE id = ?", (agent_id,))
     if agent is None:
         raise HTTPException(status_code=404, detail="Agent not found")
-    db.execute("UPDATE agents SET status='online', last_seen_at=? WHERE id=?", (db.now_iso(), agent_id))
-    return {"message": "Heartbeat received", "agent_id": agent_id, "status": "online"}
+    status = agent_monitor.sync_activity(agent_id)
+    return {"message": "Heartbeat received", "agent_id": agent_id, "status": status}
 
 
 @router.delete("/{agent_id}")

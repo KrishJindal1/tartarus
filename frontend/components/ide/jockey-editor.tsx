@@ -211,7 +211,7 @@ export function JockeyEditor({
         autoCorrect="off"
         className={`jockey-editor-ta absolute inset-0 z-20 resize-none bg-transparent text-transparent caret-[#12A594] dark:caret-[#2DD4BF] outline-none ${shared}`}
         style={{ height: minHeight }}
-        aria-label="JOCKEY script source"
+        aria-label="Tartarus script source"
       />
     </div>
   )

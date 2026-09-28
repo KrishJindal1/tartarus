@@ -52,7 +52,7 @@ export default function EvidencePage() {
               const url = URL.createObjectURL(blob)
               const a = document.createElement('a')
               a.href = url
-              a.download = `jockey-evidence-export-${Date.now()}.json`
+              a.download = `tartarus-evidence-export-${Date.now()}.json`
               document.body.appendChild(a)
               a.click()
               a.remove()

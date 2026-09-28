@@ -1,4 +1,4 @@
-# JOCKEY Framework — Forensic Analysis & Telemetry Platform
+# Tartarus Framework — Forensic Analysis & Telemetry Platform
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/Python-3.12-blue.svg)
@@ -9,7 +9,7 @@
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
 
 > **SIH Problem Statement 26148 (NTRO)** — a cross-platform forensic analysis framework
-> (**JOCKEY**, a.k.a. *Tartarus*) built on a custom **JOCKEY DSL**, **polymorphic IR
+> (**Tartarus**, a.k.a. *JOCKEY*) built on a custom **Tartarus DSL**, **polymorphic IR
 > compilation**, **in-memory (fileless) execution**, and **BYOVD detection** for
 > Windows/Linux endpoints, controlled from a single web console.
 
@@ -39,7 +39,7 @@
 
 ```
 jockey/
-├── compiler/            # JOCKEY DSL → polymorphic IR compiler (Python)
+├── compiler/            # Tartarus DSL → polymorphic IR compiler (Python)
 │   ├── grammar.py       #   keywords, types, builtins, operators
 │   ├── lexer.py         #   tokenizer
 │   ├── parser.py        #   AST (fn/let/if/output/expressions)
@@ -65,7 +65,7 @@ jockey/
 │   ├── app/(dashboard)/ #   routes: /, /run, /agents, /agents/[id], /scripts,
 │   │                    #   /scripts/new, /scripts/[id], /jobs, /jobs/[id],
 │   │                    #   /evidence, /reports, /reports/[jobId]
-│   └── components/      #   tables, JOCKEY script IDE, layout, modals
+│   └── components/      #   tables, Tartarus script IDE, layout, modals
 ├── scripts/             # seed_scripts.py, register_agent.py CLIs
 ├── infra/
 │   ├── supabase/schema.sql   # reference schema (SQLite mirrors it locally)
@@ -74,7 +74,7 @@ jockey/
 ├── .env.example         # all environment variables (no secrets)
 ├── implementation.md    # original spec
 ├── details.md           # what is implemented & working (full inventory)
-└── documentation.md     # JOCKEY language syntax reference
+└── documentation.md     # Tartarus language syntax reference
 ```
 
 ---
@@ -82,7 +82,7 @@ jockey/
 ## 2. Architecture
 
 ```
- JOCKEY script (.jky source)
+ Tartarus script (.jky source)
         │
         ▼
  ┌──────────────────────────────┐   compiler/  (Python)
@@ -144,7 +144,7 @@ uvicorn main:app --host 127.0.0.1 --port 8000
 On startup the backend automatically:
 - creates `backend/jockey.db` (SQLite, mirrors `infra/supabase/schema.sql`),
 - seeds **10 predefined JOCKY scripts**,
-- seeds the console admin: **`admin@jockey.local` / `Jockey#Admin1`**.
+- seeds the console admin: **`admin@tartarus.local` / `Tartarus#Admin1`**.
 
 Verify: `curl http://127.0.0.1:8000/health` → `{"status":"operational","version":"2.5.0"}`
 
@@ -228,7 +228,7 @@ Manual equivalents:
 ```bash
 TOKEN=$(curl -s -X POST http://127.0.0.1:8000/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"admin@jockey.local","password":"Jockey#Admin1"}' \
+  -d '{"email":"admin@tartarus.local","password":"Tartarus#Admin1"}' \
   | python3 -c 'import sys,json;print(json.load(sys.stdin)["access_token"])')
 
 curl -s http://127.0.0.1:8000/scripts/ -H "Authorization: Bearer $TOKEN"
@@ -271,7 +271,7 @@ secrets are stored there**. Highlights:
 | `R2_*` | empty | optional encrypted payload delivery; inline when empty |
 | `WORKER_SECRET` | empty | shared secret for the Cloudflare Worker |
 | `NEXT_PUBLIC_API_BASE_URL` | `http://127.0.0.1:8000` | frontend → backend |
-| `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | `admin@jockey.local` / `Jockey#Admin1` | bootstrap console user |
+| `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | `admin@tartarus.local` / `Tartarus#Admin1` | bootstrap console user |
 
 ---
 
@@ -450,7 +450,7 @@ documented as future work in `details.md`).
 |---|---|
 | [`README.md`](README.md) | this file — install, run, test, operate |
 | [`details.md`](details.md) | full inventory: what is implemented, verified, tested, scripts, opcodes, limitations |
-| [`documentation.md`](documentation.md) | **JOCKEY language syntax reference** (lexical structure, grammar, builtins, examples, IR encoding) |
+| [`documentation.md`](documentation.md) | **Tartarus language syntax reference** (lexical structure, grammar, builtins, examples, IR encoding) |
 | [`implementation.md`](implementation.md) | original SIH specification / task list |
 
 ---

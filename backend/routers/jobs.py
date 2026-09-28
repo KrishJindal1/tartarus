@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from core import db, r2_client
 from core.config import settings
 from core.security import agent_matches, check_worker_secret, current_user, require_agent
-from services import audit_logger, job_dispatcher
+from services import agent_monitor, audit_logger, job_dispatcher
 from services.job_dispatcher import _serialize
 
 router = APIRouter()
@@ -30,7 +30,7 @@ class JobStatusPatch(BaseModel):
 @router.post("/create")
 def create_job(body: JobCreate, request: Request, user=Depends(current_user)):
     """
-    Compile the JOCKY script through the polymorphic pipeline and queue the job.
+    Compile the Tartarus script through the polymorphic pipeline and queue the job.
     The IR delivered to the agent is unique per deployment (fresh SHA-256).
     """
     job = job_dispatcher.dispatch_job(
@@ -57,7 +57,11 @@ def get_pending_job(
 
     job = job_dispatcher.claim_pending_job(agent_id)
     if job is None:
+        # the poll itself is proof of life: refresh liveness, stay online
+        agent_monitor.sync_activity(agent_id)
         raise HTTPException(status_code=404, detail="No pending jobs")
+
+    agent_monitor.sync_activity(agent_id)  # job claimed -> busy
 
     ir = job.get("ir")
     return {

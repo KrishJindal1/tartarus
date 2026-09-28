@@ -50,7 +50,7 @@ export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: 
               <Radar className="size-4" />
             </div>
             <div className="text-sm font-bold tracking-wider text-[#1f2328] dark:text-[#f0f6fc]">
-              JOCKEY
+              TARTARUS
             </div>
           </Link>
 
