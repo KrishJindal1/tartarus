@@ -1,4 +1,4 @@
-# JOCKEY — Implementation Details
+# JOCKY — Implementation Details
 
 > Complete inventory of what is implemented, what is verified working, every
 > predefined script, every opcode/function, test results, and known limitations.
@@ -48,7 +48,7 @@ Legend: ✅ implemented & verified · ⚠️ present but untested/partial · ⛔
 
 ---
 
-## 2. JOCKEY compiler (`compiler/`)
+## 2. JOCKY compiler (`compiler/`)
 
 **Pipeline:** source → tokens → AST → IR instructions (with jump patching and
 safe statement scheduling) → polymorphic mutation → bytes + SHA-256.
@@ -180,7 +180,7 @@ risk_score, collected_at`) → job `completed` + `risk_score` +
 - `AUTH_ENABLED=false` (default/dev): console routes use implicit
   `dev-user` admin — frontend works without login.
 - `AUTH_ENABLED=true`: `POST /auth/login` → JWT (`access_token`), attached by
-  the frontend from `localStorage` (`jockey_token`).
+  the frontend from `localStorage` (`jocky_token`).
 - Agents always use `agent_token` (JWT `typ=agent`) from
   `POST /agents/register`; the poll route requires it to match the `agent_id`.
 
@@ -202,7 +202,7 @@ risk_score, collected_at`) → job `completed` + `risk_score` +
 
 ### 4.2 Forensic collectors → builtins
 
-| JOCKEY builtin | Linux | Windows | macOS/BSD |
+| JOCKY builtin | Linux | Windows | macOS/BSD |
 |---|---|---|---|
 | `collect_processes()` | `/proc` scan: pid/ppid/name/exe/RSS + suspicious (deleted/tmp/shm exe) | own-process baseline (Toolhelp32 = future) | empty (no /proc) |
 | `collect_network()` | `/proc/net/{tcp,tcp6,udp,udp6}` + socket→PID via `/proc/*/fd` | empty (GetExtendedTcpTable = future) | empty |
@@ -262,7 +262,7 @@ the header light/dark toggle persists via `localStorage['jocky-theme']` and stil
 | `/run` | **Run workflow** | guided 4-step flow — 1 pick endpoint → 2 pick script (searchable) → 3 review + Execute → 4 response: live polling (2s), verdict/risk/evidence/duration tiles, findings, raw result JSON, evidence list, links to job/report. Preselect via `?agent=&script=` |
 | `/agents`, `/agents/[id]` | Endpoints | searchable agent table (status, OS/arch, AV, jobs, last seen) + detail page with metadata and that agent's jobs; "Register endpoint" modal shows the real `scripts/register_agent.py` command |
 | `/scripts` | Scripts | script table: category, risk, target OS, version, IR SHA-256, Edit → IDE, Run → queued on first online agent |
-| `/scripts/new`, `/scripts/[id]` | **JOCKEY script IDE** | custom dependency-free editor: syntax highlighting (keywords, builtins, strings, `#` comments, numbers), line numbers, tab/indent handling; toolbar = Open file (upload `.jky/.txt`), New, **Compile** (dry-run `POST /scripts/compile` → IR listing + AST + SHA-256 without saving), **Save/Create** (`POST`/`PUT`, Ctrl+S), Delete; IR/AST inspector tabs; Run panel (agent picker + last-job link); builtin scripts are read-only → "Save as new" |
+| `/scripts/new`, `/scripts/[id]` | **JOCKY script IDE** | custom dependency-free editor: syntax highlighting (keywords, builtins, strings, `#` comments, numbers), line numbers, tab/indent handling; toolbar = Open file (upload `.jky/.txt`), New, **Compile** (dry-run `POST /scripts/compile` → IR listing + AST + SHA-256 without saving), **Save/Create** (`POST`/`PUT`, Ctrl+S), Delete; IR/AST inspector tabs; Run panel (agent picker + last-job link); builtin scripts are read-only → "Save as new" |
 | `/jobs`, `/jobs/[id]` | Jobs | filterable job table + detail: lifecycle timeline, findings summary, executed IR listing, raw agent result payloads, evidence table with JSON preview/download, report + PDF links; auto-refreshes while running |
 | `/evidence` | Evidence | evidence table (type, host, job, SHA-256, risk, size, collected), per-type stat chips, **real** JSON preview modal, real JSON download, export-all |
 | `/reports`, `/reports/[jobId]` | Reports | report table + full report page: verdict/severity banner, risk score, timeline, evidence summary table, MITRE ATT&CK technique links, grouped findings, raw JSON, PDF download |
@@ -286,7 +286,7 @@ evidence, result and report.
 
 ---
 
-## 6. Predefined JOCKEY scripts (10, seeded)
+## 6. Predefined JOCKY scripts (10, seeded)
 
 | # | Name | Category | Risk | Target | What it does |
 |---|---|---|---|---|---|

@@ -1,5 +1,5 @@
 """
-Seed the JOCKEY scripts table with the predefined JOCKY forensic scripts.
+Seed the JOCKY scripts table with the predefined JOCKY forensic scripts.
 
 Delegates to backend/core/seed.py (single source of truth for seeding).
 Usage:

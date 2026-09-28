@@ -124,7 +124,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `tartarus_report_${id.slice(0, 8)}.pdf`
+      a.download = `jocky_report_${id.slice(0, 8)}.pdf`
       document.body.appendChild(a)
       a.click()
       a.remove()

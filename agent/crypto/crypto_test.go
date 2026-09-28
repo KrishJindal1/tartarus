@@ -16,7 +16,7 @@ func TestAESRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	pt := []byte("jockey forensic payload")
+	pt := []byte("jocky forensic payload")
 	ct, err := AESEncrypt(key, pt)
 	if err != nil {
 		t.Fatal(err)

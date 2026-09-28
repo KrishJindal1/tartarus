@@ -1,5 +1,5 @@
 """
-Router for managing Tartarus forensic scripts (source, IR inspection, staging).
+Router for managing JOCKY forensic scripts (source, IR inspection, staging).
 """
 
 import hashlib
@@ -121,11 +121,11 @@ def list_scripts():
 
 @router.post("/")
 def create_script(body: ScriptCreate, request: Request, user=Depends(require_role("admin", "analyst"))):
-    """Stage a new Tartarus script: validates compilation + polymorphic hashing."""
+    """Stage a new JOCKY script: validates compilation + polymorphic hashing."""
     try:
         ir, sha = mutate_source(body.jocky_source)
     except Exception as exc:
-        raise HTTPException(status_code=400, detail=f"Tartarus compile error: {exc}")
+        raise HTTPException(status_code=400, detail=f"JOCKY compile error: {exc}")
 
     script_id = str(uuid4())
     db.execute(
@@ -184,7 +184,7 @@ def update_script(script_id: str, body: ScriptUpdate, request: Request, user=Dep
     try:
         ir, sha = mutate_source(source)
     except Exception as exc:
-        raise HTTPException(status_code=400, detail=f"Tartarus compile error: {exc}")
+        raise HTTPException(status_code=400, detail=f"JOCKY compile error: {exc}")
 
     version = int(row.get("version") or 1) + 1
     db.execute(

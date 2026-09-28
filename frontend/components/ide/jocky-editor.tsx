@@ -2,7 +2,7 @@
 
 import React, { useCallback, useMemo, useRef } from 'react'
 
-// JOCKEY keyword / builtin vocabulary (must match compiler/grammar.py)
+// JOCKY keyword / builtin vocabulary (must match compiler/grammar.py)
 const KEYWORDS = new Set(['fn', 'let', 'output', 'log', 'if', 'else'])
 const LITERALS = new Set(['true', 'false'])
 const BUILTINS = new Set([
@@ -95,29 +95,29 @@ function highlightLine(line: string): string {
   return out
 }
 
-export function highlightJockey(source: string): string {
+export function highlightJocky(source: string): string {
   return source.split('\n').map(highlightLine).join('\n')
 }
 
-interface JockeyEditorProps {
+interface JockyEditorProps {
   value: string
   onChange?: (value: string) => void
   readOnly?: boolean
   minHeight?: number
 }
 
-export function JockeyEditor({
+export function JockyEditor({
   value,
   onChange,
   readOnly = false,
   minHeight = 420,
-}: JockeyEditorProps) {
+}: JockyEditorProps) {
   const preRef = useRef<HTMLPreElement>(null)
   const gutterRef = useRef<HTMLPreElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const lines = useMemo(() => value.split('\n'), [value])
-  const html = useMemo(() => highlightJockey(value) + '\n', [value])
+  const html = useMemo(() => highlightJocky(value) + '\n', [value])
 
   const handleScroll = useCallback(() => {
     const ta = textareaRef.current
@@ -209,9 +209,9 @@ export function JockeyEditor({
         spellCheck={false}
         autoCapitalize="off"
         autoCorrect="off"
-        className={`jockey-editor-ta absolute inset-0 z-20 resize-none bg-transparent text-transparent caret-[#12A594] dark:caret-[#2DD4BF] outline-none ${shared}`}
+        className={`jocky-editor-ta absolute inset-0 z-20 resize-none bg-transparent text-transparent caret-[#12A594] dark:caret-[#2DD4BF] outline-none ${shared}`}
         style={{ height: minHeight }}
-        aria-label="Tartarus script source"
+        aria-label="JOCKY script source"
       />
     </div>
   )

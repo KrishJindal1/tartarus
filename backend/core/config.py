@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     ]
 
     # Auth
-    JWT_SECRET: str = "jockey-dev-secret-change-me-in-production-32ch"
+    JWT_SECRET: str = "jocky-dev-secret-change-me-in-production-32ch"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 480
     AGENT_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30
@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     WORKER_SECRET: str = ""
 
     # Local persistence (SQLite) - used when SUPABASE_URL is not configured
-    DATABASE_PATH: str = "jockey.db"
+    DATABASE_PATH: str = "jocky.db"
     # Optional PostgreSQL (Supabase/Render): set to persist beyond container resets.
     DATABASE_URL: str = ""
 

@@ -1,4 +1,4 @@
-# JOCKEY Central Management Frontend — Agent & Developer Handoff Guide
+# JOCKY Central Management Frontend — Agent & Developer Handoff Guide
 
 > **Important**: This document provides architectural context, current state, and guidelines for team leads, developers, and AI agents reviewing or extending this codebase.
 
@@ -7,7 +7,7 @@
 ## 🎯 1. Problem Statement & Domain Purpose
 
 ### Context
-Modern security solutions monitor API call sequences, behavioral heuristics, and standard compiler signatures. The **JOCKEY Framework** is a central management interface and programming framework designed for multi-target forensic analysis and telemetry management.
+Modern security solutions monitor API call sequences, behavioral heuristics, and standard compiler signatures. The **JOCKY Framework** is a central management interface and programming framework designed for multi-target forensic analysis and telemetry management.
 
 ### Scope of this Repository
 This repository is dedicated to the **Frontend Central Management Interface**:
@@ -37,7 +37,7 @@ This repository is dedicated to the **Frontend Central Management Interface**:
 When connecting this frontend to live production backend infrastructure:
 
 1. **FastAPI WebSocket Client**:
-   - Bind `StreamLogsModal` and `LiveStatusView` to a real WebSocket endpoint (e.g. `wss://api.jockey-forensics.internal/v1/stream`).
+   - Bind `StreamLogsModal` and `LiveStatusView` to a real WebSocket endpoint (e.g. `wss://api.jocky-forensics.internal/v1/stream`).
 2. **PostgreSQL / Backend Auth Session**:
    - Connect `useDashboardState` hooks to authenticated REST endpoints for live persistence of custom scripts and endpoint registrations.
 3. **PDF Generation Service**:

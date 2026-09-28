@@ -1,6 +1,6 @@
 # Project Changelog & Architectural Modifications
 
-All notable structural, architectural, and code transformations made to the **JOCKEY Central Management Frontend** repository are documented in this file.
+All notable structural, architectural, and code transformations made to the **JOCKY Central Management Frontend** repository are documented in this file.
 
 ---
 
@@ -11,7 +11,7 @@ Enable instant cross-view inspection of deployed Go scripts directly from the **
 
 ### 📂 Refinements Implemented
 1. **Interactive Script Navigation Pills**:
-   - Transformed static `.go` script pills (`mem_dump.go`, `proc_hollow_scan.go`, `kernel_enum.go`, `registry_forensic.go`, `net_pcap.go`, `api_unhook.go`, `direct_syscall.go`) in [`endpoint-agents-table.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/dashboard/endpoint-agents-table.tsx) and [`endpoints-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/endpoints-view.tsx) into interactive buttons with hover styling and tooltips.
+   - Transformed static `.go` script pills (`mem_dump.go`, `proc_hollow_scan.go`, `kernel_enum.go`, `registry_forensic.go`, `net_pcap.go`, `api_unhook.go`, `direct_syscall.go`) in [`endpoint-agents-table.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/dashboard/endpoint-agents-table.tsx) and [`endpoints-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/endpoints-view.tsx) into interactive buttons with hover styling and tooltips.
    - Handled event propagation so clicking the script pill seamlessly jumps to script inspection without triggering the parent row's modal or selection behavior.
 2. **Go Script Database Expansion (`frontend/data/scripts.ts`)**:
    - Added full mock AST nodes, SSA forms, Go routines, and evasion compiler attributes for all routines displayed across the fleet (`kernel_enum.go`, `registry_forensic.go`, `net_pcap.go`, `api_unhook.go`, `direct_syscall.go`, `mem_dump.go`, `proc_hollow_scan.go`).
@@ -102,27 +102,27 @@ Complete a 100% thorough overhaul of both **GitHub Dark** (`#0d1117`, `#161b22`,
    - Secondary action pills & inputs: `bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] border-[#30363d]`
    - Badges: GitHub Dark subtle Blue (`#388bfd`/15 / `#58a6ff`), Green (`#238636`/20 / `#3fb950`), Yellow (`#d29922`/15 / `#d29922`), Purple (`#bc8cff`/15 / `#d2a8ff`), Red (`#f85149`/20 / `#f85149`).
 3. **Comprehensive Component Overhaul**:
-   - **All 7 Views**: [`overview-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/overview-view.tsx), [`deploy-scripts-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/deploy-scripts-view.tsx), [`endpoints-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/endpoints-view.tsx), [`evidence-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/evidence-view.tsx), [`live-status-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/live-status-view.tsx), [`reports-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/reports-view.tsx), [`results-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/results-view.tsx), [`timeline-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/timeline-view.tsx), [`destination-view-shell.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/destination-view-shell.tsx).
+   - **All 7 Views**: [`overview-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/overview-view.tsx), [`deploy-scripts-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/deploy-scripts-view.tsx), [`endpoints-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/endpoints-view.tsx), [`evidence-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/evidence-view.tsx), [`live-status-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/live-status-view.tsx), [`reports-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/reports-view.tsx), [`results-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/results-view.tsx), [`timeline-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/timeline-view.tsx), [`destination-view-shell.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/destination-view-shell.tsx).
    - **All 14 Modals**: Add Endpoint, Configure Endpoint, Create Report, Schedule Delivery, Report Detail, Evidence Preview, Evidence Tag, Forensic Record Detail, Guardrail Policy, Import Script, Inspect Run, Stream Logs, User Profile, Environment Config.
    - **All Dashboard Cards & Tables**: `EndpointAgentsTable`, `RecentForensicJobsTable`, `ForensicRecordsTable`, `EndpointHealthTable`, `ImplementationPipelineCard`, `ProposedSolutionPillarsCard`, `LiveExecutionCard`, `QuickActionsGrid`, `MetricsGrid`, `RecentActivityTimeline`.
    - **All UI Primitives & Nav**: `Card`, `Badge`, `Modal`, `SearchInput`, `ThemeToggle`, `Toast`, `StatusDot`, `Sidebar`, `Header`.
 
 ---
 
-## [Custom Cyber-Forensic Logo & Standardized JOCKEY Brand] - 2026-09-26
+## [Custom Cyber-Forensic Logo & Standardized JOCKY Brand] - 2026-09-26
 
 ### 🎯 Objective
-Replace the generator `v0` tab favicon and placeholder branding with a custom, high-fidelity **Cyber-Forensic Shield & Radar Emblem** and standardized **JOCKEY** brand identity.
+Replace the generator `v0` tab favicon and placeholder branding with a custom, high-fidelity **Cyber-Forensic Shield & Radar Emblem** and standardized **JOCKY** brand identity.
 
 ### 📂 Refinements Implemented
 1. **Custom Vector Favicon & Logo (`public/icon.svg` & `public/placeholder-logo.svg`)**:
    - Designed a high-resolution SVG emblem featuring a deep slate/navy container, precision cyber-shield contours, concentric radar range rings, crosshairs, and glowing green telemetry node blips.
    - Removed all references to generator logos and icons.
 2. **Metadata & Tab Identity (`app/layout.tsx`)**:
-   - Updated browser tab title to: `JOCKEY | Forensic Operations Control Plane`.
+   - Updated browser tab title to: `JOCKY | Forensic Operations Control Plane`.
    - Linked `/icon.svg` as vector favicon, shortcut icon, and apple touch icon.
 3. **Consistent Brand Nomenclature**:
-   - Standardized application branding to **JOCKEY** across the sidebar, header breadcrumb, code compiler suite, and JSON telemetry export tools.
+   - Standardized application branding to **JOCKY** across the sidebar, header breadcrumb, code compiler suite, and JSON telemetry export tools.
 
 ---
 
@@ -166,8 +166,8 @@ Eliminate unneeded promotional badges, repetitive evasion pills, header action d
 
 ### 📂 Refinements Implemented
 1. **Header & Title Deduplication**:
-   - Removed hardcoded `Central Management Plane` and `JOCKY Framework` text from [`header.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/layout/header.tsx), replacing with a clean `JOCKY / {activeNav}` breadcrumb.
-   - Simplified the Overview page title from `Forensic Central Management Console` to `Overview` in [`overview-view.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/views/overview-view.tsx) to eliminate redundancy.
+   - Removed hardcoded `Central Management Plane` and `JOCKY Framework` text from [`header.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/layout/header.tsx), replacing with a clean `JOCKY / {activeNav}` breadcrumb.
+   - Simplified the Overview page title from `Forensic Central Management Console` to `Overview` in [`overview-view.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/views/overview-view.tsx) to eliminate redundancy.
    - Removed `● SYSTEM ACTIVE · 100% AV BYPASS ENFORCED` badge from `OverviewView`.
    - Removed `ProposedSolutionPillarsCard` from the top of the Overview dashboard.
    - Removed bottom node status bar (`Node: NTRO-OP-07 ● Online ... Tunnel: Encrypted Relay...`) from `overview-view.tsx`.
@@ -295,13 +295,13 @@ Empower analysts and operators with deep, granular **column-wise filtering and s
    - Replaced all legacy `CloudFront CDN / Domain Fronting` references with clean, realistic forensic transport terminology: `Encrypted Relay (Port 443 TLS 1.3)`.
    - Removed all distracting extraneous tokens (`sha`, `sih 26148 ps`, `supabase`).
 2. **Strictly Read-Only Forensic Analysis Tools**:
-   - Upgraded Evidence Vault with [`EvidenceAnalyzeModal`](file:///d:/apps/sih%20project/jockey/frontend/components/modals/evidence-tag-modal.tsx):
+   - Upgraded Evidence Vault with [`EvidenceAnalyzeModal`](file:///d:/apps/sih%20project/jocky/frontend/components/modals/evidence-tag-modal.tsx):
      - **Hex & Byte Disassembler**: Interactive offset inspector for volatile binary memory dumps.
      - **Extracted IOCs & Symbols**: Memory address spaces, alloc protections (`PAGE_EXECUTE_READWRITE`), and unhooked DLL routines.
      - **JSON Telemetry Tree**: Formatted machine-readable telemetry viewer with one-click clipboard export.
-   - Enforced **Immutable Forensic Record (Read-Only)** guarantees across all tables and modals ([`forensic-record-detail-modal.tsx`](file:///d:/apps/sih%20project/jockey/frontend/components/modals/forensic-record-detail-modal.tsx)).
+   - Enforced **Immutable Forensic Record (Read-Only)** guarantees across all tables and modals ([`forensic-record-detail-modal.tsx`](file:///d:/apps/sih%20project/jocky/frontend/components/modals/forensic-record-detail-modal.tsx)).
 3. **Go Language Framework Integration**:
-   - Updated Script Studio and runtime datasets ([`scripts.ts`](file:///d:/apps/sih%20project/jockey/frontend/data/scripts.ts), [`forensicJobs.ts`](file:///d:/apps/sih%20project/jockey/frontend/data/forensicJobs.ts), [`endpoints.ts`](file:///d:/apps/sih%20project/jockey/frontend/data/endpoints.ts)):
+   - Updated Script Studio and runtime datasets ([`scripts.ts`](file:///d:/apps/sih%20project/jocky/frontend/data/scripts.ts), [`forensicJobs.ts`](file:///d:/apps/sih%20project/jocky/frontend/data/forensicJobs.ts), [`endpoints.ts`](file:///d:/apps/sih%20project/jocky/frontend/data/endpoints.ts)):
      - Go source routines (`.go`) utilizing native `jocky/forensics`, `jocky/telemetry`, `jocky/win/wdk`, and `jocky/lnx/proc` packages.
      - Go AST call graphs and Go SSA intermediate execution streams.
      - Cross-platform Golang in-memory agent runtime across Windows (WDK) and Linux (eBPF, /proc).

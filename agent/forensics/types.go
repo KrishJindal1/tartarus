@@ -2,7 +2,7 @@ package forensics
 
 import "time"
 
-// Shared forensic data types returned by the JOCKEY collectors.
+// Shared forensic data types returned by the JOCKY collectors.
 
 // ProcessInfo represents metadata of an inspected endpoint process.
 type ProcessInfo struct {

@@ -33,5 +33,5 @@ def get_report_pdf(job_id: str):
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f'attachment; filename="jockey-report-{job_id[:8]}.pdf"'},
+        headers={"Content-Disposition": f'attachment; filename="jocky-report-{job_id[:8]}.pdf"'},
     )

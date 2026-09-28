@@ -30,7 +30,7 @@ export default function OverviewPage() {
         <div>
           <h1 className="text-lg font-bold text-[#1f2328] dark:text-[#f0f6fc]">Operations overview</h1>
           <p className="text-xs text-[#656d76] dark:text-[#8b949e]">
-            Live state of agents, Tartarus scripts, jobs and evidence — polled every 3s.
+            Live state of agents, JOCKY scripts, jobs and evidence — polled every 3s.
           </p>
         </div>
         <div className="flex items-center gap-2">

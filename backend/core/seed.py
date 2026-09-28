@@ -1,5 +1,5 @@
 """
-Predefined Tartarus scripts and bootstrap console accounts.
+Predefined JOCKY scripts and bootstrap console accounts.
 Applied on startup so /scripts and /auth work out of the box.
 """
 

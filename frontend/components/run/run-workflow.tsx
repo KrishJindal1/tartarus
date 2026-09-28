@@ -68,7 +68,7 @@ function Stepper({ step, maxReached }: { step: number; maxReached: number }) {
               } ${clickable ? 'cursor-pointer' : ''}`}
               onClick={
                 clickable
-                  ? () => window.dispatchEvent(new CustomEvent('tartarus-run-goto', { detail: n }))
+                  ? () => window.dispatchEvent(new CustomEvent('jocky-run-goto', { detail: n }))
                   : undefined
               }
             >
@@ -125,8 +125,8 @@ export function RunWorkflow({ initialAgentId, initialScriptId }: RunWorkflowProp
       const n = (e as CustomEvent<number>).detail
       setStep(n)
     }
-    window.addEventListener('tartarus-run-goto', handler)
-    return () => window.removeEventListener('tartarus-run-goto', handler)
+    window.addEventListener('jocky-run-goto', handler)
+    return () => window.removeEventListener('jocky-run-goto', handler)
   }, [])
 
   const agent: AgentView | undefined = agents.find((a) => a.agentId === agentId)
@@ -235,7 +235,7 @@ export function RunWorkflow({ initialAgentId, initialScriptId }: RunWorkflowProp
         <div>
           <h1 className="text-lg font-bold text-[#1f2328] dark:text-[#f0f6fc]">Run a script</h1>
           <p className="text-xs text-[#656d76] dark:text-[#8b949e]">
-            Pick an endpoint, pick a Tartarus script, execute it in memory and inspect the
+            Pick an endpoint, pick a JOCKY script, execute it in memory and inspect the
             response.
           </p>
         </div>

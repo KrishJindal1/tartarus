@@ -1,4 +1,4 @@
-# Tartarus Framework — Forensic Analysis & Telemetry Platform
+# Tartarus — Forensic Analysis & Telemetry Platform
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/Python-3.12-blue.svg)
@@ -9,9 +9,10 @@
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
 
 > **SIH Problem Statement 26148 (NTRO)** — a cross-platform forensic analysis framework
-> (**Tartarus**, a.k.a. *JOCKEY*) built on a custom **Tartarus DSL**, **polymorphic IR
-> compilation**, **in-memory (fileless) execution**, and **BYOVD detection** for
-> Windows/Linux endpoints, controlled from a single web console.
+> powered by the **JOCKY** language & framework and delivered as the **Tartarus** web
+> console: a custom **JOCKY DSL**, **polymorphic IR compilation**, **in-memory (fileless)
+> execution**, and **BYOVD detection** for Windows/Linux endpoints, controlled from a
+> single dashboard.
 
 ---
 
@@ -38,8 +39,8 @@
 ## 1. What this repo contains
 
 ```
-jockey/
-├── compiler/            # Tartarus DSL → polymorphic IR compiler (Python)
+jocky/
+├── compiler/            # JOCKY DSL → polymorphic IR compiler (Python)
 │   ├── grammar.py       #   keywords, types, builtins, operators
 │   ├── lexer.py         #   tokenizer
 │   ├── parser.py        #   AST (fn/let/if/output/expressions)
@@ -65,7 +66,7 @@ jockey/
 │   ├── app/(dashboard)/ #   routes: /, /run, /agents, /agents/[id], /scripts,
 │   │                    #   /scripts/new, /scripts/[id], /jobs, /jobs/[id],
 │   │                    #   /evidence, /reports, /reports/[jobId]
-│   └── components/      #   tables, Tartarus script IDE, layout, modals
+│   └── components/      #   tables, JOCKY script IDE, layout, modals
 ├── scripts/             # seed_scripts.py, register_agent.py CLIs
 ├── infra/
 │   ├── supabase/schema.sql   # reference schema (SQLite mirrors it locally)
@@ -74,7 +75,7 @@ jockey/
 ├── .env.example         # all environment variables (no secrets)
 ├── implementation.md    # original spec
 ├── details.md           # what is implemented & working (full inventory)
-└── documentation.md     # Tartarus language syntax reference
+└── documentation.md     # JOCKY language syntax reference
 ```
 
 ---
@@ -82,7 +83,7 @@ jockey/
 ## 2. Architecture
 
 ```
- Tartarus script (.jky source)
+ JOCKY script (.jky source)
         │
         ▼
  ┌──────────────────────────────┐   compiler/  (Python)
@@ -142,7 +143,7 @@ uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
 On startup the backend automatically:
-- creates `backend/jockey.db` (SQLite, mirrors `infra/supabase/schema.sql`),
+- creates `backend/jocky.db` (SQLite, mirrors `infra/supabase/schema.sql`),
 - seeds **10 predefined JOCKY scripts**,
 - seeds the console admin: **`admin@tartarus.local` / `Tartarus#Admin1`**.
 
@@ -265,7 +266,7 @@ secrets are stored there**. Highlights:
 |---|---|---|
 | `AUTH_ENABLED` | `false` | `true` enforces JWT on console routes |
 | `JWT_SECRET` | dev value | set a random ≥32-char secret in production |
-| `DATABASE_PATH` | `jockey.db` | SQLite file (used when `DATABASE_URL` is empty) |
+| `DATABASE_PATH` | `jocky.db` | SQLite file (used when `DATABASE_URL` is empty) |
 | `DATABASE_URL` | empty | Postgres connection string (Supabase pooler) → persistent cloud DB |
 | `CORS_ORIGINS` | dev origins | JSON list of allowed origins, e.g. `["https://jockytartarus.vercel.app"]` |
 | `R2_*` | empty | optional encrypted payload delivery; inline when empty |
@@ -349,7 +350,7 @@ iwr https://raw.githubusercontent.com/himkarr/tartarus/main/agent/install/instal
 |---|---|
 | `--c2` / `-C2 <url>` | backend origin (default: this repo's Render URL) |
 | `--agent-id <uuid>` | reuse an existing agent id (re-register) |
-| `--dir` / `-InstallDir <path>` | install directory (default `/opt/jockey-agent`, `C:\jockey-dist`) |
+| `--dir` / `-InstallDir <path>` | install directory (default `~/.jocky-agent`, `%LOCALAPPDATA%\jocky-agent`) |
 | `--source` / `-Source <path>` | use a local `tartarus-*` binary instead of downloading |
 | `--systemd` / `-Autostart` | install as a service / start with Windows |
 | `--no-start` / `-NoStart` | install only, don't start |
@@ -450,7 +451,7 @@ documented as future work in `details.md`).
 |---|---|
 | [`README.md`](README.md) | this file — install, run, test, operate |
 | [`details.md`](details.md) | full inventory: what is implemented, verified, tested, scripts, opcodes, limitations |
-| [`documentation.md`](documentation.md) | **Tartarus language syntax reference** (lexical structure, grammar, builtins, examples, IR encoding) |
+| [`documentation.md`](documentation.md) | **JOCKY language syntax reference** (lexical structure, grammar, builtins, examples, IR encoding) |
 | [`implementation.md`](implementation.md) | original SIH specification / task list |
 
 ---

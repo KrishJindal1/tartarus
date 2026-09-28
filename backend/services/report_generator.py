@@ -88,7 +88,7 @@ def _build_report_dict(job_id: str) -> Dict:
         verdict, severity = "No significant findings", "LOW"
 
     return {
-        "report_type": "Tartarus Forensic System Audit",
+        "report_type": "JOCKY Forensic System Audit",
         "job_id": job_id,
         "script": script["name"] if script else None,
         "agent": {
@@ -132,7 +132,7 @@ def generate_pdf_report(job_id: str) -> bytes:
     doc = SimpleDocTemplate(
         buf, pagesize=A4,
         leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm, bottomMargin=16 * mm,
-        title=f"Tartarus Forensic Report {job_id[:8]}",
+        title=f"JOCKY Forensic Report {job_id[:8]}",
     )
     styles = getSampleStyleSheet()
     h1 = ParagraphStyle("H1", parent=styles["Heading1"], textColor=colors.HexColor("#0d1117"))
@@ -140,7 +140,7 @@ def generate_pdf_report(job_id: str) -> bytes:
     body = styles["BodyText"]
 
     story = []
-    story.append(Paragraph("Tartarus Framework — Forensic System Audit Report", h1))
+    story.append(Paragraph("JOCKY Framework — Forensic System Audit Report", h1))
     story.append(Paragraph("Issued for NTRO · Problem Statement 26148", body))
     story.append(Spacer(1, 6))
 

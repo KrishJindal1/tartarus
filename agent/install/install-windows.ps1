@@ -1,4 +1,4 @@
-# JOCKEY / Tartarus - Windows agent installer (x64). Works on ANY Windows 10+
+# JOCKY / Tartarus - Windows agent installer (x64). Works on ANY Windows 10+
 # machine with internet access, regardless of network (agents reach the backend
 # over its public URL). Safe to re-run; idempotent unless -Force.
 #
@@ -9,7 +9,7 @@
 # Options:
 #   -C2 <url>         backend base URL (required), e.g. https://xxx.onrender.com
 #   -AgentId <uuid>   reuse a fixed agent id (default: generate once, persist)
-#   -InstallDir <p>   install dir (default: %LOCALAPPDATA%\jockey-agent)
+#   -InstallDir <p>   install dir (default: %LOCALAPPDATA%\jocky-agent)
 #   -Source <u|path>  binary source (default: GitHub raw releases/)
 #   -Autostart        register a scheduled task at logon (boot autostart)
 #   -NoStart          install but don't start
@@ -18,7 +18,7 @@
 param(
   [Parameter(Mandatory = $true)][string]$C2,
   [string]$AgentId = "",
-  [string]$InstallDir = "$env:LOCALAPPDATA\jockey-agent",
+  [string]$InstallDir = "$env:LOCALAPPDATA\jocky-agent",
   [string]$Source = "https://raw.githubusercontent.com/himkarr/tartarus/main/releases/tartarus-win-amd64.exe",
   [switch]$Autostart,
   [switch]$NoStart,
@@ -78,16 +78,16 @@ try {
 $bat = Join-Path $InstallDir "start-agent.bat"
 @"
 @echo off
-rem JOCKEY agent ($AgentId)
+rem JOCKY agent ($AgentId)
 "$exe" -agent-id $AgentId -c2 $C2 -privkey "$key"
 "@ | Set-Content -Path $bat -Encoding ASCII
 
 # -- optional autostart (scheduled task at logon, no admin needed) --
 if ($Autostart) {
-  Write-Host "==> registering logon task 'JOCKEY Agent'"
+  Write-Host "==> registering logon task 'JOCKY Agent'"
   $action = New-ScheduledTaskAction -Execute $bat
   $trigger = New-ScheduledTaskTrigger -AtLogOn
-  Register-ScheduledTask -TaskName "JOCKEY Agent" -Action $action -Trigger $trigger -Force | Out-Null
+  Register-ScheduledTask -TaskName "JOCKY Agent" -Action $action -Trigger $trigger -Force | Out-Null
 }
 
 # -- start --

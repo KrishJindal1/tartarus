@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# JOCKEY agent installer — run INSIDE one of the NEW WSL distros.
-#   usage: bash /mnt/c/jockey-dist/setup-agent.sh <hostname> <reuse1|new>
-#     reuse1 = claim the pre-registered WSL-AGENT-01 identity (id+key staged in C:\jockey-dist)
+# JOCKY agent installer — run INSIDE one of the NEW WSL distros.
+#   usage: bash /mnt/c/jocky-dist/setup-agent.sh <hostname> <reuse1|new>
+#     reuse1 = claim the pre-registered WSL-AGENT-01 identity (id+key staged in C:\jocky-dist)
 #     new    = generate a fresh identity (WSL-AGENT-02)
 set -euo pipefail
 
-DIST=/mnt/c/jockey-dist
+DIST=/mnt/c/jocky-dist
 NAME="${1:-}"
 MODE="${2:-}"
 
@@ -44,7 +44,7 @@ echo "$AGENT_ID" > ~/agent-id.txt
 cat > ~/start-agent.sh <<'START'
 #!/usr/bin/env bash
 set -e
-HOSTIP="$(tr -d '[:space:]' < /mnt/c/jockey-dist/host-ip.txt)"
+HOSTIP="$(tr -d '[:space:]' < /mnt/c/jocky-dist/host-ip.txt)"
 [ -n "$HOSTIP" ] || { echo "host-ip.txt empty — run refresh-host-ip.sh in the HOST distro"; exit 1; }
 echo "c2=http://${HOSTIP}:8000 agent-id=$(cat ~/agent-id.txt)"
 exec ~/tartarus-agent --agent-id "$(cat ~/agent-id.txt)" \

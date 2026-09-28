@@ -1,4 +1,4 @@
-# Render Blueprint — JOCKEY backend (FastAPI + SQLite).
+# Render Blueprint — JOCKY backend (FastAPI + SQLite).
 # Deploy: Render dashboard → New → Blueprint → pick this repo (renders this file),
 #   or New → Web Service → connect repo → Runtime: Docker (uses the settings below).
 services:
@@ -28,7 +28,7 @@ services:
         value: '["https://jockytartarus.vercel.app"]'
 
       - key: DATABASE_PATH
-        value: /tmp/jockey.db
+        value: /tmp/jocky.db
 
       - key: DATABASE_URL
         sync: false # set in Render dashboard (Secret): postgresql://... (Supabase pooler)

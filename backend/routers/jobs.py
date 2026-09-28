@@ -30,7 +30,7 @@ class JobStatusPatch(BaseModel):
 @router.post("/create")
 def create_job(body: JobCreate, request: Request, user=Depends(current_user)):
     """
-    Compile the Tartarus script through the polymorphic pipeline and queue the job.
+    Compile the JOCKY script through the polymorphic pipeline and queue the job.
     The IR delivered to the agent is unique per deployment (fresh SHA-256).
     """
     job = job_dispatcher.dispatch_job(

@@ -1,6 +1,6 @@
-# JOCKEY Language — Syntax Reference
+# JOCKY Language — Syntax Reference
 
-> Complete reference for the **JOCKEY forensic DSL**: lexical structure,
+> Complete reference for the **JOCKY forensic DSL**: lexical structure,
 > grammar, statements, expressions, built-in functions, semantics, compilation
 > to polymorphic IR, and worked examples.
 >
@@ -12,8 +12,8 @@
 
 ## 1. Overview
 
-JOCKEY is a small, domain-specific language for describing **forensic
-collection tasks**. A JOCKEY program is compiled to a compact, polymorphic
+JOCKY is a small, domain-specific language for describing **forensic
+collection tasks**. A JOCKY program is compiled to a compact, polymorphic
 instruction stream (IR) that is executed **in memory** by the endpoint agent —
 no intermediate files are written.
 

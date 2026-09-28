@@ -1,4 +1,4 @@
-# JOCKEY Framework — Project Objectives & Actionability Matrix
+# JOCKY Framework — Project Objectives & Actionability Matrix
 
 > **Mission**: Enterprise Cyber-Forensic Operations Control Plane for heterogeneous multi-target analysis (Windows & Ubuntu), in-memory execution, kernel subversion detection, and tamper-evident telemetry.
 
@@ -7,7 +7,7 @@
 ## 🎯 1. Core Problem Statement Objectives
 
 ### Context & Need
-Modern security solutions monitor API call sequences, behavioral heuristics, and static signatures. The **JOCKEY Framework** provides an unhindered forensic control plane and programming model that bypasses heuristic choke points and provides deep forensic insight into running systems.
+Modern security solutions monitor API call sequences, behavioral heuristics, and static signatures. The **JOCKY Framework** provides an unhindered forensic control plane and programming model that bypasses heuristic choke points and provides deep forensic insight into running systems.
 
 ### 4 Key Strategic Objectives
 1. **Multi-Target In-Memory Telemetry**:

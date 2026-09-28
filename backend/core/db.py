@@ -189,7 +189,7 @@ def _connect_pg():
             "DATABASE_URL is set but psycopg2 is missing (pip install psycopg2-binary)"
         ) from exc
     conn = psycopg2.connect(
-        settings.DATABASE_URL, connect_timeout=10, application_name="jockey-backend"
+        settings.DATABASE_URL, connect_timeout=10, application_name="jocky-backend"
     )
     conn.autocommit = True
     conn.cursor_factory = RealDictCursor

@@ -40,7 +40,7 @@ def ingest_result(
     body: IngestBody,
     request: Request,
     x_worker_secret: Optional[str] = Header(None),
-    x_jockey_result: Optional[str] = Header(None),
+    x_jocky_result: Optional[str] = Header(None),
 ):
     """
     Called by the Cloudflare Worker (with X-Worker-Secret) or directly by an
@@ -53,9 +53,9 @@ def ingest_result(
     raw_bytes = None
 
     # Encrypted result delivered via worker header (base64) or pulled from R2
-    if x_jockey_result:
+    if x_jocky_result:
         import base64
-        raw_bytes = base64.b64decode(x_jockey_result)
+        raw_bytes = base64.b64decode(x_jocky_result)
     elif not body.message and not body.result:
         job = db.query_one("SELECT r2_result_key FROM jobs WHERE id = ?", (job_id,))
         if job and job.get("r2_result_key") and r2_client.is_configured():

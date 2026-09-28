@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# JOCKEY / Tartarus — Linux agent installer (amd64). Works on ANY Linux with
+# JOCKY / Tartarus — Linux agent installer (amd64). Works on ANY Linux with
 # internet access, regardless of network (agents reach the backend over its
 # public URL). Safe to re-run; idempotent unless --force.
 #
@@ -10,7 +10,7 @@
 # Options:
 #   --c2 <url>        backend base URL (required), e.g. https://xxx.onrender.com
 #   --agent-id <uuid> reuse a fixed agent id (default: generate once, persist)
-#   --dir <path>      install dir (default: ~/.jockey-agent)
+#   --dir <path>      install dir (default: ~/.jocky-agent)
 #   --source <url|path> binary source (default: GitHub raw releases/)
 #   --systemd         install+enable a systemd service (run as root; boot autostart)
 #   --no-start        install but don't start
@@ -19,7 +19,7 @@ set -euo pipefail
 
 C2=""
 AGENT_ID=""
-INSTALL_DIR="$HOME/.jockey-agent"
+INSTALL_DIR="$HOME/.jocky-agent"
 SOURCE="https://raw.githubusercontent.com/himkarr/tartarus/main/releases/tartarus-linux-amd64"
 DO_SYSTEMD=0
 START=1
@@ -103,9 +103,9 @@ chmod +x "$INSTALL_DIR/start-agent.sh"
 if [ "$DO_SYSTEMD" = "1" ]; then
   [ "$(id -u)" = "0" ] || { echo "ERROR: --systemd requires root (sudo)"; exit 1; }
   command -v systemctl >/dev/null || { echo "ERROR: systemd not available"; exit 1; }
-  cat > /etc/systemd/system/jockey-agent.service <<UNIT
+  cat > /etc/systemd/system/jocky-agent.service <<UNIT
 [Unit]
-Description=JOCKEY endpoint agent
+Description=JOCKY endpoint agent
 After=network-online.target
 Wants=network-online.target
 
@@ -118,7 +118,7 @@ RestartSec=5
 WantedBy=multi-user.target
 UNIT
   systemctl daemon-reload
-  systemctl enable --now jockey-agent
+  systemctl enable --now jocky-agent
   echo "==> systemd service enabled and started"
 else
   if [ "$START" = "1" ]; then

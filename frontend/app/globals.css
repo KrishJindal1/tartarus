@@ -162,7 +162,7 @@
   }
 }
 
-/* JOCKEY IDE syntax tokens */
+/* JOCKY IDE syntax tokens */
 .tok-kw { color: #A78BFA; font-weight: 600; }
 .tok-fn { color: #12A594; }
 .tok-str { color: #0B433C; }
@@ -178,4 +178,4 @@
 .dark .tok-comment { color: #8b949e; }
 .dark .tok-punct { color: #8b949e; }
 
-.jockey-editor-ta::selection { background: rgba(45, 212, 191, 0.30); }
+.jocky-editor-ta::selection { background: rgba(45, 212, 191, 0.30); }

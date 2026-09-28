@@ -159,7 +159,7 @@ def ingest_result(
         count = len(data) if isinstance(data, list) else 1
         summary_parts.append(f"{count} {etype}")
 
-    # Script outputs (the values the Tartarus script emitted)
+    # Script outputs (the values the JOCKY script emitted)
     if findings.get("outputs"):
         data = {"outputs": findings["outputs"]}
         evidence_rows.append({
