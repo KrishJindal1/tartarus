@@ -21,7 +21,7 @@
 1. [What this repo contains](#1-what-this-repo-contains)
 2. [Architecture](#2-architecture)
 3. [Prerequisites](#3-prerequisites)
-4. [Quick Start (local, 3 terminals)](#4-quick-start-local-3-terminals)
+4. [Installation & Quick Start](#4-installation--quick-start)
 5. [End-to-end walkthrough](#5-end-to-end-walkthrough)
 6. [Docker](#6-docker)
 7. [Environment variables](#7-environment-variables)
@@ -132,59 +132,73 @@ inline payload delivery when they are absent.
 
 ---
 
-## 4. Quick Start (local, 3 terminals)
+## 4. Installation & Quick Start
 
-### 4.1 Backend (port 8000)
+Four copy-paste steps: **clone → install deps → run the console → install an agent**.
+
+### 4.1 Clone & install dependencies (once)
 
 ```bash
-cd backend
-pip install -r requirements.txt          # once
-uvicorn main:app --host 127.0.0.1 --port 8000
+git clone https://github.com/himkarr/tartarus.git
+cd tartarus
+
+pip install -r backend/requirements.txt    # backend (FastAPI)
+cd frontend && npm install && cd ..        # console (Next.js)
 ```
 
-On startup the backend automatically:
-- creates `backend/jocky.db` (SQLite, mirrors `infra/supabase/schema.sql`),
-- seeds **10 predefined JOCKY scripts**,
-- seeds the console admin: **`admin@tartarus.local` / `Tartarus#Admin1`**.
+Go is only needed to build the agent from source
+([§12](#12-cross-compiling-the-agent)); tool versions in
+[§3](#3-prerequisites).
 
-Verify: `curl http://127.0.0.1:8000/health` → `{"status":"operational","version":"2.5.0"}`
+### 4.2 Run the console (two terminals)
+
+```bash
+cd backend  && uvicorn main:app --host 127.0.0.1 --port 8000   # → http://127.0.0.1:8000
+cd frontend && npm run dev                                     # → http://localhost:3000
+```
+
+On first start the backend creates `backend/jocky.db`, seeds **11 predefined
+JOCKY scripts**, and creates the console admin:
+
+- Dashboard: <http://localhost:3000>
+- Login: **`admin@tartarus.local` / `Tartarus#Admin1`**
+
+Verify the backend: `curl http://127.0.0.1:8000/health` →
+`{"status":"operational","version":"2.5.0"}`.
+
+The dashboard polls the backend every 3 s (API base defaults to
+`http://127.0.0.1:8000` — override with `NEXT_PUBLIC_API_BASE_URL`).
 
 > Auth is **off by default** (`AUTH_ENABLED=false`) for development — console
 > endpoints work without a token (implicit dev admin). Set `AUTH_ENABLED=true`
 > in production to enforce JWT login on every console route.
+>
+> Re-seed scripts any time (idempotent): `python3 scripts/seed_scripts.py`.
 
-### 4.2 Frontend (port 3000)
+### 4.3 Install an agent (one command per endpoint)
 
-```bash
-cd frontend
-npm install                          # once
-npm run dev                          # http://localhost:3000
-```
-
-The dashboard polls the backend every 3 s. API base URL defaults to
-`http://127.0.0.1:8000` (override with `NEXT_PUBLIC_API_BASE_URL`).
-
-### 4.3 Agent (endpoint collector)
+**Linux** (nohup by default; prints `SUCCESS: ... ONLINE`):
 
 ```bash
-# one-time: build + generate the agent's RSA key
-cd agent
-GOTOOLCHAIN=auto go build -o /tmp/tartarus-agent .
-openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /tmp/agent_private.pem
-
-# register the agent with the backend (prints the exact start command)
-cd ..
-python3 scripts/register_agent.py --hostname LAB-01 --os linux \
-    --key-output /tmp/agent_private.pem --backend http://127.0.0.1:8000
-
-# start it (use the agent_id printed above)
-/tmp/tartarus-agent --agent-id <AGENT_ID> \
-    --c2 http://127.0.0.1:8000 \
-    --privkey /tmp/agent_private.pem \
-    --poll-min 2 --poll-max 5
+curl -fsSL https://raw.githubusercontent.com/himkarr/tartarus/main/agent/install/install-linux.sh \
+  | bash -s -- --c2 http://127.0.0.1:8000
 ```
 
-Expected agent log:
+**Windows** (PowerShell):
+
+```powershell
+iwr https://raw.githubusercontent.com/himkarr/tartarus/main/agent/install/install-windows.ps1 -OutFile i.ps1
+.\i.ps1 -C2 http://127.0.0.1:8000 -Autostart
+```
+
+Point `--c2` / `-C2` at your backend: `http://127.0.0.1:8000` for local dev, or
+`https://jockey-backend-ho8q.onrender.com` for the deployed instance. Both
+installers download the released binary from [`releases/`](releases/),
+generate an RSA key, register the endpoint, and start the poll loop — add
+`--systemd` (Linux, sudo) or `-Autostart` (Windows) for boot autostart.
+Full flag list: [§9](#9-install-agents-on-any-machine).
+
+The endpoint appears on **Dashboard → Agents** as `online` within seconds:
 
 ```
 [TARTARUS-AGENT] Registration successful
@@ -193,8 +207,19 @@ Expected agent log:
 [TARTARUS-AGENT] Job <uuid> completed (41611 bytes result)
 ```
 
-> Alternative: `python3 scripts/seed_scripts.py` re-seeds the scripts at any time
-> (idempotent).
+**Build the agent from source** (optional, instead of the released binary):
+
+```bash
+cd agent && GOTOOLCHAIN=auto go build -o /tmp/tartarus-agent . && cd ..
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /tmp/agent_private.pem
+
+# registers the endpoint and prints the exact start command:
+python3 scripts/register_agent.py --hostname LAB-01 --os linux \
+    --key-output /tmp/agent_private.pem --backend http://127.0.0.1:8000
+
+/tmp/tartarus-agent --agent-id <AGENT_ID> \
+    --c2 http://127.0.0.1:8000 --privkey /tmp/agent_private.pem --poll-min 2 --poll-max 5
+```
 
 ---
 
@@ -207,7 +232,7 @@ Expected agent log:
    pages): pick an endpoint → pick a script → **Execute** → watch the response
    (status, risk, findings, raw JSON, evidence). Preselect with
    `/run?agent=<id>&script=<id>`. Alternatively **Run Suite** (Ctrl+K) queues
-   every deployed script against the first online agent (10 jobs when seeded),
+   every deployed script against the first online agent (11 jobs when seeded),
    and any script in the IDE (`/scripts/new`) can be run directly.
 3. The agent claims jobs (`GET /jobs/pending/{agent_id}`), executes the
    polymorphic IR **in memory**, and submits results
@@ -312,7 +337,7 @@ postgresql://postgres.<project-ref>:<db-password>@aws-0-ap-south-1.pooler.supaba
   mode pooler; username is `postgres.<project-ref>`, port **6543**,
   `sslmode=require`). `db.<ref>.supabase.co` is IPv6-only and unreachable
   from Render/WSL — always use the `aws-0-<region>.pooler.supabase.com` host.
-- Schema + the 10 predefined scripts are created automatically on first boot.
+- Schema + the 11 predefined scripts are created automatically on first boot.
 - Keep the password out of the repo — set it only in the Render dashboard.
 
 **Frontend → Vercel**:

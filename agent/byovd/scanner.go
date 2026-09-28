@@ -16,7 +16,7 @@ func ScanLoadedDrivers() []DriverFinding {
 
 	fh, err := os.Open("/proc/modules")
 	if err != nil {
-		return nil
+		return []DriverFinding{}
 	}
 	defer fh.Close()
 
@@ -70,27 +70,4 @@ func ScanLoadedDrivers() []DriverFinding {
 	}
 
 	return findings
-}
-
-func lookupDriverIntel(name string) (struct {
-	CVE      string
-	Impact   string
-	Severity string
-	Notes    string
-}, bool) {
-	v, ok := knownVulnerableDrivers[strings.ToLower(name)]
-	if !ok {
-		return struct {
-			CVE      string
-			Impact   string
-			Severity string
-			Notes    string
-		}{}, false
-	}
-	return struct {
-		CVE      string
-		Impact   string
-		Severity string
-		Notes    string
-	}{v.CVE, v.Impact, v.Severity, v.Notes}, true
 }

@@ -173,11 +173,18 @@ type vmState struct {
 }
 
 // ExecuteIR executes a polymorphic JOCKY-IR program and returns the
-// aggregated forensic result as JSON.
-func ExecuteIR(ir []byte, execMode string) ([]byte, error) {
-	result, err := Execute(ir, execMode)
-	if err != nil {
-		return nil, err
+// aggregated forensic result as JSON. Collector panics are converted into
+// job errors so a single bad section never takes the agent down.
+func ExecuteIR(ir []byte, execMode string) (out []byte, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("IR execution panic: %v", r)
+			out = nil
+		}
+	}()
+	result, execErr := Execute(ir, execMode)
+	if execErr != nil {
+		return nil, execErr
 	}
 	return json.Marshal(result)
 }

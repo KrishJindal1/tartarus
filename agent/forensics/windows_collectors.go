@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"unicode/utf16"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -27,28 +28,35 @@ var (
 	procGetProcessMemoryInfo        = modPsapi.NewProc("GetProcessMemoryInfo")
 	modWtsapi                       = windows.NewLazySystemDLL("wtsapi32.dll")
 	procWTSQuerySessionInformationW = modWtsapi.NewProc("WTSQuerySessionInformationW")
+	modNtdll                        = windows.NewLazySystemDLL("ntdll.dll")
+	procNtQueryInformationProcess   = modNtdll.NewProc("NtQueryInformationProcess")
 )
+
+// ProcessCommandLineInformation (NtQueryInformationProcess class).
+const processCommandLineInformation = 60
 
 // WTS information classes (wtsapi32.h WTS_INFO_CLASS).
 const (
-	wtsUserName        = 5
-	wtsDomainName      = 7
-	wtsClientName      = 10
-	wtsClientAddress   = 14
-	afInet             = 2
-	afInet6            = 23
-	memImage           = 0x01000000
-	memMapped          = 0x00040000
-	memPrivate         = 0x00020000
-	maxMemRegions      = 512
-	tcpTableOwnerPID   = 5 // TCP_TABLE_OWNER_PID_ALL
-	udpTableOwnerPID   = 1 // UDP_TABLE_OWNER_PID
+	wtsUserName      = 5
+	wtsDomainName    = 7
+	wtsClientName    = 10
+	wtsClientAddress = 14
+	afInet           = 2
+	afInet6          = 23
+	memImage         = 0x01000000
+	memMapped        = 0x00040000
+	memPrivate       = 0x00020000
+	maxMemRegions    = 512
+	tcpTableOwnerPID = 5 // TCP_TABLE_OWNER_PID_ALL
+	udpTableOwnerPID = 1 // UDP_TABLE_OWNER_PID
 )
 
+// tcpStatesByNumber maps Windows MIB_TCP_STATE values (tcpStateClosed=1,
+// tcpStateListen=2, tcpStateEstablished=5, ...) to names.
 var tcpStatesByNumber = map[uint32]string{
-	1: "ESTABLISHED", 2: "SYN_SENT", 3: "SYN_RECV", 4: "FIN_WAIT1",
-	5: "FIN_WAIT2", 6: "TIME_WAIT", 7: "CLOSE", 8: "CLOSE_WAIT",
-	9: "LAST_ACK", 10: "LISTEN", 11: "CLOSING",
+	1: "CLOSED", 2: "LISTEN", 3: "SYN_SENT", 4: "SYN_RECV",
+	5: "ESTABLISHED", 6: "FIN_WAIT1", 7: "FIN_WAIT2", 8: "CLOSE_WAIT",
+	9: "CLOSING", 10: "LAST_ACK", 11: "TIME_WAIT", 12: "DELETE_TCB",
 }
 
 var wtsStates = map[uint32]string{
@@ -74,23 +82,15 @@ func processNameMap() map[uint32]string {
 	return m
 }
 
-// processImagePath resolves the full image path for a PID (best effort).
-func processImagePath(pid uint32) string {
-	h, err := windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, false, pid)
-	if err != nil {
-		return ""
-	}
-	defer windows.CloseHandle(h)
+// processDetails resolves image path, working set, account and command line
+// for a PID through one limited-information handle (best effort per field).
+func processDetails(h windows.Handle) (exe string, memMB float64, user, cmdline string) {
 	buf := make([]uint16, 320)
 	size := uint32(len(buf))
-	if err := windows.QueryFullProcessImageName(h, 0, &buf[0], &size); err != nil {
-		return ""
+	if err := windows.QueryFullProcessImageName(h, 0, &buf[0], &size); err == nil {
+		exe = windows.UTF16ToString(buf[:size])
 	}
-	return windows.UTF16ToString(buf[:size])
-}
 
-// workingSetMB reports the process working set in MB (0 if inaccessible).
-func workingSetMB(pid uint32) float64 {
 	type processMemoryCounters struct {
 		CB                         uint32
 		PageFaultCount             uint32
@@ -103,18 +103,73 @@ func workingSetMB(pid uint32) float64 {
 		PagefileUsage              uintptr
 		PeakPagefileUsage          uintptr
 	}
-	h, err := windows.OpenProcess(windows.PROCESS_QUERY_INFORMATION|windows.PROCESS_VM_READ, false, pid)
-	if err != nil {
-		return 0
-	}
-	defer windows.CloseHandle(h)
 	var pmc processMemoryCounters
 	pmc.CB = uint32(unsafe.Sizeof(pmc))
-	r1, _, _ := procGetProcessMemoryInfo.Call(uintptr(h), uintptr(unsafe.Pointer(&pmc)), uintptr(pmc.CB))
-	if r1 == 0 {
-		return 0
+	if r1, _, _ := procGetProcessMemoryInfo.Call(uintptr(h), uintptr(unsafe.Pointer(&pmc)), uintptr(pmc.CB)); r1 != 0 {
+		memMB = float64(pmc.WorkingSetSize) / (1024 * 1024)
 	}
-	return float64(pmc.WorkingSetSize) / (1024 * 1024)
+
+	if tok, err := openProcessToken(h); err == nil {
+		user = tokenAccount(tok)
+		tok.Close()
+	}
+	cmdline = processCommandLine(h)
+	return
+}
+
+func openProcessToken(h windows.Handle) (windows.Token, error) {
+	var tok windows.Token
+	err := windows.OpenProcessToken(h, windows.TOKEN_QUERY, &tok)
+	return tok, err
+}
+
+// tokenAccount renders DOMAIN\user for the process token user.
+func tokenAccount(tok windows.Token) string {
+	tu, err := tok.GetTokenUser()
+	if err != nil || tu == nil {
+		return ""
+	}
+	account, domain, _, err := tu.User.Sid.LookupAccount("")
+	if err != nil {
+		return tu.User.Sid.String()
+	}
+	if domain != "" {
+		return domain + "\\" + account
+	}
+	return account
+}
+
+// processCommandLine fetches the full command line via
+// NtQueryInformationProcess(ProcessCommandLineInformation).
+func processCommandLine(h windows.Handle) string {
+	var size uint32
+	buf := make([]byte, 4096)
+	status, _, _ := procNtQueryInformationProcess.Call(
+		uintptr(h), processCommandLineInformation,
+		uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)),
+		uintptr(unsafe.Pointer(&size)))
+	if uintptr(status) == 0xC0000004 && size > uint32(len(buf)) { // STATUS_INFO_LENGTH_MISMATCH
+		buf = make([]byte, size)
+		status, _, _ = procNtQueryInformationProcess.Call(
+			uintptr(h), processCommandLineInformation,
+			uintptr(unsafe.Pointer(&buf[0])), uintptr(len(buf)),
+			uintptr(unsafe.Pointer(&size)))
+	}
+	if status != 0 || len(buf) < 16 {
+		return ""
+	}
+	usLen := uint64(binary.LittleEndian.Uint16(buf[0:2]))
+	bufPtr := binary.LittleEndian.Uint64(buf[8:16])
+	base := uint64(uintptr(unsafe.Pointer(&buf[0])))
+	if usLen == 0 || bufPtr < base || bufPtr+usLen > base+uint64(len(buf)) {
+		return ""
+	}
+	raw := buf[bufPtr-base : bufPtr-base+usLen]
+	u := make([]uint16, len(raw)/2)
+	for i := range u {
+		u[i] = binary.LittleEndian.Uint16(raw[2*i:])
+	}
+	return string(utf16.Decode(u))
 }
 
 // CollectProcesses enumerates the process table via Toolhelp32.
@@ -130,19 +185,25 @@ func CollectProcesses() []ProcessInfo {
 	pe.Size = uint32(unsafe.Sizeof(pe))
 	for err := windows.Process32First(snap, &pe); err == nil; err = windows.Process32Next(snap, &pe) {
 		name := windows.UTF16ToString(pe.ExeFile[:])
-		exe := processImagePath(pe.ProcessID)
+		exe, memMB, user, cmdline := "", 0.0, "", ""
+		if h, err := windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, false, pe.ProcessID); err == nil {
+			exe, memMB, user, cmdline = processDetails(h)
+			windows.CloseHandle(h)
+		}
 		info := ProcessInfo{
 			PID:      int(pe.ProcessID),
 			PPID:     int(pe.ParentProcessID),
 			Name:     name,
 			ExePath:  exe,
-			MemoryMB: workingSetMB(pe.ProcessID),
+			User:     user,
+			CmdLine:  cmdline,
+			MemoryMB: memMB,
 		}
-		lower := strings.ToLower(exe)
-		if strings.Contains(lower, `\temp\`) ||
-			strings.Contains(lower, `\appdata\local\temp\`) ||
-			strings.Contains(lower, `\users\public\`) ||
-			strings.Contains(lower, `\downloads\`) {
+		hay := strings.ToLower(exe + " " + cmdline)
+		if strings.Contains(hay, `\temp\`) ||
+			strings.Contains(hay, `\appdata\local\temp\`) ||
+			strings.Contains(hay, `\users\public\`) ||
+			strings.Contains(hay, `\downloads\`) {
 			info.IsSuspicious = true
 		}
 		out = append(out, info)
@@ -236,14 +297,16 @@ func CollectNetwork() []NetConn {
 			add("tcp", lAddr, lPort, rAddr, rPort, state, pid)
 		}
 	}
-	// TCP IPv6
+	// TCP IPv6 — MIB_TCP6ROW_OWNER_PID: LocalAddr@0, LocalScopeId@16,
+	// LocalPort@20, RemoteAddr@24, RemoteScopeId@40, RemotePort@44,
+	// State@48, OwningPid@52 (no State at offset 0).
 	if buf, err := queryExtendedTable(procGetExtendedTcpTable, windows.AF_INET6, tcpTableOwnerPID); err == nil {
 		for _, row := range tableRows(buf, 56) {
-			state := tcpStatesByNumber[binary.LittleEndian.Uint32(row[0:4])]
-			lAddr := net.IP(row[4:20]).String()
-			lPort := ntohs32(binary.LittleEndian.Uint32(row[24:28]))
-			rAddr := net.IP(row[28:44]).String()
-			rPort := ntohs32(binary.LittleEndian.Uint32(row[48:52]))
+			state := tcpStatesByNumber[binary.LittleEndian.Uint32(row[48:52])]
+			lAddr := net.IP(row[0:16]).String()
+			lPort := ntohs32(binary.LittleEndian.Uint32(row[20:24]))
+			rAddr := net.IP(row[24:40]).String()
+			rPort := ntohs32(binary.LittleEndian.Uint32(row[44:48]))
 			pid := binary.LittleEndian.Uint32(row[52:56])
 			add("tcp6", lAddr, lPort, rAddr, rPort, state, pid)
 		}

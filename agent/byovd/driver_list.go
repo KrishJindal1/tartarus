@@ -1,5 +1,7 @@
 package byovd
 
+import "strings"
+
 // DriverFinding represents a loaded kernel driver matched against known
 // BYOVD (Bring Your Own Vulnerable Driver) intelligence.
 type DriverFinding struct {
@@ -38,4 +40,29 @@ var knownVulnerableDrivers = map[string]struct {
 	"nsi.dll.nss":        {"CVE-2019-19117", "kernel R/W", "high", "Nahimic driver variant"},
 	"rwdrv.sys":          {"CVE-2022-20070", "kernel R/W", "critical", "MSI RTCore"},
 	"kprocesshacker.sys": {"N/A", "direct process memory access", "high", "KProcessHacker"},
+}
+
+// lookupDriverIntel checks a driver filename (e.g. "capcom.sys") against the
+// BYOVD intelligence map, case-insensitively.
+func lookupDriverIntel(name string) (struct {
+	CVE      string
+	Impact   string
+	Severity string
+	Notes    string
+}, bool) {
+	v, ok := knownVulnerableDrivers[strings.ToLower(name)]
+	if !ok {
+		return struct {
+			CVE      string
+			Impact   string
+			Severity string
+			Notes    string
+		}{}, false
+	}
+	return struct {
+		CVE      string
+		Impact   string
+		Severity string
+		Notes    string
+	}{v.CVE, v.Impact, v.Severity, v.Notes}, true
 }
