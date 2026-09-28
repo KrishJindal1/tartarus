@@ -25,6 +25,18 @@ type osVersionInfoExW struct {
 	Reserved          byte
 }
 
+type memoryStatusEx struct {
+	Length               uint32
+	MemoryLoad           uint32
+	TotalPhys            uint64
+	AvailPhys            uint64
+	TotalPageFile        uint64
+	AvailPageFile        uint64
+	TotalVirtual         uint64
+	AvailVirtual         uint64
+	AvailExtendedVirtual uint64
+}
+
 // CollectSystem gathers host system metadata on Windows.
 func CollectSystem() SystemInfo {
 	hostname, _ := os.Hostname()
@@ -38,6 +50,13 @@ func CollectSystem() SystemInfo {
 	k32 := syscall.NewLazyDLL("kernel32.dll")
 	tick, _, _ := k32.NewProc("GetTickCount64").Call()
 
+	memTotalMB := int64(0)
+	var memSTATEX memoryStatusEx
+	memSTATEX.Length = uint32(unsafe.Sizeof(memSTATEX))
+	if ok, _, _ := k32.NewProc("GlobalMemoryStatusEx").Call(uintptr(unsafe.Pointer(&memSTATEX))); ok != 0 {
+		memTotalMB = int64(memSTATEX.TotalPhys) / (1024 * 1024)
+	}
+
 	return SystemInfo{
 		Hostname:     hostname,
 		OSType:       "windows",
@@ -45,6 +64,8 @@ func CollectSystem() SystemInfo {
 		Kernel:       "ntdll",
 		Architecture: runtime.GOARCH,
 		UptimeSec:    int64(tick) / 1000,
+		CPUCount:     runtime.NumCPU(),
+		MemTotalMB:   memTotalMB,
 		InstalledAV:  detectAVWindows(),
 	}
 }

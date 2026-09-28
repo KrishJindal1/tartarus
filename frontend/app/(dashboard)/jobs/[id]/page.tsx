@@ -13,7 +13,7 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { useToast } from '@/components/ui'
-import { JobStatusBadge, RiskBadge } from '@/components/dashboard'
+import { JobStatusBadge, RiskBadge, JsonTree } from '@/components/dashboard'
 import { EvidenceTable } from '@/components/dashboard/evidence-table'
 import { EvidencePreviewModal } from '@/components/modals/evidence-preview-modal'
 import { api, BackendJobDetail, BackendResultRow, BackendEvidenceRow } from '@/lib/api'
@@ -360,17 +360,18 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                 </div>
                 <details>
                   <summary className="cursor-pointer text-[11px] font-bold text-[#0F766E] dark:text-[#2DD4BF]">
-                    Raw payload
+                    Agent output
                   </summary>
-                  <pre className="mt-2 max-h-72 overflow-auto rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#0C0E11] p-3 text-[10px] leading-4 font-mono text-[#e6edf3] whitespace-pre-wrap break-all">
+                  <div className="mt-2 max-h-72 overflow-auto rounded-md border border-[#d0d7de] dark:border-[#24282F] bg-[#0C0E11] p-3 text-[11px] leading-4 text-[#e6edf3]">
                     {(() => {
+                      const raw = r.raw ?? r.message ?? '{}'
                       try {
-                        return JSON.stringify(JSON.parse(r.raw ?? r.message ?? '{}'), null, 2)
+                        return <JsonTree data={JSON.parse(raw)} defaultExpandedDepth={2} />
                       } catch {
-                        return r.raw ?? r.message
+                        return <pre className="whitespace-pre-wrap break-all font-mono">{raw}</pre>
                       }
                     })()}
-                  </pre>
+                  </div>
                 </details>
               </div>
             ))}

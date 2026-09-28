@@ -1,12 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Radar, X } from 'lucide-react'
+import { Radar, Settings, X } from 'lucide-react'
 import { DynamicIcon } from '@/components/ui'
 import { navItems } from '@/data/navigation'
 import { useDashboard } from '@/providers/dashboard-provider'
+import { SettingsModal } from '@/components/modals/settings-modal'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -23,6 +24,7 @@ function isActive(pathname: string, href: string): boolean {
 export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname()
   const { counts } = useDashboard()
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   return (
     <>
@@ -100,7 +102,22 @@ export function Sidebar({ isOpen = true, isMobileOpen = false, onCloseMobile }: 
             })}
           </nav>
         </div>
+
+        {/* Footer — bottom-left settings */}
+        <div className="border-t border-[#d0d7de] dark:border-[#24282F] px-3 py-3">
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            className="flex h-9 w-full items-center gap-3 rounded-md px-3 text-left text-xs text-[#656d76] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#14181E] hover:text-[#1f2328] dark:hover:text-[#f0f6fc] transition-colors cursor-pointer"
+            title="Settings — manage data"
+          >
+            <Settings className="size-4 shrink-0" />
+            <span>Settings</span>
+          </button>
+        </div>
       </aside>
+
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>
   )
 }

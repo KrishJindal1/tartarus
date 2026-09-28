@@ -19,6 +19,31 @@ const td = 'px-4 py-3 text-xs align-middle'
 
 const PAGE_SIZE = 10
 
+/** One-line human summary of an evidence payload for the table. */
+function dataSummary(data: unknown): string {
+  if (Array.isArray(data)) {
+    if (data.length === 0) return 'empty list'
+    const first = data[0]
+    let preview = ''
+    if (first && typeof first === 'object') {
+      preview = Object.values(first as Record<string, unknown>)
+        .filter((v): v is string | number => typeof v === 'string' || typeof v === 'number')
+        .slice(0, 2)
+        .map(String)
+        .join(' · ')
+    } else {
+      preview = String(first)
+    }
+    return `${data.length} items${preview ? ` — ${preview}` : ''}`
+  }
+  if (data && typeof data === 'object') {
+    const keys = Object.keys(data as object)
+    return `${keys.length} field${keys.length === 1 ? '' : 's'}: ${keys.slice(0, 4).join(', ')}${keys.length > 4 ? ', …' : ''}`
+  }
+  const s = String(data)
+  return s.length > 90 ? `${s.slice(0, 90)}…` : s
+}
+
 export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTableProps) {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
@@ -61,6 +86,7 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
           <thead className="bg-[#f6f8fa] dark:bg-[#0C0E11]">
             <tr className="border-b border-[#d0d7de] dark:border-[#24282F]">
               <th className={th}>Type</th>
+              <th className={th}>Details</th>
               <th className={th}>Host</th>
               <th className={th}>Job</th>
               <th className={th}>SHA-256</th>
@@ -80,6 +106,12 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
                   <span className="rounded border border-[#d0d7de] dark:border-[#24282F] bg-[#f6f8fa] dark:bg-[#1B1F26] px-1.5 py-0.5 font-mono text-[11px] font-semibold">
                     {item.type}
                   </span>
+                </td>
+                <td
+                  className={`${td} max-w-[260px] truncate text-[#656d76] dark:text-[#8b949e]`}
+                  title={dataSummary(item.data)}
+                >
+                  {dataSummary(item.data)}
                 </td>
                 <td className={`${td} font-semibold`}>{item.hostname ?? '—'}</td>
                 <td className={`${td} font-mono text-[10px]`}>
@@ -125,7 +157,7 @@ export function EvidenceTable({ evidence, onPreview, onDownload }: EvidenceTable
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-10 text-center text-xs text-[#8b949e]">
+                <td colSpan={9} className="px-4 py-10 text-center text-xs text-[#8b949e]">
                   <FolderKanban className="size-5 mx-auto mb-2 opacity-50" />
                   {evidence.length === 0
                     ? 'No evidence captured yet — run a script to collect artifacts.'

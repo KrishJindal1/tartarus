@@ -326,23 +326,25 @@ func Execute(ir []byte, execMode string) (*ForensicResult, error) {
 }
 
 // applySection mirrors discovered data into the aggregate result sections.
+// Slice sections accumulate so scripts may call the same collector on
+// multiple targets (e.g. collect_files twice) without the last call winning.
 func (st *vmState) applySection(name string, out any) {
 	switch name {
 	case "collect_processes", "system.info.processes":
 		if v, ok := out.([]forensics.ProcessInfo); ok {
-			st.result.Processes = v
+			st.result.Processes = append(st.result.Processes, v...)
 		}
 	case "collect_network":
 		if v, ok := out.([]forensics.NetConn); ok {
-			st.result.Network = v
+			st.result.Network = append(st.result.Network, v...)
 		}
 	case "collect_logons":
 		if v, ok := out.([]forensics.LogonSession); ok {
-			st.result.Logons = v
+			st.result.Logons = append(st.result.Logons, v...)
 		}
 	case "collect_files":
 		if v, ok := out.([]forensics.FileArtifact); ok {
-			st.result.Files = v
+			st.result.Files = append(st.result.Files, v...)
 		}
 	case "collect_system", "system.info":
 		if v, ok := out.(forensics.SystemInfo); ok {
@@ -350,19 +352,19 @@ func (st *vmState) applySection(name string, out any) {
 		}
 	case "dump_memory":
 		if v, ok := out.([]forensics.MemRegion); ok {
-			st.result.Memory = v
+			st.result.Memory = append(st.result.Memory, v...)
 		}
 	case "dump_registry":
 		if v, ok := out.([]forensics.RegistryFinding); ok {
-			st.result.Registry = v
+			st.result.Registry = append(st.result.Registry, v...)
 		}
 	case "analyze_persistence":
 		if v, ok := out.([]forensics.PersistEntry); ok {
-			st.result.Persistence = v
+			st.result.Persistence = append(st.result.Persistence, v...)
 		}
 	case "scan_byovd":
 		if v, ok := out.([]byovd.DriverFinding); ok {
-			st.result.Byovd = v
+			st.result.Byovd = append(st.result.Byovd, v...)
 		}
 	}
 	if findings, ok := out.([]string); ok {

@@ -5,6 +5,7 @@ package forensics
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"golang.org/x/sys/unix"
@@ -31,6 +32,11 @@ func CollectSystem() SystemInfo {
 
 	dist := detectLinuxDistro()
 
+	memTotalMB := int64(0)
+	if sysinfo.Totalram > 0 {
+		memTotalMB = int64(sysinfo.Totalram) * int64(sysinfo.Unit) / (1024 * 1024)
+	}
+
 	return SystemInfo{
 		Hostname:     hostname,
 		OSType:       "linux",
@@ -38,6 +44,8 @@ func CollectSystem() SystemInfo {
 		Kernel:       kernel,
 		Architecture: arch(),
 		UptimeSec:    uptime,
+		CPUCount:     runtime.NumCPU(),
+		MemTotalMB:   memTotalMB,
 		InstalledAV:  detectAV(),
 	}
 }

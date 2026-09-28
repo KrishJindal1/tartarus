@@ -58,30 +58,54 @@ PREDEFINED_SCRIPTS = [
         "jocky_source": 'fn collect_system() {\n  let info = collect_system()\n  output info\n}',
     },
     {
-        "name": "File Recovery",
+        "name": "File Recovery (Linux)",
         "category": "files",
         "risk_level": "medium",
-        "os_target": "both",
-        "jocky_source": 'fn collect_files() {\n  let files = collect_files("/etc")\n  output files\n}',
+        "os_target": "linux",
+        "jocky_source": (
+            'fn collect_files() {\n'
+            '  let cfg = collect_files("/etc")\n'
+            '  let logs = collect_files("/var/log")\n'
+            '  let home = collect_files("/home")\n'
+            '  output cfg\n'
+            '  output logs\n'
+            '  output home\n'
+            '}'
+        ),
+    },
+    {
+        "name": "File Recovery (Windows)",
+        "category": "files",
+        "risk_level": "medium",
+        "os_target": "windows",
+        "jocky_source": (
+            'fn collect_files() {\n'
+            '  let tmp = collect_files("C:\\\\Windows\\\\Temp")\n'
+            '  let pub = collect_files("C:\\\\Users\\\\Public")\n'
+            '  let prog = collect_files("C:\\\\ProgramData")\n'
+            '  output tmp\n'
+            '  output pub\n'
+            '  output prog\n'
+            '}'
+        ),
     },
     {
         "name": "Full Endpoint Audit",
         "category": "process",
         "risk_level": "high",
-        "os_target": "linux",
+        "os_target": "both",
         "jocky_source": (
             "fn full_audit() {\n"
             "  let procs = collect_processes()\n"
             "  let net = collect_network()\n"
             "  let pers = analyze_persistence()\n"
+            "  let sessions = collect_logons()\n"
             "  let sys = collect_system()\n"
-            "  if procs == 0 {\n"
-            "    log(\"no processes?\")\n"
-            "  }\n"
             "  output sys\n"
             "  output procs\n"
             "  output net\n"
             "  output pers\n"
+            "  output sessions\n"
             "}"
         ),
     },
@@ -100,24 +124,70 @@ PREDEFINED_SCRIPTS = [
 ]
 
 
+# Predefined scripts renamed/split in later releases; removed only while
+# they still carry the pristine seed (version 1, never console-edited).
+RETIRED_PREDEFINED = ["File Recovery"]
+
+
 def _seed_scripts() -> None:
     from uuid import uuid4
 
     import sys
     import os
+    import hashlib
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
     from compiler.ir_emitter import IREmitter
     from compiler.polymorphic_engine import mutate_program
 
+    def compile_ir(source: str):
+        prog = IREmitter(source).emit_program()
+        ir = mutate_program(prog).to_bytes()
+        return ir, hashlib.sha256(ir).hexdigest()
+
+    for name in RETIRED_PREDEFINED:
+        execute(
+            """DELETE FROM scripts WHERE name=? AND is_predefined=1
+                 AND version=1 AND is_deployed=1 AND created_by IS NULL""",
+            (name,),
+        )
+
     for script in PREDEFINED_SCRIPTS:
-        existing = query_one("SELECT id FROM scripts WHERE name = ?", (script["name"],))
+        existing = query_one(
+            "SELECT id, jocky_source, version, is_predefined FROM scripts WHERE name = ?",
+            (script["name"],),
+        )
         if existing:
+            # Refresh managed scripts that were never edited through the
+            # console (version stays 1 until an operator saves a change).
+            stale = (
+                existing.get("jocky_source") != script["jocky_source"]
+                or existing.get("os_target") != script["os_target"]
+                or existing.get("category") != script["category"]
+                or existing.get("risk_level") != script["risk_level"]
+            )
+            untouched = (
+                existing.get("is_predefined")
+                and int(existing.get("version") or 1) == 1
+                and stale
+            )
+            if untouched:
+                try:
+                    ir, sha = compile_ir(script["jocky_source"])
+                except Exception:
+                    ir, sha = None, None
+                execute(
+                    """UPDATE scripts SET jocky_source=?, compiled_ir=?, ir_sha256=?,
+                          category=?, risk_level=?, os_target=?
+                       WHERE id=?""",
+                    (
+                        script["jocky_source"], ir, sha,
+                        script["category"], script["risk_level"], script["os_target"],
+                        existing["id"],
+                    ),
+                )
             continue
         try:
-            prog = IREmitter(script["jocky_source"]).emit_program()
-            ir = mutate_program(prog).to_bytes()
-            import hashlib
-            sha = hashlib.sha256(ir).hexdigest()
+            ir, sha = compile_ir(script["jocky_source"])
         except Exception:
             ir, sha = None, None
 

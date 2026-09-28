@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from core import db
 from core.config import settings
 from core.seed import seed_all
-from routers import agents, auth, evidence, jobs, reports, results, scripts
+from routers import admin, agents, auth, evidence, jobs, reports, results, scripts
 from services import agent_monitor, audit_logger
 
 app = FastAPI(
@@ -61,6 +61,7 @@ app.include_router(results.router, prefix="/results", tags=["Results"])
 app.include_router(scripts.router, prefix="/scripts", tags=["Scripts"])
 app.include_router(evidence.router, prefix="/evidence", tags=["Evidence"])
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])
+app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
 
 @app.get("/health")

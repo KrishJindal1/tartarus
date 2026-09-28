@@ -36,6 +36,7 @@ func CollectSystem() SystemInfo {
 		Kernel:       kernel,
 		Architecture: unix.ByteSliceToString(uts.Machine[:]),
 		UptimeSec:    uptime,
+		CPUCount:     runtime.NumCPU(),
 	}
 }
 

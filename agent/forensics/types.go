@@ -6,13 +6,16 @@ import "time"
 
 // ProcessInfo represents metadata of an inspected endpoint process.
 type ProcessInfo struct {
-	PID          int      `json:"pid"`
-	PPID         int      `json:"ppid"`
-	Name         string   `json:"name"`
-	ExePath      string   `json:"exe_path"`
-	IsSuspicious bool     `json:"is_suspicious"`
-	LoadedDLLs   []string `json:"loaded_dlls,omitempty"`
-	MemoryMB     float64  `json:"memory_mb"`
+	PID          int        `json:"pid"`
+	PPID         int        `json:"ppid"`
+	Name         string     `json:"name"`
+	ExePath      string     `json:"exe_path"`
+	CmdLine      string     `json:"cmdline,omitempty"`
+	User         string     `json:"user,omitempty"`
+	StartTime    *time.Time `json:"start_time,omitempty"`
+	IsSuspicious bool       `json:"is_suspicious"`
+	LoadedDLLs   []string   `json:"loaded_dlls,omitempty"`
+	MemoryMB     float64    `json:"memory_mb"`
 }
 
 // NetConn represents an active network connection or listening socket.
@@ -24,6 +27,7 @@ type NetConn struct {
 	RemotePort int    `json:"remote_port"`
 	State      string `json:"state"`
 	PID        int    `json:"pid"`
+	Process    string `json:"process,omitempty"`
 }
 
 // MemRegion represents a process virtual memory region.
@@ -83,5 +87,7 @@ type SystemInfo struct {
 	Kernel       string   `json:"kernel"`
 	Architecture string   `json:"architecture"`
 	UptimeSec    int64    `json:"uptime_sec"`
+	CPUCount     int      `json:"cpu_count,omitempty"`
+	MemTotalMB   int64    `json:"mem_total_mb,omitempty"`
 	InstalledAV  []string `json:"installed_av,omitempty"`
 }

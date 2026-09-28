@@ -217,6 +217,14 @@ export const api = {
     apiGet<BackendResultRow[]>(`/results/${jobId ? `?job_id=${jobId}` : ''}`),
   login: (email: string, password: string) =>
     apiPost<{ access_token: string; token_type: string }>('/auth/login', { email, password }),
+  adminClearData: (body: {
+    jobs?: boolean
+    evidence?: boolean
+    reports?: boolean
+    results?: boolean
+    audit?: boolean
+  }) =>
+    apiPost<{ message: string; deleted: Record<string, number> }>('/admin/clear-data', body),
 }
 
 // handy base for <a href> links (dev mode has no auth on static-ish GETs)

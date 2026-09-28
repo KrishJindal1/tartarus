@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Modal } from '@/components/ui'
-import { RiskBadge } from '@/components/dashboard'
+import { RiskBadge, JsonTree } from '@/components/dashboard'
 import { relTime, formatBytes } from '@/providers/dashboard-provider'
 import type { EvidenceView } from '@/types'
 
@@ -20,13 +20,6 @@ export function EvidencePreviewModal({
   onDownload,
 }: EvidencePreviewModalProps) {
   if (!evidence) return null
-
-  let json = ''
-  try {
-    json = JSON.stringify(evidence.data, null, 2)
-  } catch {
-    json = String(evidence.data)
-  }
 
   return (
     <Modal
@@ -70,19 +63,24 @@ export function EvidencePreviewModal({
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#8b949e]">
               artifact.json
             </span>
-            {onDownload && (
-              <button
-                type="button"
-                onClick={() => onDownload(evidence)}
-                className="text-[10px] font-bold text-[#2DD4BF] hover:underline cursor-pointer"
-              >
-                Download
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              <span className="text-[9px] font-mono text-[#656d76] dark:text-[#8b949e]">
+                click rows to expand
+              </span>
+              {onDownload && (
+                <button
+                  type="button"
+                  onClick={() => onDownload(evidence)}
+                  className="text-[10px] font-bold text-[#2DD4BF] hover:underline cursor-pointer"
+                >
+                  Download
+                </button>
+              )}
+            </div>
           </div>
-          <pre className="p-3 max-h-[320px] overflow-auto text-[11px] leading-5 font-mono text-[#e6edf3] whitespace-pre-wrap break-words">
-            {json}
-          </pre>
+          <div className="p-3 max-h-[320px] overflow-auto text-[11px] leading-5 text-[#e6edf3] break-words">
+            <JsonTree data={evidence.data} defaultExpandedDepth={2} />
+          </div>
         </div>
       </div>
     </Modal>

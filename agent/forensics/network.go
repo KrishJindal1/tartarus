@@ -56,7 +56,7 @@ func parseProcNet(path, proto string) []NetConn {
 			state = "OPEN"
 		}
 		pid := lookupSocketPID(fields[9])
-		out = append(out, NetConn{
+		conn := NetConn{
 			Protocol:   proto,
 			LocalAddr:  lAddr,
 			LocalPort:  lPort,
@@ -64,9 +64,22 @@ func parseProcNet(path, proto string) []NetConn {
 			RemotePort: rPort,
 			State:      state,
 			PID:        pid,
-		})
+		}
+		if pid > 0 {
+			conn.Process = procName(pid)
+		}
+		out = append(out, conn)
 	}
 	return out
+}
+
+// procName reads the command name for a PID from /proc (best effort).
+func procName(pid int) string {
+	data, err := os.ReadFile(fmt.Sprintf("/proc/%d/comm", pid))
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(data))
 }
 
 func splitAddr(s string) (string, int) {
@@ -80,6 +93,20 @@ func splitAddr(s string) (string, int) {
 }
 
 func decodeHexIP(hexStr string) string {
+	// IPv6 rows are 32 hex chars: four 32-bit words in host (little-endian) order.
+	if len(hexStr) == 32 {
+		raw := make([]byte, 0, 16)
+		for i := 0; i < 32; i += 8 {
+			w, err := strconv.ParseUint(hexStr[i:i+8], 16, 32)
+			if err != nil {
+				return hexStr
+			}
+			var b [4]byte
+			binary.LittleEndian.PutUint32(b[:], uint32(w))
+			raw = append(raw, b[:]...)
+		}
+		return net.IP(raw).String()
+	}
 	b, err := strconv.ParseUint(hexStr, 16, 32)
 	if err != nil {
 		return hexStr
