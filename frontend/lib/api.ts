@@ -153,6 +153,14 @@ export interface EvidenceSummary {
   latest: BackendEvidenceRow | null
 }
 
+export interface AdminDataStats {
+  jobs: number
+  evidence: number
+  reports: number
+  results: number
+  audit: number
+}
+
 export interface CompileResult {
   ok: boolean
   error: string | null
@@ -225,6 +233,7 @@ export const api = {
     audit?: boolean
   }) =>
     apiPost<{ message: string; deleted: Record<string, number> }>('/admin/clear-data', body),
+  adminDataStats: () => apiGet<AdminDataStats>('/admin/data-stats'),
 }
 
 // handy base for <a href> links (dev mode has no auth on static-ish GETs)

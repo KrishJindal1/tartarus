@@ -31,6 +31,19 @@ def _drain(deleted: dict, key: str, select_sql: str, params=()) -> None:
         db.execute(select_sql.replace("SELECT *", "DELETE", 1), params)
     deleted[key] = n
 
+@router.get("/data-stats")
+def data_stats(user=Depends(require_role("admin"))):
+    """Row counts per clearable category — powers the console Settings page."""
+    audit_row = db.query_one("SELECT COUNT(*) AS n FROM audit_logs")
+    return {
+        "jobs": _count("SELECT * FROM jobs"),
+        "evidence": _count("SELECT * FROM evidence"),
+        "reports": _count("SELECT * FROM jobs WHERE status IN ('completed','failed')"),
+        "results": _count("SELECT * FROM results"),
+        "audit": int(audit_row["n"]) if audit_row else 0,
+    }
+
+
 @router.post("/clear-data")
 def clear_data(body: ClearDataBody, request: Request, user=Depends(require_role("admin"))):
     """Delete generated records (jobs, evidence, results, reports, audit trail).
